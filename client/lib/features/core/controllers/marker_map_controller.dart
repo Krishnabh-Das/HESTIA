@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/utils/constants/sizes.dart';
-import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:http/http.dart' as http;
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
@@ -25,15 +25,24 @@ class MarkerMapController extends GetxController {
         : MapType.normal;
   }
 
+  // -- SHOW POLYGON
+  Rx<bool> showPolygon = false.obs;
+  RxSet<Polygon> polygons = <Polygon>{}.obs;
+  void toggleShowPolygon() async {
+    showPolygon.value = !showPolygon.value;
+
+    if (showPolygon.value) {
+      polygons.value =
+          await FirebaseQueryForRegionMap().getPolygonsFromFirestore();
+      markers.value.clear();
+    } else {
+      markers.value.addAll(fixedMarkers);
+    }
+  }
+
   // -- MARKERS
   RxSet<Marker> markers = <Marker>{}.obs;
   RxSet<Marker> fixedMarkers = <Marker>{}.obs;
-
-  // SHOW POLYGON
-  Rx<bool> showPolygon = false.obs;
-  void toggleShowPolygon() {
-    showPolygon.value = !showPolygon.value;
-  }
 
   // Add Markers when tapped
   void addTapMarkers(LatLng position, int id) {
@@ -87,6 +96,12 @@ class MarkerMapController extends GetxController {
   void updateGoogleControllerForCustomInfoWindowController(
       GoogleMapController googleMapController) {
     customInfoWindowController.value.googleMapController = googleMapController;
+  }
+
+  // -- Loading Effect in Buttons (For POST Button)
+  Rx<bool> isloading = false.obs;
+  void toggleIsLoading() {
+    isloading.value = !isloading.value;
   }
 
   // ------------------------------- VARIABLES (NON OBSERVABLE) --------------------------
@@ -236,9 +251,7 @@ class MarkerMapController extends GetxController {
       },
       onTap: () {
         customInfoWindowController.addInfoWindow!(
-          infoWindow(desc, image, id),
-          position,
-        );
+            infoWindow(desc, image, id), position);
       },
       icon: BitmapDescriptor.defaultMarkerWithHue(
         BitmapDescriptor.hueRed,
@@ -294,12 +307,12 @@ class MarkerMapController extends GetxController {
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             TextButton(
               onPressed: () async {
                 deleteMarkerFromFixedandUpdateMarkers(markerid);
                 await FirebaseQueryForUsers()
-                    .deleteImageFromFirebaseStorage("MarkerImages/${markerid}");
+                    .deleteImageFromFirebaseStorage("MarkerImages/$markerid");
                 await FirebaseQueryForUsers()
                     .deleteMarkerFromFirestore(markerid);
                 customInfoWindowController.value.hideInfoWindow!();
@@ -320,14 +333,14 @@ class MarkerMapController extends GetxController {
     return showModalBottomSheet(
         backgroundColor: Colors.white,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
         context: context,
         builder: (context) {
           return Wrap(
             children: [
               Padding(
-                  padding: EdgeInsets.fromLTRB(MyAppSizes.defaultSpace, 4,
+                  padding: const EdgeInsets.fromLTRB(MyAppSizes.defaultSpace, 4,
                       MyAppSizes.defaultSpace, MyAppSizes.defaultSpace),
                   child: Column(
                     children: [
@@ -345,7 +358,7 @@ class MarkerMapController extends GetxController {
                           color: Colors.red[400],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Text(
@@ -401,7 +414,7 @@ class MarkerMapController extends GetxController {
       Directory(appDirPath).createSync(recursive: true);
 
       // Create a temporary file in the app's temporary directory
-      File imageFile = File('$appDirPath/image_file${id}.png');
+      File imageFile = File('$appDirPath/image_file$id.png');
 
       // Write the bytes to the file
       await imageFile.writeAsBytes(bytes);
@@ -425,7 +438,7 @@ class MarkerMapController extends GetxController {
           position,
           customInfoWindowController.value,
           map["description"],
-          image != null ? image : File(""));
+          image ?? File(""));
 
       // Adding the marker to Markers & fixed Markers list
       addSpecificMarker(marker, false);

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
-import 'package:iconsax/iconsax.dart';
 
 class FloatingButtonsMarkerMapScreen extends StatelessWidget {
   const FloatingButtonsMarkerMapScreen({super.key});
@@ -12,6 +14,7 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 28, right: 12),
       alignment: Alignment.topRight,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
             heroTag: "changeMap",
@@ -93,6 +96,27 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
               Icons.polymer_rounded,
               size: 25,
               color: Colors.white,
+            ),
+          ),
+          const SizedBox(
+            height: 70,
+          ),
+          SizedBox(
+            height: 50,
+            width: 50,
+            child: FloatingActionButton(
+              heroTag: "ShowPolygons",
+              onPressed: () async =>
+                  await FirebaseAuth.instance.signOut().then((value) {
+                Get.to(() => LoginScreen());
+              }),
+              backgroundColor: Colors.redAccent,
+              mini: true,
+              child: const Icon(
+                Icons.logout,
+                size: 30,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

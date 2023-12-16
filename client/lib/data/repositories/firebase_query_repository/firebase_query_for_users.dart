@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
@@ -23,22 +22,18 @@ class FirebaseQueryForUsers {
 
       return imageUrl;
     } catch (error) {
-      print("Image Upload Error: " + error.toString());
-      throw error;
+      print("Image Upload Error: $error");
+      rethrow;
     }
   }
 
   // -- Delete Image From Firebase Storage
   Future<void> deleteImageFromFirebaseStorage(String filePath) async {
     try {
-      if (filePath != null) {
-        // Delete the file from Firebase Storage
-        await FirebaseStorage.instance.ref().child(filePath).delete();
+      // Delete the file from Firebase Storage
+      await FirebaseStorage.instance.ref().child(filePath).delete();
 
-        print('Image deleted successfully');
-      } else {
-        print('File path not found for the given download URL');
-      }
+      print('Image deleted successfully');
     } catch (e) {
       print('Error deleting image: $e');
     }
@@ -133,9 +128,9 @@ class FirebaseQueryForUsers {
           .get();
 
       List<Map<String, dynamic>> markers = [];
-      snapshot.docs.forEach((doc) {
-        markers.add(doc.data()!);
-      });
+      for (var doc in snapshot.docs) {
+        markers.add(doc.data());
+      }
 
       return markers;
     } catch (error) {

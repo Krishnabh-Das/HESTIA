@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
@@ -79,28 +80,34 @@ class ImageScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            SizedBox(
-              child: ElevatedButton(
-                child: const Text("Post"),
-                onPressed: () async {
-                  int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
-                  Marker marker = MarkerMapController.instance.MakeFixedMarker(
-                      randomMarkerID,
-                      position,
-                      customInfoWindowController,
-                      desc.text,
-                      image);
+            Obx(
+              () => SizedBox(
+                child: ElevatedButton(
+                  child: MarkerMapController.instance.isloading.value
+                      ? CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 4,
+                        )
+                      : Text("Post"),
+                  onPressed: () async {
+                    MarkerMapController.instance.toggleIsLoading();
+                    int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
+                    Marker marker = MarkerMapController.instance
+                        .MakeFixedMarker(randomMarkerID, position,
+                            customInfoWindowController, desc.text, image);
 
-                  // Adding Marker details in Firestore
-                  await FirebaseQueryForUsers().addMarkerToUser(
-                      position.latitude,
-                      position.longitude,
-                      image,
-                      desc.text,
-                      randomMarkerID);
+                    // Adding Marker details in Firestore
+                    await FirebaseQueryForUsers()
+                        .addMarkerToUser(position.latitude, position.longitude,
+                            image, desc.text, randomMarkerID)
+                        .then((value) =>
+                            MarkerMapController.instance.toggleIsLoading())
+                        .onError((error, stackTrace) =>
+                            MarkerMapController.instance.toggleIsLoading());
 
-                  Navigator.pop(context, marker);
-                },
+                    Navigator.pop(context, marker);
+                  },
+                ),
               ),
             )
           ],
