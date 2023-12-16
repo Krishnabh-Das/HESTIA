@@ -83,8 +83,9 @@ class ImageScreen extends StatelessWidget {
               child: ElevatedButton(
                 child: const Text("Post"),
                 onPressed: () async {
+                  int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
                   Marker marker = MarkerMapController.instance.MakeFixedMarker(
-                      id,
+                      randomMarkerID,
                       position,
                       customInfoWindowController,
                       desc.text,
@@ -92,7 +93,11 @@ class ImageScreen extends StatelessWidget {
 
                   // Adding Marker details in Firestore
                   await FirebaseQueryForUsers().addMarkerToUser(
-                      position.latitude, position.longitude, image, desc.text);
+                      position.latitude,
+                      position.longitude,
+                      image,
+                      desc.text,
+                      randomMarkerID);
 
                   Navigator.pop(context, marker);
                 },

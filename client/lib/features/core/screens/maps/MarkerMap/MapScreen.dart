@@ -12,7 +12,7 @@ class MarkerMapScreen extends StatelessWidget {
 
   MarkerMapScreen({super.key}) {
     controller.getUserLocation();
-    controller.makeMarkersFromFirestoreMaps();
+    controller.makeMarkersFromJson();
   }
 
   @override
@@ -55,7 +55,7 @@ class MarkerMapScreen extends StatelessWidget {
                 CustomInfoWindow(
                   controller: controller.customInfoWindowController.value,
                   width: 230,
-                  height: 170,
+                  height: 220,
                   offset: 35,
                 ),
 

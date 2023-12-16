@@ -189,7 +189,7 @@ class MarkerMapController extends GetxController {
   // -- Add the marker of the current location and move the camera there
   Future<void> moveToCurrLocation() async {
     googleMapController
-        .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 13));
+        .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
 
     final marker = Marker(
         markerId: const MarkerId("currentLocation"),
@@ -219,13 +219,13 @@ class MarkerMapController extends GetxController {
 
         // Add a new info window at the updated position
         customInfoWindowController.addInfoWindow!(
-          infoWindow(desc, image),
+          infoWindow(desc, image, id),
           value,
         );
       },
       onTap: () {
         customInfoWindowController.addInfoWindow!(
-          infoWindow(desc, image),
+          infoWindow(desc, image, id),
           position,
         );
       },
@@ -236,7 +236,7 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Making Custom Info Window For Custom Marker (or Fixed Markers)
-  Widget infoWindow(String text, File image) {
+  Widget infoWindow(String text, File image, int markerid) {
     return Container(
       width: 250,
       height: 300,
@@ -275,13 +275,49 @@ class MarkerMapController extends GetxController {
               ),
             ),
           ),
+          Spacer(),
+          TextButton(
+            onPressed: () async {
+              deleteMarkerFromFixedandUpdateMarkers(markerid);
+              await FirebaseQueryForUsers()
+                  .deleteImageFromFirebaseStorage("MarkerImages/${markerid}");
+              await FirebaseQueryForUsers().deleteMarkerFromFirestore(markerid);
+              customInfoWindowController.value.hideInfoWindow!();
+            },
+            child: const Text(
+              "Delete",
+              style: TextStyle(color: Colors.red),
+            ),
+          )
         ],
       ),
     );
   }
 
+  // -- Delete a specific marker from the Markers using id
+  void deleteMarkerFromFixedandUpdateMarkers(int markerid) {
+    Marker? markerToRemove;
+
+    for (Marker marker in fixedMarkers) {
+      if (marker.markerId == MarkerId(markerid.toString())) {
+        markerToRemove = marker;
+        break;
+      }
+    }
+
+    if (markerToRemove != null) {
+      fixedMarkers.remove(markerToRemove);
+      markers
+        ..clear()
+        ..addAll(fixedMarkers);
+      print('Marker with id $markerid removed from fixedMarker');
+    } else {
+      print('Marker with id $markerid not found in fixedMarker');
+    }
+  }
+
   // -- Get Image From URL (Use to get the firebase Storage Images)
-  Future<File> getImageFile(String imageUrl) async {
+  Future<File> getImageFile(String imageUrl, int id) async {
     final response = await http.get(Uri.parse(imageUrl));
 
     if (response.statusCode == 200) {
@@ -308,20 +344,21 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Make Markers from Firestore Maps (& store it in fixed markers)
-  Future<void> makeMarkersFromFirestoreMaps() async {
+  Future<void> makeMarkersFromJson() async {
     var listofmaps = await FirebaseQueryForUsers().getMarkersFromUsers();
 
     for (var map in listofmaps) {
-      LatLng position = LatLng(map["lat"], map["long"]);
-      File? image = await getImageFile(map["imageUrl"]);
+      LatLng position = LatLng(map["lat"], map["long"]); // Getting the position
+      File? image =
+          await getImageFile(map["imageUrl"], map["id"]); // Getting the image
       Marker marker = MakeFixedMarker(
-          ++id,
+          map["id"],
           position,
           customInfoWindowController.value,
           map["description"],
           image != null ? image : File(""));
 
-      // Adding the marker to markers & fixed Markers list
+      // Adding the marker to Markers & fixed Markers list
       addSpecificMarker(marker, false);
     }
   }

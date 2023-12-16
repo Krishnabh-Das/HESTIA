@@ -36,7 +36,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyAppTheme.lightTheme,
       darkTheme: MyAppTheme.darkTheme,
-      home: LoginScreen(),
+      home: MarkerMapScreen(),
     );
   }
 }
