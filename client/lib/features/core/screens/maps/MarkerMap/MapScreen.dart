@@ -12,6 +12,7 @@ class MarkerMapScreen extends StatelessWidget {
 
   MarkerMapScreen({super.key}) {
     controller.getUserLocation();
+    controller.makeMarkersFromFirestoreMaps();
   }
 
   @override

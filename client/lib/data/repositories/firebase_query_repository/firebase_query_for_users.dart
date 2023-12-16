@@ -11,15 +11,16 @@ class FirebaseQueryForUsers {
   // -- Upload Image in Firebase Storage & get URL
   Future<String> uploadImageToMarkerImages(File image) async {
     try {
-      final reference = storage
+      final userFireStoreReference = storage
           .ref()
           .child("MarkerImages/${DateTime.now().millisecondsSinceEpoch}");
-      final UploadTask uploadTask = reference.putFile(image);
+
+      final UploadTask uploadTask = userFireStoreReference.putFile(image);
 
       await uploadTask.whenComplete(() => print('Image uploaded successfully'));
 
       // URL of the image
-      String imageUrl = await reference.getDownloadURL();
+      String imageUrl = await userFireStoreReference.getDownloadURL();
 
       return imageUrl;
     } catch (error) {
@@ -60,6 +61,36 @@ class FirebaseQueryForUsers {
       print('Marker added successfully!');
     } catch (error) {
       print('Error adding marker: $error');
+    }
+  }
+
+  // Retrieve Marker details from Firestore (as List of Map)
+  Future<List<Map<String, dynamic>>> getMarkersFromUsers() async {
+    String? userId = AuthRepository().getUserId();
+
+    // Checking if user is signed in
+    if (userId == null) {
+      print('User is not signed in.');
+      return [];
+    }
+
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Markers')
+          .get();
+
+      List<Map<String, dynamic>> markers = [];
+      snapshot.docs.forEach((doc) {
+        markers.add(doc.data()!);
+      });
+
+      return markers;
+    } catch (error) {
+      print('Error getting markers: $error');
+      return [];
     }
   }
 }

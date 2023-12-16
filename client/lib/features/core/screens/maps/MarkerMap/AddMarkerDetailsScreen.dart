@@ -3,6 +3,7 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
+import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 
 // ignore: must_be_immutable
 class ImageScreen extends StatelessWidget {
@@ -82,32 +83,12 @@ class ImageScreen extends StatelessWidget {
               child: ElevatedButton(
                 child: const Text("Post"),
                 onPressed: () async {
-                  Marker marker = Marker(
-                    markerId: MarkerId('$id'),
-                    position: position,
-                    draggable: true,
-                    onDrag: (LatLng value) {
-                      customInfoWindowController.hideInfoWindow!();
-
-                      // Store the new position
-                      position = value;
-
-                      // Add a new info window at the updated position
-                      customInfoWindowController.addInfoWindow!(
-                        infoWindow(desc.text, image),
-                        value,
-                      );
-                    },
-                    onTap: () {
-                      customInfoWindowController.addInfoWindow!(
-                        infoWindow(desc.text, image),
-                        position,
-                      );
-                    },
-                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueRed,
-                    ),
-                  );
+                  Marker marker = MarkerMapController.instance.MakeFixedMarker(
+                      id,
+                      position,
+                      customInfoWindowController,
+                      desc.text,
+                      image);
 
                   // Adding Marker details in Firestore
                   await FirebaseQueryForUsers().addMarkerToUser(
@@ -119,50 +100,6 @@ class ImageScreen extends StatelessWidget {
             )
           ],
         ),
-      ),
-    );
-  }
-
-  Widget infoWindow(String text, File image) {
-    return Container(
-      width: 250,
-      height: 300,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 280,
-            height: 100,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: FileImage(image),
-                fit: BoxFit.fitWidth,
-                filterQuality: FilterQuality.high,
-              ),
-              borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-              color: Colors.red[400],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

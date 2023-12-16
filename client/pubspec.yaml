@@ -18,10 +18,11 @@ dependencies:
   iconsax: ^0.0.8
 
   # Utility Packages
-  http: ^1.1.0
+  http: ^1.1.2
   intl: ^0.18.1
   logger: ^2.0.2+1
   url_launcher: ^6.2.1
+  path_provider: ^2.0.8
 
   # State Management 
   get: ^4.6.5
@@ -49,6 +50,7 @@ dependencies:
   cloud_firestore: ^4.13.6
   firebase_auth: ^4.15.3
   firebase_storage: ^11.5.6
+  
 
   # Google Maps
   google_maps_flutter: ^2.5.0
