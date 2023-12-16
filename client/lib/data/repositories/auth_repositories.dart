@@ -11,7 +11,7 @@ class AuthRepository {
         .then((UserCredential credential) {
       print("Signed Up");
       onSuccess();
-        }).onError((error, stackTrace) {
+    }).onError((error, stackTrace) {
       print("$error");
     });
   }
@@ -24,7 +24,7 @@ class AuthRepository {
         .then((UserCredential credential) {
       print("Signed In");
       onSuccess();
-        }).onError((error, stackTrace) {
+    }).onError((error, stackTrace) {
       print("$error");
     });
   }
@@ -32,5 +32,17 @@ class AuthRepository {
   /// EMail Verification
   void sendEmailVerification() {
     auth.currentUser?.sendEmailVerification();
+  }
+
+  // Getting the UserID
+  String? getUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      return user.uid;
+    } else {
+      // User is not signed in
+      return null;
+    }
   }
 }

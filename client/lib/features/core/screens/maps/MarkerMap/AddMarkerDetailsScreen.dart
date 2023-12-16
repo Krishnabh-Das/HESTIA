@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 
 // ignore: must_be_immutable
 class ImageScreen extends StatelessWidget {
@@ -80,7 +81,7 @@ class ImageScreen extends StatelessWidget {
             SizedBox(
               child: ElevatedButton(
                 child: const Text("Post"),
-                onPressed: () {
+                onPressed: () async {
                   Marker marker = Marker(
                     markerId: MarkerId('$id'),
                     position: position,
@@ -107,6 +108,10 @@ class ImageScreen extends StatelessWidget {
                       BitmapDescriptor.hueRed,
                     ),
                   );
+
+                  // Adding Marker details in Firestore
+                  await FirebaseQueryForUsers().addMarkerToUser(
+                      position.latitude, position.longitude, image, desc.text);
 
                   Navigator.pop(context, marker);
                 },
