@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,9 +12,25 @@ class MarkerMapScreen extends StatelessWidget {
   // --- MAP CONTROLLER
   var controller = Get.put(MarkerMapController());
 
+  List<LatLng> points = [
+    LatLng(26.143070, 91.757311),
+    LatLng(26.141149, 91.754762),
+    LatLng(26.139538, 91.758018),
+    LatLng(26.141524, 91.761065),
+  ];
+
+  Set<Polygon> polygon = HashSet<Polygon>();
+
   MarkerMapScreen({super.key}) {
     controller.getUserLocation();
     controller.makeMarkersFromJson();
+    polygon.add(Polygon(
+        polygonId: PolygonId("1"),
+        points: points,
+        geodesic: true,
+        strokeWidth: 1,
+        fillColor: Colors.redAccent.withOpacity(0.3),
+        strokeColor: Colors.red));
   }
 
   @override
@@ -51,6 +69,8 @@ class MarkerMapScreen extends StatelessWidget {
                   },
                   mapType: controller.currentMapType,
                   markers: Set.from(controller.markers),
+                  polygons: Set<Polygon>.of(
+                      controller.showPolygon.value ? polygon : []),
                 ),
 
                 // --Info Window

@@ -29,6 +29,12 @@ class MarkerMapController extends GetxController {
   RxSet<Marker> markers = <Marker>{}.obs;
   RxSet<Marker> fixedMarkers = <Marker>{}.obs;
 
+  // SHOW POLYGON
+  Rx<bool> showPolygon = false.obs;
+  void toggleShowPolygon() {
+    showPolygon.value = !showPolygon.value;
+  }
+
   // Add Markers when tapped
   void addTapMarkers(LatLng position, int id) {
     markers.clear();
@@ -309,6 +315,7 @@ class MarkerMapController extends GetxController {
     );
   }
 
+  // -- Bottom Sheet for getting Marker Details
   Future<dynamic> MarkerDetailsBottomSheet(File image, String text) {
     return showModalBottomSheet(
         backgroundColor: Colors.white,

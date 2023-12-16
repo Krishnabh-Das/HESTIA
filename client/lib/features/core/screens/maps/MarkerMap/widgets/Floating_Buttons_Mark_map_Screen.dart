@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:iconsax/iconsax.dart';
 
 class FloatingButtonsMarkerMapScreen extends StatelessWidget {
   const FloatingButtonsMarkerMapScreen({super.key});
@@ -76,6 +77,20 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
             mini: true,
             child: const Icon(
               Icons.delete,
+              size: 25,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            heroTag: "ShowPolygons",
+            onPressed: () => MarkerMapController.instance.toggleShowPolygon(),
+            backgroundColor: Colors.pink[300],
+            mini: true,
+            child: const Icon(
+              Icons.polymer_rounded,
               size: 25,
               color: Colors.white,
             ),
