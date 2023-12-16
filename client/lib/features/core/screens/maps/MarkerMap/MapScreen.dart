@@ -17,6 +17,8 @@ class MarkerMapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.context = context;
+
     return Scaffold(
         body: Obx(
       () => controller.currPos.value == null

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:hestia/utils/constants/sizes.dart';
+import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:http/http.dart' as http;
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +84,9 @@ class MarkerMapController extends GetxController {
   }
 
   // ------------------------------- VARIABLES (NON OBSERVABLE) --------------------------
+
+  // MarkerScreen Context (for Bottom Sheet)
+  late BuildContext context;
 
   // Used to get the current location
   final Location locationController = Location();
@@ -236,62 +241,119 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Making Custom Info Window For Custom Marker (or Fixed Markers)
-  Widget infoWindow(String text, File image, int markerid) {
-    return Container(
-      width: 250,
-      height: 300,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 280,
-            height: 100,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: FileImage(image),
-                fit: BoxFit.fitWidth,
-                filterQuality: FilterQuality.high,
-              ),
-              borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-              color: Colors.red[400],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+  Widget infoWindow(
+    String text,
+    File image,
+    int markerid,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        MarkerDetailsBottomSheet(image, text);
+      },
+      child: Container(
+        width: 250,
+        height: 300,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 280,
+              height: 100,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(image),
+                  fit: BoxFit.fitWidth,
+                  filterQuality: FilterQuality.high,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                color: Colors.red[400],
               ),
             ),
-          ),
-          Spacer(),
-          TextButton(
-            onPressed: () async {
-              deleteMarkerFromFixedandUpdateMarkers(markerid);
-              await FirebaseQueryForUsers()
-                  .deleteImageFromFirebaseStorage("MarkerImages/${markerid}");
-              await FirebaseQueryForUsers().deleteMarkerFromFirestore(markerid);
-              customInfoWindowController.value.hideInfoWindow!();
-            },
-            child: const Text(
-              "Delete",
-              style: TextStyle(color: Colors.red),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                text,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
             ),
-          )
-        ],
+            Spacer(),
+            TextButton(
+              onPressed: () async {
+                deleteMarkerFromFixedandUpdateMarkers(markerid);
+                await FirebaseQueryForUsers()
+                    .deleteImageFromFirebaseStorage("MarkerImages/${markerid}");
+                await FirebaseQueryForUsers()
+                    .deleteMarkerFromFirestore(markerid);
+                customInfoWindowController.value.hideInfoWindow!();
+              },
+              child: const Text(
+                "Delete",
+                style: TextStyle(color: Colors.red),
+              ),
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  Future<dynamic> MarkerDetailsBottomSheet(File image, String text) {
+    return showModalBottomSheet(
+        backgroundColor: Colors.white,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+        context: context,
+        builder: (context) {
+          return Wrap(
+            children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(MyAppSizes.defaultSpace, 4,
+                      MyAppSizes.defaultSpace, MyAppSizes.defaultSpace),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: FileImage(image),
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(25)),
+                          color: Colors.red[400],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        text,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ))
+            ],
+          );
+        });
   }
 
   // -- Delete a specific marker from the Markers using id
