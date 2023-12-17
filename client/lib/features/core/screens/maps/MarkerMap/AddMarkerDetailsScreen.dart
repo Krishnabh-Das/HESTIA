@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -93,6 +94,7 @@ class ImageScreen extends StatelessWidget {
                   onPressed: () async {
                     MarkerMapController.instance.toggleIsLoading();
                     int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
+                    Timestamp time = Timestamp.now();
                     Directory tempDir = await getTemporaryDirectory();
                     // Create the necessary directories
                     String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
@@ -105,13 +107,19 @@ class ImageScreen extends StatelessWidget {
                     // Copy the original image file to the destination file
                     image.copySync(destinationFile.path);
                     Marker marker = MarkerMapController.instance
-                        .MakeFixedMarker(randomMarkerID, position,
-                            customInfoWindowController, desc.text, "", true);
+                        .MakeFixedMarker(
+                            randomMarkerID,
+                            position,
+                            customInfoWindowController,
+                            desc.text,
+                            time,
+                            "",
+                            true);
 
                     // Adding Marker details in Firestore
                     await FirebaseQueryForUsers()
                         .addMarkerToUser(position.latitude, position.longitude,
-                            image, desc.text, randomMarkerID)
+                            image, desc.text, randomMarkerID, time)
                         .then((value) =>
                             MarkerMapController.instance.toggleIsLoading())
                         .onError((error, stackTrace) =>

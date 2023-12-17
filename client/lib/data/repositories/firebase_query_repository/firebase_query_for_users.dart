@@ -42,7 +42,7 @@ class FirebaseQueryForUsers {
 
   // -- Add Marker Details in FireStore
   Future<void> addMarkerToUser(double lat, double long, File image,
-      String description, int randomMarkerID) async {
+      String description, int randomMarkerID, Timestamp time) async {
     String? userId = AuthRepository().getUserId();
 
     // After getting uid do the Write Operation
@@ -59,6 +59,7 @@ class FirebaseQueryForUsers {
         'formattedTime': formattedTime,
         'imageUrl': imageUrl,
         'description': description,
+        'time': time
       };
 
       await FirebaseFirestore.instance

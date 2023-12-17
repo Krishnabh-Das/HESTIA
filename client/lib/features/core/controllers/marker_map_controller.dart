@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
@@ -12,6 +13,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/AddMarkerDetailsScreen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -240,6 +242,7 @@ class MarkerMapController extends GetxController {
     LatLng position,
     CustomInfoWindowController customInfoWindowController,
     String desc,
+    Timestamp? time,
     String imageUrl,
     bool hasDelete,
   ) {
@@ -258,7 +261,7 @@ class MarkerMapController extends GetxController {
         print('Marker $id tapped');
 
         customInfoWindowController.addInfoWindow!(
-            infoWindow(desc, null, id, hasDelete), position);
+            infoWindow(desc, null, id, time, hasDelete), position);
 
         Directory tempDir = await getTemporaryDirectory();
         String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
@@ -268,7 +271,7 @@ class MarkerMapController extends GetxController {
             ? imageFile
             : await getImageFile(imageUrl, id);
         customInfoWindowController.addInfoWindow!(
-            infoWindow(desc, image, id, hasDelete), position);
+            infoWindow(desc, image, id, time, hasDelete), position);
       },
       icon: BitmapDescriptor.defaultMarkerWithHue(
         BitmapDescriptor.hueRed,
@@ -280,13 +283,14 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Making Custom Info Window For Custom Marker (or Fixed Markers)
-  Widget infoWindow(String text, File? image, int markerid, bool hasDelete) {
+  Widget infoWindow(
+      String text, File? image, int markerid, Timestamp? time, bool hasDelete) {
     print('Creating info window for marker $markerid');
 
     return GestureDetector(
       onTap: () {
         print('Info window tapped for marker $markerid');
-        MarkerDetailsBottomSheet(image, text);
+        MarkerDetailsBottomSheet(image, text, time);
       },
       child: Container(
         width: 250,
@@ -321,7 +325,21 @@ class MarkerMapController extends GetxController {
                         strokeWidth: 4,
                       ),
                     )
-                  : null,
+                  : time != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              formatTimestamp(time),
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                        )
+                      : null,
             ),
             Padding(
               padding: const EdgeInsets.all(10),
@@ -332,7 +350,7 @@ class MarkerMapController extends GetxController {
                 style: const TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.w500,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
             ),
@@ -361,8 +379,19 @@ class MarkerMapController extends GetxController {
     );
   }
 
+  String formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+
+    String formattedTime = DateFormat.jm().format(dateTime); // Format: 11:15 AM
+    String formattedDate =
+        DateFormat('d MMM, y').format(dateTime); // Format: 12 Sept, 2023
+
+    return '$formattedTime, $formattedDate';
+  }
+
   // -- Bottom Sheet for getting Marker Details
-  Future<dynamic> MarkerDetailsBottomSheet(File? image, String text) {
+  Future<dynamic> MarkerDetailsBottomSheet(
+      File? image, String text, Timestamp? time) {
     return showModalBottomSheet(
         backgroundColor: Colors.white,
         isScrollControlled: true,
@@ -376,6 +405,7 @@ class MarkerMapController extends GetxController {
                   padding: const EdgeInsets.fromLTRB(MyAppSizes.defaultSpace, 4,
                       MyAppSizes.defaultSpace, MyAppSizes.defaultSpace),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         width: double.infinity,
@@ -394,7 +424,17 @@ class MarkerMapController extends GetxController {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
+                      ),
+                      time != null
+                          ? Text(formatTimestamp(time),
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w400))
+                          : Container(),
+                      const SizedBox(
+                        height: 10,
                       ),
                       Text(
                         text,
@@ -426,7 +466,6 @@ class MarkerMapController extends GetxController {
       fixedMarkers.remove(markerToRemove);
       markers.remove(markerToRemove);
 
-      markers.addAll(fixedMarkers);
       print('Marker with id $markerid removed from fixedMarker');
     } else {
       print('Marker with id $markerid not found in fixedMarker');
@@ -493,6 +532,7 @@ class MarkerMapController extends GetxController {
             position,
             customInfoWindowController.value,
             map["description"] ?? "",
+            map["time"],
             map["imageUrl"],
             isUsersMarker,
           );
