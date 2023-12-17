@@ -5,6 +5,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:path_provider/path_provider.dart';
 
 // ignore: must_be_immutable
 class ImageScreen extends StatelessWidget {
@@ -92,11 +93,20 @@ class ImageScreen extends StatelessWidget {
                   onPressed: () async {
                     MarkerMapController.instance.toggleIsLoading();
                     int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
+                    Directory tempDir = await getTemporaryDirectory();
+                    // Create the necessary directories
+                    String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
+                    Directory(appDirPath).createSync(recursive: true);
+
+                    // Create a destination file in the desired directory
+                    File destinationFile =
+                        File('$appDirPath/image_file${randomMarkerID}.png');
+
+                    // Copy the original image file to the destination file
+                    image.copySync(destinationFile.path);
                     Marker marker = MarkerMapController.instance
                         .MakeFixedMarker(randomMarkerID, position,
-                            customInfoWindowController, desc.text, image, true);
-
-                    Navigator.pop(context, marker);
+                            customInfoWindowController, desc.text, "", true);
 
                     // Adding Marker details in Firestore
                     await FirebaseQueryForUsers()
@@ -106,6 +116,7 @@ class ImageScreen extends StatelessWidget {
                             MarkerMapController.instance.toggleIsLoading())
                         .onError((error, stackTrace) =>
                             MarkerMapController.instance.toggleIsLoading());
+                    Navigator.pop(context, marker);
                   },
                 ),
               ),

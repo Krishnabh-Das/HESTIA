@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FloatingButtonsMarkerMapScreen extends StatelessWidget {
   const FloatingButtonsMarkerMapScreen({super.key});
@@ -106,10 +109,10 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
             width: 50,
             child: FloatingActionButton(
               heroTag: "logout",
-              onPressed: () async =>
-                  await FirebaseAuth.instance.signOut().then((value) {
+              onPressed: () async {
+                FirebaseAuth.instance.signOut();
                 Get.offAll(() => LoginScreen());
-              }),
+              },
               backgroundColor: Colors.redAccent,
               mini: true,
               child: const Icon(

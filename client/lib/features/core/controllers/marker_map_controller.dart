@@ -240,7 +240,7 @@ class MarkerMapController extends GetxController {
     LatLng position,
     CustomInfoWindowController customInfoWindowController,
     String desc,
-    File image,
+    String imageUrl,
     bool hasDelete,
   ) {
     print('Creating marker with id: $id');
@@ -251,18 +251,22 @@ class MarkerMapController extends GetxController {
       draggable: true,
       onDrag: (LatLng value) {
         print('Marker $id dragged to position: $value');
-
-        // Store the new position
         position = value;
-
-        // Add a new info window at the updated position
-        customInfoWindowController.addInfoWindow!(
-          infoWindow(desc, image, id, hasDelete),
-          value,
-        );
+        customInfoWindowController.hideInfoWindow!();
       },
-      onTap: () {
+      onTap: () async {
         print('Marker $id tapped');
+
+        customInfoWindowController.addInfoWindow!(
+            infoWindow(desc, null, id, hasDelete), position);
+
+        Directory tempDir = await getTemporaryDirectory();
+        String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
+        File? imageFile = File('$appDirPath/image_file$id.png');
+
+        File? image = imageFile.existsSync()
+            ? imageFile
+            : await getImageFile(imageUrl, id);
         customInfoWindowController.addInfoWindow!(
             infoWindow(desc, image, id, hasDelete), position);
       },
@@ -276,7 +280,7 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Making Custom Info Window For Custom Marker (or Fixed Markers)
-  Widget infoWindow(String text, File image, int markerid, bool hasDelete) {
+  Widget infoWindow(String text, File? image, int markerid, bool hasDelete) {
     print('Creating info window for marker $markerid');
 
     return GestureDetector(
@@ -300,14 +304,24 @@ class MarkerMapController extends GetxController {
               width: 280,
               height: 100,
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(image),
-                  fit: BoxFit.fitWidth,
-                  filterQuality: FilterQuality.high,
-                ),
+                image: image != null
+                    ? DecorationImage(
+                        image: FileImage(image),
+                        fit: BoxFit.fitWidth,
+                        filterQuality: FilterQuality.high,
+                      )
+                    : null,
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                 color: Colors.red[400],
               ),
+              child: image == null
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 4,
+                      ),
+                    )
+                  : null,
             ),
             Padding(
               padding: const EdgeInsets.all(10),
@@ -348,7 +362,7 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Bottom Sheet for getting Marker Details
-  Future<dynamic> MarkerDetailsBottomSheet(File image, String text) {
+  Future<dynamic> MarkerDetailsBottomSheet(File? image, String text) {
     return showModalBottomSheet(
         backgroundColor: Colors.white,
         isScrollControlled: true,
@@ -367,11 +381,13 @@ class MarkerMapController extends GetxController {
                         width: double.infinity,
                         height: 200,
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: FileImage(image),
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high,
-                          ),
+                          image: image != null
+                              ? DecorationImage(
+                                  image: FileImage(image),
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.high,
+                                )
+                              : null,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(25)),
                           color: Colors.red[400],
@@ -408,9 +424,9 @@ class MarkerMapController extends GetxController {
 
     if (markerToRemove != null) {
       fixedMarkers.remove(markerToRemove);
-      markers
-        ..clear()
-        ..addAll(fixedMarkers);
+      markers.remove(markerToRemove);
+
+      markers.addAll(fixedMarkers);
       print('Marker with id $markerid removed from fixedMarker');
     } else {
       print('Marker with id $markerid not found in fixedMarker');
@@ -462,8 +478,8 @@ class MarkerMapController extends GetxController {
 
         if (position != null) {
           print('User marker position: $position');
-          File? image = await getImageFile(map["imageUrl"], map["id"]);
-          print('User marker image loaded: $image');
+          // File? image = await getImageFile(map["imageUrl"], map["id"]);
+          // print('User marker image loaded: $image');
 
           bool isUsersMarker;
           if (map["userid"] == userID) {
@@ -477,7 +493,7 @@ class MarkerMapController extends GetxController {
             position,
             customInfoWindowController.value,
             map["description"] ?? "",
-            image ?? File(""),
+            map["imageUrl"],
             isUsersMarker,
           );
 
