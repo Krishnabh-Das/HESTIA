@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
+import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:intl/intl.dart';
 
 class FirebaseQueryForUsers {
@@ -44,12 +45,6 @@ class FirebaseQueryForUsers {
       String description, int randomMarkerID) async {
     String? userId = AuthRepository().getUserId();
 
-    // Checking if user is signed in
-    if (userId == null) {
-      print('User is not signed in.');
-      return;
-    }
-
     // After getting uid do the Write Operation
     try {
       String imageUrl = await uploadImageToMarkerImages(image, randomMarkerID);
@@ -57,26 +52,31 @@ class FirebaseQueryForUsers {
       DateTime now = DateTime.now();
       String formattedTime = DateFormat('hh:mm a, EEE, MM/yyyy').format(now);
 
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(userId)
-          .collection('Markers')
-          .add({
+      Map<String, dynamic> json = {
         'id': randomMarkerID,
         'lat': lat,
         'long': long,
         'formattedTime': formattedTime,
         'imageUrl': imageUrl,
         'description': description,
-      });
-      print('Marker added successfully!');
+      };
+
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Markers')
+          .add(json);
+
+      // Sequencial Trigger of Functions (After User Adding the details in Markers)
+      await FirebaseQueryForMarkers().addMarkerToMarkers(json, userId);
+      print('Marker added successfully in Users!');
     } catch (error) {
-      print('Error adding marker: $error');
+      print('Error adding marker in Users: $error');
     }
   }
 
   // -- Delete Marker Details from FireStore
-  Future<void> deleteMarkerFromFirestore(int markerId) async {
+  Future<void> deleteMarkerFromFirestoreUsers(int markerId) async {
     try {
       String? userId = AuthRepository().getUserId();
 
@@ -100,6 +100,8 @@ class FirebaseQueryForUsers {
       if (snapshot.docs.isNotEmpty) {
         // Delete the document
         await markers.doc(snapshot.docs.first.id).delete();
+        await FirebaseQueryForMarkers()
+            .deleteMarkerFromFirestoreMarkers(markerId);
         print('Marker document deleted successfully');
       } else {
         print('Marker document not found in Firestore');
@@ -113,15 +115,8 @@ class FirebaseQueryForUsers {
   Future<List<Map<String, dynamic>>> getMarkersFromUsers() async {
     String? userId = AuthRepository().getUserId();
 
-    // Checking if user is signed in
-    if (userId == null) {
-      print('User is not signed in.');
-      return [];
-    }
-
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-          .instance
+      final snapshot = await FirebaseFirestore.instance
           .collection('Users')
           .doc(userId)
           .collection('Markers')
