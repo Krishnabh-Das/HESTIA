@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:hestia/data/repositories/auth_repositories.dart';
+import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:http/http.dart' as http;
@@ -34,15 +36,15 @@ class MarkerMapController extends GetxController {
     if (showPolygon.value) {
       polygons.value =
           await FirebaseQueryForRegionMap().getPolygonsFromFirestore();
-      markers.value.clear();
+      markers.clear();
     } else {
-      markers.value.addAll(fixedMarkers);
+      markers.addAll(fixedMarkers);
     }
   }
 
   // -- MARKERS
   RxSet<Marker> markers = <Marker>{}.obs;
-  RxSet<Marker> fixedMarkers = <Marker>{}.obs;
+  Set<Marker> fixedMarkers = <Marker>{};
 
   // Add Markers when tapped
   void addTapMarkers(LatLng position, int id) {
@@ -69,8 +71,13 @@ class MarkerMapController extends GetxController {
 
   // Add a specific made up marker (but not adding Current Location in fixed)
   void addSpecificMarker(Marker marker, bool isCurr) {
+    print("inside addspecificmarker: ${markers}");
+    if (!isCurr) {
+      print("Added fixedMarkers");
+      fixedMarkers.add(marker);
+    }
+
     markers.add(marker);
-    if (!isCurr) fixedMarkers.add(marker);
   }
 
   // Home Marker Add (To navigate Back to home)
@@ -214,6 +221,7 @@ class MarkerMapController extends GetxController {
 
   // -- Add the marker of the current location and move the camera there
   Future<void> moveToCurrLocation() async {
+    customInfoWindowController.value.hideInfoWindow!();
     googleMapController
         .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
 
@@ -228,45 +236,52 @@ class MarkerMapController extends GetxController {
 
   // -- Making Custom Markers
   Marker MakeFixedMarker(
-      int id,
-      LatLng position,
-      CustomInfoWindowController customInfoWindowController,
-      String desc,
-      File image) {
-    return Marker(
+    int id,
+    LatLng position,
+    CustomInfoWindowController customInfoWindowController,
+    String desc,
+    File image,
+    bool hasDelete,
+  ) {
+    print('Creating marker with id: $id');
+
+    Marker marker = Marker(
       markerId: MarkerId('$id'),
       position: position,
       draggable: true,
       onDrag: (LatLng value) {
-        customInfoWindowController.hideInfoWindow!();
+        print('Marker $id dragged to position: $value');
 
         // Store the new position
         position = value;
 
         // Add a new info window at the updated position
         customInfoWindowController.addInfoWindow!(
-          infoWindow(desc, image, id),
+          infoWindow(desc, image, id, hasDelete),
           value,
         );
       },
       onTap: () {
+        print('Marker $id tapped');
         customInfoWindowController.addInfoWindow!(
-            infoWindow(desc, image, id), position);
+            infoWindow(desc, image, id, hasDelete), position);
       },
       icon: BitmapDescriptor.defaultMarkerWithHue(
         BitmapDescriptor.hueRed,
       ),
     );
+
+    print('Marker created: $marker');
+    return marker;
   }
 
   // -- Making Custom Info Window For Custom Marker (or Fixed Markers)
-  Widget infoWindow(
-    String text,
-    File image,
-    int markerid,
-  ) {
+  Widget infoWindow(String text, File image, int markerid, bool hasDelete) {
+    print('Creating info window for marker $markerid');
+
     return GestureDetector(
       onTap: () {
+        print('Info window tapped for marker $markerid');
         MarkerDetailsBottomSheet(image, text);
       },
       child: Container(
@@ -308,20 +323,24 @@ class MarkerMapController extends GetxController {
               ),
             ),
             const Spacer(),
-            TextButton(
-              onPressed: () async {
-                deleteMarkerFromFixedandUpdateMarkers(markerid);
-                await FirebaseQueryForUsers()
-                    .deleteImageFromFirebaseStorage("MarkerImages/$markerid");
-                await FirebaseQueryForUsers()
-                    .deleteMarkerFromFirestore(markerid);
-                customInfoWindowController.value.hideInfoWindow!();
-              },
-              child: const Text(
-                "Delete",
-                style: TextStyle(color: Colors.red),
-              ),
-            )
+            hasDelete
+                ? TextButton(
+                    onPressed: () async {
+                      print('Delete button pressed for marker $markerid');
+                      customInfoWindowController.value.hideInfoWindow!();
+                      deleteMarkerFromFixedandUpdateMarkers(markerid);
+                      await FirebaseQueryForUsers()
+                          .deleteImageFromFirebaseStorage(
+                              "MarkerImages/$markerid");
+                      await FirebaseQueryForUsers()
+                          .deleteMarkerFromFirestoreUsers(markerid);
+                    },
+                    child: const Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  )
+                : TextButton(onPressed: () {}, child: Text("Other's Marker")),
           ],
         ),
       ),
@@ -402,46 +421,78 @@ class MarkerMapController extends GetxController {
   Future<File> getImageFile(String imageUrl, int id) async {
     final response = await http.get(Uri.parse(imageUrl));
 
-    if (response.statusCode == 200) {
-      // Convert the response body to bytes
-      Uint8List bytes = response.bodyBytes;
+    // Convert the response body to bytes
+    Uint8List bytes = response.bodyBytes;
 
-      // Get the app's temporary directory
-      Directory tempDir = await getTemporaryDirectory();
+    // Get the app's temporary directory
+    Directory tempDir = await getTemporaryDirectory();
 
-      // Create the necessary directories
-      String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
-      Directory(appDirPath).createSync(recursive: true);
+    // Create the necessary directories
+    String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
+    Directory(appDirPath).createSync(recursive: true);
 
-      // Create a temporary file in the app's temporary directory
-      File imageFile = File('$appDirPath/image_file$id.png');
+    // Create a temporary file in the app's temporary directory
+    File imageFile = File('$appDirPath/image_file$id.png');
 
-      // Write the bytes to the file
-      await imageFile.writeAsBytes(bytes);
+    // Write the bytes to the file
+    await imageFile.writeAsBytes(bytes);
 
-      return imageFile;
-    } else {
-      throw Exception('Failed to load image');
-    }
+    return imageFile;
   }
 
   // -- Make Markers from Firestore Maps (& store it in fixed markers)
   Future<void> makeMarkersFromJson() async {
-    var listofmaps = await FirebaseQueryForUsers().getMarkersFromUsers();
+    try {
+      print('Start makeMarkersFromJson');
 
-    for (var map in listofmaps) {
-      LatLng position = LatLng(map["lat"], map["long"]); // Getting the position
-      File? image =
-          await getImageFile(map["imageUrl"], map["id"]); // Getting the image
-      Marker marker = MakeFixedMarker(
-          map["id"],
-          position,
-          customInfoWindowController.value,
-          map["description"],
-          image ?? File(""));
+      var listofAllMarkers =
+          await FirebaseQueryForMarkers().getMarkersFromMarkers();
+      print('List of markers retrieved successfully');
 
-      // Adding the marker to Markers & fixed Markers list
-      addSpecificMarker(marker, false);
+      print('Number of all markers: ${listofAllMarkers.length}');
+
+      var userID = AuthRepository().getUserId();
+
+      for (var map in listofAllMarkers) {
+        print('Processing user marker: $map');
+
+        LatLng? position = map["lat"] != null && map["long"] != null
+            ? LatLng(map["lat"], map["long"])
+            : null;
+
+        if (position != null) {
+          print('User marker position: $position');
+          File? image = await getImageFile(map["imageUrl"], map["id"]);
+          print('User marker image loaded: $image');
+
+          bool isUsersMarker;
+          if (map["userid"] == userID) {
+            isUsersMarker = true;
+          } else {
+            isUsersMarker = false;
+          }
+
+          Marker marker = MakeFixedMarker(
+            map["id"],
+            position,
+            customInfoWindowController.value,
+            map["description"] ?? "",
+            image ?? File(""),
+            isUsersMarker,
+          );
+
+          print('marker created: $marker');
+
+          // Adding the marker to Markers & fixed Markers list
+          addSpecificMarker(marker, false);
+          print('marker added to lists');
+        }
+      }
+
+      print('End makeMarkersFromJson');
+      print("Markers List: ${markers}");
+    } catch (error) {
+      print('Error making markers: $error');
     }
   }
 }

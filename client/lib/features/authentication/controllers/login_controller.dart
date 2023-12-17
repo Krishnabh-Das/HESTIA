@@ -20,7 +20,7 @@ class LoginController extends GetxController {
       passwordString,
       () {
         if (_auth.auth.currentUser!.emailVerified) {
-          Get.offAll(() => MarkerMapScreen());
+          Get.offAll(() => MarkerMapScreen(key: UniqueKey()));
         }
       },
     );
