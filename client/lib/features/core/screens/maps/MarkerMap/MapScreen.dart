@@ -50,7 +50,7 @@ class MarkerMapScreen extends StatelessWidget {
                     controller.customInfoWindowController.value.onCameraMove!();
                   },
                   mapType: controller.currentMapType,
-                  markers: Set.from(controller.markers),
+                  markers: MarkerMapController.instance.markers.value,
                   polygons: Set<Polygon>.of(controller.showPolygon.value
                       ? controller.polygons.value
                       : []),

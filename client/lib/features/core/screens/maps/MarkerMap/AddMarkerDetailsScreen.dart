@@ -94,7 +94,9 @@ class ImageScreen extends StatelessWidget {
                     int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
                     Marker marker = MarkerMapController.instance
                         .MakeFixedMarker(randomMarkerID, position,
-                            customInfoWindowController, desc.text, image);
+                            customInfoWindowController, desc.text, image, true);
+
+                    Navigator.pop(context, marker);
 
                     // Adding Marker details in Firestore
                     await FirebaseQueryForUsers()
@@ -104,8 +106,6 @@ class ImageScreen extends StatelessWidget {
                             MarkerMapController.instance.toggleIsLoading())
                         .onError((error, stackTrace) =>
                             MarkerMapController.instance.toggleIsLoading());
-
-                    Navigator.pop(context, marker);
                   },
                 ),
               ),

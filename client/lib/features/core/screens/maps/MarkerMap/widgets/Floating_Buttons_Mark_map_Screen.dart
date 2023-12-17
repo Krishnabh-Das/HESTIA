@@ -105,10 +105,10 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
             height: 50,
             width: 50,
             child: FloatingActionButton(
-              heroTag: "ShowPolygons",
+              heroTag: "logout",
               onPressed: () async =>
                   await FirebaseAuth.instance.signOut().then((value) {
-                Get.to(() => LoginScreen());
+                Get.offAll(() => LoginScreen());
               }),
               backgroundColor: Colors.redAccent,
               mini: true,
