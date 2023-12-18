@@ -86,11 +86,11 @@ class ImageScreen extends StatelessWidget {
               () => SizedBox(
                 child: ElevatedButton(
                   child: MarkerMapController.instance.isloading.value
-                      ? CircularProgressIndicator(
+                      ? const CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 4,
                         )
-                      : Text("Post"),
+                      : const Text("Post"),
                   onPressed: () async {
                     MarkerMapController.instance.toggleIsLoading();
                     int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
@@ -102,7 +102,7 @@ class ImageScreen extends StatelessWidget {
 
                     // Create a destination file in the desired directory
                     File destinationFile =
-                        File('$appDirPath/image_file${randomMarkerID}.png');
+                        File('$appDirPath/image_file$randomMarkerID.png');
 
                     // Copy the original image file to the destination file
                     image.copySync(destinationFile.path);

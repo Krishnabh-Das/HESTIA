@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
+import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
+import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:http/http.dart' as http;
 import 'package:custom_info_window/custom_info_window.dart';
@@ -16,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MarkerMapController extends GetxController {
   static MarkerMapController get instance => Get.find();
@@ -42,6 +45,12 @@ class MarkerMapController extends GetxController {
     } else {
       markers.addAll(fixedMarkers);
     }
+  }
+
+  // -- CHECK IF INFO WINDOW OPENED OR CLOSED
+  Rx<bool> IsInfoWindowOpen = false.obs;
+  void changeValueOfInfoWindowOpen(bool value) {
+    IsInfoWindowOpen.value = value;
   }
 
   // -- MARKERS
@@ -73,7 +82,7 @@ class MarkerMapController extends GetxController {
 
   // Add a specific made up marker (but not adding Current Location in fixed)
   void addSpecificMarker(Marker marker, bool isCurr) {
-    print("inside addspecificmarker: ${markers}");
+    print("inside addspecificmarker: $markers");
     if (!isCurr) {
       print("Added fixedMarkers");
       fixedMarkers.add(marker);
@@ -178,11 +187,17 @@ class MarkerMapController extends GetxController {
       Marker currPosMarker = Marker(
         markerId: const MarkerId('currentLocation'),
         position: currPos.value!,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        icon: await const HexagonWidget(
+          imagePath: MyAppImages.profile2,
+        ).toBitmapDescriptor(
+          logicalSize: const Size(50, 50),
+          imageSize: const Size(180, 180),
+        ),
         infoWindow: const InfoWindow(
           title: "Your Current Location",
         ),
       );
+
       addSpecificMarker(currPosMarker, true);
     } catch (e) {
       print("Error getting user location: $e");
@@ -230,7 +245,10 @@ class MarkerMapController extends GetxController {
     final marker = Marker(
         markerId: const MarkerId("currentLocation"),
         position: currPos.value!,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        icon: await const HexagonWidget(
+          imagePath: MyAppImages.profile2,
+        ).toBitmapDescriptor(
+            logicalSize: const Size(50, 50), imageSize: const Size(180, 180)),
         infoWindow: const InfoWindow(title: "Current Location"));
 
     homeMarkerAdd(marker);
@@ -286,6 +304,7 @@ class MarkerMapController extends GetxController {
   Widget infoWindow(
       String text, File? image, int markerid, Timestamp? time, bool hasDelete) {
     print('Creating info window for marker $markerid');
+    changeValueOfInfoWindowOpen(true);
 
     return GestureDetector(
       onTap: () {
@@ -319,7 +338,7 @@ class MarkerMapController extends GetxController {
                 color: Colors.red[400],
               ),
               child: image == null
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 4,
@@ -332,7 +351,7 @@ class MarkerMapController extends GetxController {
                             alignment: Alignment.topLeft,
                             child: Text(
                               formatTimestamp(time),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 11,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400),
@@ -372,7 +391,8 @@ class MarkerMapController extends GetxController {
                       style: TextStyle(color: Colors.red),
                     ),
                   )
-                : TextButton(onPressed: () {}, child: Text("Other's Marker")),
+                : TextButton(
+                    onPressed: () {}, child: const Text("Other's Marker")),
           ],
         ),
       ),
@@ -428,7 +448,7 @@ class MarkerMapController extends GetxController {
                       ),
                       time != null
                           ? Text(formatTimestamp(time),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 13,
                                   color: Colors.black87,
                                   fontWeight: FontWeight.w400))
@@ -546,7 +566,7 @@ class MarkerMapController extends GetxController {
       }
 
       print('End makeMarkersFromJson');
-      print("Markers List: ${markers}");
+      print("Markers List: $markers");
     } catch (error) {
       print('Error making markers: $error');
     }

@@ -23,13 +23,11 @@ dependencies:
   logger: ^2.0.2+1
   url_launcher: ^6.2.1
   path_provider: ^2.0.8
+  widget_to_marker: ^1.0.4
 
   # State Management 
   get: ^4.6.5
   get_storage: ^2.1.1
-
-  # Splash Screen
-  flutter_native_splash: ^2.3.6
 
   # Page Indicator
   smooth_page_indicator: ^1.1.0
@@ -73,6 +71,7 @@ flutter:
   assets:
     - assets/images/authentication/
     - assets/images/gif/
+    - assets/images/profile/
    
 
 

@@ -1,11 +1,9 @@
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FloatingButtonsMarkerMapScreen extends StatelessWidget {
   const FloatingButtonsMarkerMapScreen({super.key});

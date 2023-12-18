@@ -43,8 +43,12 @@ class MarkerMapScreen extends StatelessWidget {
                   onTap: (latLng) {
                     controller
                         .customInfoWindowController.value.hideInfoWindow!();
-                    controller.addTapMarkers(latLng, controller.id++);
-                    controller.tapPosition = latLng;
+                    if (controller.IsInfoWindowOpen.value == false) {
+                      controller.changeValueOfInfoWindowOpen(true);
+                      controller.addTapMarkers(latLng, controller.id++);
+                      controller.tapPosition = latLng;
+                    }
+                    controller.changeValueOfInfoWindowOpen(false);
                   },
                   onCameraMove: (position) {
                     controller.customInfoWindowController.value.onCameraMove!();

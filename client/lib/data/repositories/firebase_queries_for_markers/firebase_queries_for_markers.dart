@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 
 class FirebaseQueryForMarkers {
