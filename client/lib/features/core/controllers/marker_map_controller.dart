@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
@@ -187,21 +188,27 @@ class MarkerMapController extends GetxController {
       Marker currPosMarker = Marker(
         markerId: const MarkerId('currentLocation'),
         position: currPos.value!,
-        icon: await const HexagonWidget(
-          imagePath: MyAppImages.profile2,
-        ).toBitmapDescriptor(
-          logicalSize: const Size(50, 50),
-          imageSize: const Size(180, 180),
-        ),
+        icon: await widgetToIcon(),
         infoWindow: const InfoWindow(
           title: "Your Current Location",
         ),
       );
 
+      tapPosition = currPos.value;
+
       addSpecificMarker(currPosMarker, true);
     } catch (e) {
       print("Error getting user location: $e");
     }
+  }
+
+  Future<BitmapDescriptor> widgetToIcon() async {
+    return await const HexagonWidget(
+      imagePath: MyAppImages.profile2,
+    ).toBitmapDescriptor(
+      logicalSize: const Size(50, 50),
+      imageSize: const Size(180, 180),
+    );
   }
 
   // -- Open Camera / Gallery for Marker Description
@@ -248,7 +255,7 @@ class MarkerMapController extends GetxController {
         icon: await const HexagonWidget(
           imagePath: MyAppImages.profile2,
         ).toBitmapDescriptor(
-            logicalSize: const Size(50, 50), imageSize: const Size(180, 180)),
+            logicalSize: const Size(50, 50), imageSize: const Size(175, 175)),
         infoWindow: const InfoWindow(title: "Current Location"));
 
     homeMarkerAdd(marker);
@@ -269,12 +276,6 @@ class MarkerMapController extends GetxController {
     Marker marker = Marker(
       markerId: MarkerId('$id'),
       position: position,
-      draggable: true,
-      onDrag: (LatLng value) {
-        print('Marker $id dragged to position: $value');
-        position = value;
-        customInfoWindowController.hideInfoWindow!();
-      },
       onTap: () async {
         print('Marker $id tapped');
 
