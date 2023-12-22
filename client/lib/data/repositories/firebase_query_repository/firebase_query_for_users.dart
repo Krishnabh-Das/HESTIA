@@ -134,4 +134,21 @@ class FirebaseQueryForUsers {
       return [];
     }
   }
+
+  Future<Map<String, dynamic>> getProfileFromUsers() async {
+    String? userId = AuthRepository().getUserId();
+    print("print user ID ${userId}");
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Profile')
+          .get();
+
+      return snapshot.docs[0].data();
+    } catch (error) {
+      print('Error getting markers: $error');
+      return {};
+    }
+  }
 }

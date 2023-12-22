@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/MapScreen.dart';
 import 'package:hestia/utils/constants/api_constants.dart';
@@ -39,7 +40,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyAppTheme.lightTheme,
       darkTheme: MyAppTheme.darkTheme,
-      home: currentUser == null ? LoginScreen() : MarkerMapScreen(),
+      home: currentUser == null ? LoginScreen() : bottomNavBar(),
     );
   }
 }
