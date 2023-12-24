@@ -5,23 +5,27 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/Floating_Buttons_Mark_map_Screen.dart';
 
-// ignore: must_be_immutable
 class MarkerMapScreen extends StatelessWidget {
   // --- MAP CONTROLLER
-  var controller = Get.put(MarkerMapController());
+  final MarkerMapController markerMapController = Get.find();
 
   MarkerMapScreen({super.key}) {
-    controller.getUserLocation();
-    controller.makeMarkersFromJson();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    print("Init is called");
+    await markerMapController.getUserLocation();
+    await markerMapController.makeMarkersFromJson();
   }
 
   @override
   Widget build(BuildContext context) {
-    controller.context = context;
+    markerMapController.context = context;
 
     return Scaffold(
         body: Obx(
-      () => controller.currPos.value == null
+      () => markerMapController.currPos.value == null
           ? const Center(
               child: Text("Loading..."),
             )
@@ -30,39 +34,42 @@ class MarkerMapScreen extends StatelessWidget {
                 // -- Google Map
                 GoogleMap(
                   onMapCreated: (controller) {
-                    MarkerMapController.instance.googleMapController =
-                        controller;
-                    MarkerMapController.instance
+                    markerMapController.googleMapController = controller;
+                    markerMapController
                         .updateGoogleControllerForCustomInfoWindowController(
                             controller);
-                    MarkerMapController.instance.tapPosition =
-                        MarkerMapController.instance.currPos.value;
+                    markerMapController.tapPosition =
+                        markerMapController.currPos.value;
                   },
                   initialCameraPosition: CameraPosition(
-                      target: controller.currPos.value!, zoom: 16),
+                      target: markerMapController.currPos.value!, zoom: 16),
                   onTap: (latLng) {
-                    controller
+                    markerMapController
                         .customInfoWindowController.value.hideInfoWindow!();
-                    if (controller.IsInfoWindowOpen.value == false) {
-                      controller.changeValueOfInfoWindowOpen(true);
-                      controller.addTapMarkers(latLng, controller.id++);
-                      controller.tapPosition = latLng;
+                    if (markerMapController.IsInfoWindowOpen.value == false) {
+                      markerMapController.changeValueOfInfoWindowOpen(true);
+                      markerMapController.addTapMarkers(
+                          latLng, markerMapController.id++);
+                      markerMapController.tapPosition = latLng;
                     }
-                    controller.changeValueOfInfoWindowOpen(false);
+                    markerMapController.changeValueOfInfoWindowOpen(false);
                   },
                   onCameraMove: (position) {
-                    controller.customInfoWindowController.value.onCameraMove!();
+                    markerMapController
+                        .customInfoWindowController.value.onCameraMove!();
                   },
-                  mapType: controller.currentMapType,
+                  mapType: markerMapController.currentMapType,
                   markers: MarkerMapController.instance.markers.value,
-                  polygons: Set<Polygon>.of(controller.showPolygon.value
-                      ? controller.polygons.value
-                      : []),
+                  polygons: Set<Polygon>.of(
+                      markerMapController.showPolygon.value
+                          ? markerMapController.polygons.value
+                          : []),
                 ),
 
                 // --Info Window
                 CustomInfoWindow(
-                  controller: controller.customInfoWindowController.value,
+                  controller:
+                      markerMapController.customInfoWindowController.value,
                   width: 230,
                   height: 220,
                   offset: 35,

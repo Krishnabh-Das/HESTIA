@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
-import 'package:hestia/features/core/screens/maps/MarkerMap/MapScreen.dart';
+import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/utils/constants/api_constants.dart';
 import 'package:hestia/utils/theme/theme.dart';
 
@@ -34,6 +34,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var currentUser = FirebaseAuth.instance.currentUser;
+    Get.put(MarkerMapController());
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,

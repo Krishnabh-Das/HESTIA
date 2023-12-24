@@ -115,6 +115,7 @@ class FirebaseQueryForUsers {
   // Retrieve Marker details from Firestore (as List of Map)
   Future<List<Map<String, dynamic>>> getMarkersFromUsers() async {
     String? userId = AuthRepository().getUserId();
+    print("userId for settings: $userId");
 
     try {
       final snapshot = await FirebaseFirestore.instance
@@ -128,6 +129,7 @@ class FirebaseQueryForUsers {
         markers.add(doc.data());
       }
 
+      print("heastia Markers: ${markers}");
       return markers;
     } catch (error) {
       print('Error getting markers: $error');

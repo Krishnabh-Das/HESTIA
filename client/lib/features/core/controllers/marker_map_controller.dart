@@ -25,7 +25,7 @@ class MarkerMapController extends GetxController {
   static MarkerMapController get instance => Get.find();
 
   // -- CHANGING MAP TYPE
-  final Rx<MapType> _currentMapType = MapType.normal.obs;
+  Rx<MapType> _currentMapType = MapType.normal.obs;
   MapType get currentMapType => _currentMapType.value;
   void toggleMap() {
     _currentMapType.value = _currentMapType.value == MapType.normal
@@ -143,7 +143,7 @@ class MarkerMapController extends GetxController {
   late File image = File('');
 
   // -- Animate Camera to current Location
-  late final GoogleMapController googleMapController;
+  late GoogleMapController googleMapController;
 
   // ------------------------------- FUNCTIONS ---------------------------------
 
@@ -245,18 +245,35 @@ class MarkerMapController extends GetxController {
 
   // -- Add the marker of the current location and move the camera there
   Future<void> moveToCurrLocation() async {
+    print(
+        "customInfoWindowController type: ${customInfoWindowController.runtimeType}");
+    print("googleMapController type: ${googleMapController.runtimeType}");
+
     customInfoWindowController.value.hideInfoWindow!();
-    googleMapController
-        .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
+    if (googleMapController != null) {
+      print("Animating camera...");
+      try {
+        await googleMapController
+            .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
+        print("Animate Camera Called");
+      } catch (e) {
+        print("Error animating camera: $e");
+      }
+    } else {
+      print("GoogleMapController is null");
+    }
 
     final marker = Marker(
-        markerId: const MarkerId("currentLocation"),
-        position: currPos.value!,
-        icon: await const HexagonWidget(
-          imagePath: MyAppImages.profile2,
-        ).toBitmapDescriptor(
-            logicalSize: const Size(50, 50), imageSize: const Size(175, 175)),
-        infoWindow: const InfoWindow(title: "Current Location"));
+      markerId: const MarkerId("currentLocation"),
+      position: currPos.value!,
+      icon: await const HexagonWidget(
+        imagePath: MyAppImages.profile2,
+      ).toBitmapDescriptor(
+        logicalSize: const Size(50, 50),
+        imageSize: const Size(175, 175),
+      ),
+      infoWindow: const InfoWindow(title: "Current Location"),
+    );
 
     homeMarkerAdd(marker);
   }
@@ -494,7 +511,7 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Get Image From URL (Use to get the firebase Storage Images)
-  Future<File> getImageFile(String imageUrl, int id) async {
+  Future<File> getImageFile(String imageUrl, dynamic id) async {
     final response = await http.get(Uri.parse(imageUrl));
 
     // Convert the response body to bytes
