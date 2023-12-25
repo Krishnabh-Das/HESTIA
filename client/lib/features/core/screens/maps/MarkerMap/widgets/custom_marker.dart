@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 
-class HexagonWidget extends StatelessWidget {
+class CircularWidget extends StatelessWidget {
   final String imagePath;
 
-  const HexagonWidget({required this.imagePath});
+  const CircularWidget({required this.imagePath});
 
   @override
   Widget build(BuildContext context) {

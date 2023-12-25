@@ -38,6 +38,9 @@ dependencies:
   # Read More
   readmore: ^2.2.0
 
+  # Expandable Floating Button
+  flutter_speed_dial: ^7.0.0
+
   # Text
   google_fonts: ^6.1.0
   font_awesome_flutter: ^10.6.0

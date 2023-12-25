@@ -203,7 +203,7 @@ class MarkerMapController extends GetxController {
   }
 
   Future<BitmapDescriptor> widgetToIcon() async {
-    return await const HexagonWidget(
+    return await const CircularWidget(
       imagePath: MyAppImages.profile2,
     ).toBitmapDescriptor(
       logicalSize: const Size(50, 50),
@@ -266,7 +266,7 @@ class MarkerMapController extends GetxController {
     final marker = Marker(
       markerId: const MarkerId("currentLocation"),
       position: currPos.value!,
-      icon: await const HexagonWidget(
+      icon: await const CircularWidget(
         imagePath: MyAppImages.profile2,
       ).toBitmapDescriptor(
         logicalSize: const Size(50, 50),
