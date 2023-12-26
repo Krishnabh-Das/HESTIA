@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
+import 'package:hestia/utils/constants/api_constants.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:http/http.dart' as http;
@@ -19,10 +21,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MarkerMapController extends GetxController {
   static MarkerMapController get instance => Get.find();
+
+  // Search Bar
+  Rx<String?> sessionToken = Rx<String?>(null);
+  var searchController = TextEditingController();
+  RxList<dynamic> placesList = [].obs;
+  Rx<bool> isSearchBarVisible = false.obs;
 
   // -- CHANGING MAP TYPE
   Rx<MapType> _currentMapType = MapType.normal.obs;
@@ -59,7 +68,7 @@ class MarkerMapController extends GetxController {
   Set<Marker> fixedMarkers = <Marker>{};
 
   // Add Markers when tapped
-  void addTapMarkers(LatLng position, int id) {
+  void addTapMarkers(LatLng position, dynamic id) {
     markers.clear();
     markers.add(
       Marker(
@@ -146,6 +155,30 @@ class MarkerMapController extends GetxController {
   late GoogleMapController googleMapController;
 
   // ------------------------------- FUNCTIONS ---------------------------------
+
+  // -- Search Bar
+  void onChange(Uuid uuid) {
+    if (sessionToken.value == null) {
+      sessionToken.value = uuid.v4();
+    }
+    getSuggesstion(searchController.text);
+  }
+
+  void getSuggesstion(String input) async {
+    String baseUrl =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json";
+    String request =
+        '$baseUrl?input=$input&key=${APIConstants.google_api_key}&sessiontoken=${sessionToken.value}';
+
+    var response = await http.get(Uri.parse(request));
+    print("Response: ${response.body.toString()}");
+
+    if (response.statusCode == 200) {
+      placesList = jsonDecode(response.body.toString())['predictions'];
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
   // -- Take permission and get current location
   Future<void> getUserLocation() async {
