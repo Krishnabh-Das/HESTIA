@@ -21,7 +21,7 @@ class settingsController extends GetxController {
 
   Rx<int> totalPost = 0.obs;
 
-  Rx<File?> profileImage = Rx<File?>(null);
+  final Rx<File?> profileImage = Rx<File?>(null);
 
   Rx<String> name = "Unknown User".obs;
   Rx<String> dob = "No DOB".obs;

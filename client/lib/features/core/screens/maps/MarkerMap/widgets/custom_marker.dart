@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 
 class CircularWidget extends StatelessWidget {
-  final String imagePath;
+  CircularWidget({required this.imageFile});
 
-  const CircularWidget({required this.imagePath});
+  File? imageFile;
 
   @override
   Widget build(BuildContext context) {
+    print("Image File: $imageFile");
     return Container(
       width: 100,
       height: 115,
@@ -17,10 +22,15 @@ class CircularWidget extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(100),
-        child: Image(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
+        child: imageFile != null
+            ? Image(
+                image: Image.file(imageFile!).image,
+                fit: BoxFit.cover,
+              )
+            : Image(
+                image: AssetImage(MyAppImages.profile2),
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }

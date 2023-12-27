@@ -5,17 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_for_profile/firebase_query_for_profile.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/device/device_utility.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:widget_to_marker/widget_to_marker.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final settingsController1 = Get.put(settingsController());
+  final settingsController settingsController1 = Get.find();
   var nameTextEditingController = TextEditingController();
   var dobTextEditingController = TextEditingController();
 
@@ -31,12 +34,6 @@ class SettingsScreen extends StatelessWidget {
     }
     try {
       await settingsController1.getTotalPost();
-    } catch (e) {
-      print("Settings Screen Error: $e");
-    }
-    try {
-      settingsController1.profileImage.value =
-          await settingsController1.getProfileImageFromBackend();
     } catch (e) {
       print("Settings Screen Error: $e");
     }
@@ -363,10 +360,9 @@ class primaryHeader extends StatelessWidget {
                       () => CircleAvatar(
                         radius: 50,
                         backgroundImage:
-                            settingsController.instance.profileImage.value !=
-                                    null
-                                ? Image.file(settingsController
-                                        .instance.profileImage.value!)
+                            settingsController1.profileImage.value != null
+                                ? Image.file(
+                                        settingsController1.profileImage.value!)
                                     .image
                                 : AssetImage(MyAppImages.profile2),
                       ),
@@ -392,6 +388,8 @@ class primaryHeader extends StatelessWidget {
 
                         settingsController1.profileImage.value = image;
 
+                        addNewCustomMarkerInMapScreen(image);
+
                         settingsController1.update();
                       }
                     } catch (e) {
@@ -406,6 +404,22 @@ class primaryHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> addNewCustomMarkerInMapScreen(File image) async {
+    final marker = Marker(
+      markerId: const MarkerId("currentLocation"),
+      position: MarkerMapController.instance.currPos.value!,
+      icon: await CircularWidget(
+        imageFile: image,
+      ).toBitmapDescriptor(
+        logicalSize: const Size(50, 50),
+        imageSize: const Size(175, 175),
+      ),
+      infoWindow: const InfoWindow(title: "Current Location"),
+    );
+
+    MarkerMapController.instance.homeMarkerAdd(marker);
   }
 }
 

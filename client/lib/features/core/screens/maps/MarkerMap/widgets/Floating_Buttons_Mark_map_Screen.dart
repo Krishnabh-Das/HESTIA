@@ -4,6 +4,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 
 class FloatingButtonsMarkerMapScreen extends StatelessWidget {
   const FloatingButtonsMarkerMapScreen({super.key});
@@ -15,6 +16,8 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
       bottom: 120,
       child: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
+        animatedIconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.black,
         buttonSize: Size(45, 45),
         childrenButtonSize: Size(42, 42),
         spacing: 15,
@@ -55,7 +58,8 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
           SpeedDialChild(
               label: "Current Location",
               child: Icon(Icons.track_changes_outlined),
-              onTap: () => MarkerMapController.instance.moveToCurrLocation()),
+              onTap: () => MarkerMapController.instance.moveToCurrLocation(
+                  settingsController.instance.profileImage.value)),
           SpeedDialChild(
             label: "Change Map",
             child: Icon(Icons.map),

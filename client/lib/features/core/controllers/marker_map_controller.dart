@@ -7,6 +7,7 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/api_constants.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/constants/sizes.dart';
@@ -26,6 +27,8 @@ import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MarkerMapController extends GetxController {
   static MarkerMapController get instance => Get.find();
+
+  Rx<bool> isProfileImageLoaded = false.obs;
 
   // Search Bar
   Rx<String?> sessionToken = Rx<String?>(null);
@@ -183,6 +186,8 @@ class MarkerMapController extends GetxController {
   // -- Take permission and get current location
   Future<void> getUserLocation() async {
     try {
+      print("getUser is called");
+
       bool serviceEnabled;
       PermissionStatus permissionGranted;
 
@@ -217,31 +222,53 @@ class MarkerMapController extends GetxController {
 
       updateCurrPos(
           LatLng(currentLocation.latitude!, currentLocation.longitude!));
-
-      Marker currPosMarker = Marker(
-        markerId: const MarkerId('currentLocation'),
-        position: currPos.value!,
-        icon: await widgetToIcon(),
-        infoWindow: const InfoWindow(
-          title: "Your Current Location",
-        ),
-      );
-
-      tapPosition = currPos.value;
-
-      addSpecificMarker(currPosMarker, true);
     } catch (e) {
       print("Error getting user location: $e");
     }
   }
 
-  Future<BitmapDescriptor> widgetToIcon() async {
-    return await const CircularWidget(
-      imagePath: MyAppImages.profile2,
-    ).toBitmapDescriptor(
-      logicalSize: const Size(50, 50),
-      imageSize: const Size(180, 180),
-    );
+  Future<void> createAndAddCurrMarker() async {
+    try {
+      // Wait for the image loading process to complete before creating the icon
+      BitmapDescriptor icon =
+          await widgetToIcon(settingsController.instance.profileImage.value);
+
+      Marker currPosMarker = Marker(
+        markerId: const MarkerId('currentLocation'),
+        position: currPos.value!,
+        icon: icon,
+        infoWindow: const InfoWindow(
+          title: "Your Current Location",
+        ),
+      );
+
+      print("Current Position Marker: $currPosMarker");
+
+      tapPosition = currPos.value;
+
+      addSpecificMarker(currPosMarker, true);
+    } catch (error) {
+      print("Error in createAndAddCurrMarker: $error");
+      // Handle the error as needed
+    }
+  }
+
+  Future<BitmapDescriptor> widgetToIcon(File? imageFile) async {
+    try {
+      // Ensure CircularWidget is correctly loading the image asynchronously
+      BitmapDescriptor icon = await CircularWidget(
+        imageFile: imageFile,
+      ).toBitmapDescriptor(
+        logicalSize: const Size(50, 50),
+        imageSize: const Size(180, 180),
+      );
+
+      print("Custom icon created");
+      return icon;
+    } catch (error) {
+      print("Error in widgetToIcon: ${error.toString()}");
+      throw error;
+    }
   }
 
   // -- Open Camera / Gallery for Marker Description
@@ -277,7 +304,7 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Add the marker of the current location and move the camera there
-  Future<void> moveToCurrLocation() async {
+  Future<void> moveToCurrLocation(File? imageFile) async {
     print(
         "customInfoWindowController type: ${customInfoWindowController.runtimeType}");
     print("googleMapController type: ${googleMapController.runtimeType}");
@@ -299,8 +326,8 @@ class MarkerMapController extends GetxController {
     final marker = Marker(
       markerId: const MarkerId("currentLocation"),
       position: currPos.value!,
-      icon: await const CircularWidget(
-        imagePath: MyAppImages.profile2,
+      icon: await CircularWidget(
+        imageFile: imageFile,
       ).toBitmapDescriptor(
         logicalSize: const Size(50, 50),
         imageSize: const Size(175, 175),
