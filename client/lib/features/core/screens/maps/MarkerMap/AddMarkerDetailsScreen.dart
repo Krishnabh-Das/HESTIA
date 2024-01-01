@@ -6,6 +6,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:path_provider/path_provider.dart';
 
 // ignore: must_be_immutable
@@ -14,13 +15,12 @@ class ImageScreen extends StatelessWidget {
       {super.key,
       required this.image,
       required this.position,
-      required this.id,
       required this.customInfoWindowController});
 
   TextEditingController desc = TextEditingController();
   final File image;
   LatLng position;
-  final int id;
+
   final CustomInfoWindowController customInfoWindowController;
 
   @override
@@ -96,6 +96,7 @@ class ImageScreen extends StatelessWidget {
                     int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
                     Timestamp time = Timestamp.now();
                     Directory tempDir = await getTemporaryDirectory();
+
                     // Create the necessary directories
                     String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
                     Directory(appDirPath).createSync(recursive: true);
@@ -124,6 +125,12 @@ class ImageScreen extends StatelessWidget {
                             MarkerMapController.instance.toggleIsLoading())
                         .onError((error, stackTrace) =>
                             MarkerMapController.instance.toggleIsLoading());
+
+                    // Updating the setttings Post
+                    settingsController.instance.settingsUserPostDetails.value
+                        .add({"image": image, "desc": desc.text});
+
+                    // Returing the Marker
                     Navigator.pop(context, marker);
                   },
                 ),

@@ -151,7 +151,7 @@ class MarkerMapController extends GetxController {
   LatLng? tapPosition;
 
   // -- Unique MarkerId & Image
-  int id = 1;
+
   late File image = File('');
 
   // -- Animate Camera to current Location
@@ -286,7 +286,6 @@ class MarkerMapController extends GetxController {
           () => ImageScreen(
             image: image,
             position: tapPosition!,
-            id: id,
             customInfoWindowController: customInfoWindowController.value,
           ),
         );
@@ -295,7 +294,6 @@ class MarkerMapController extends GetxController {
         if (result != null) {
           // Add the returned marker to the _markers list
           addSpecificMarker(result, false);
-          id++;
         }
       }
     } catch (e) {
@@ -456,13 +454,25 @@ class MarkerMapController extends GetxController {
                 ? TextButton(
                     onPressed: () async {
                       print('Delete button pressed for marker $markerid');
+                      await deleteMarkerFromFixedandUpdateMarkers(markerid);
                       customInfoWindowController.value.hideInfoWindow!();
-                      deleteMarkerFromFixedandUpdateMarkers(markerid);
                       await FirebaseQueryForUsers()
                           .deleteImageFromFirebaseStorage(
                               "MarkerImages/$markerid");
                       await FirebaseQueryForUsers()
                           .deleteMarkerFromFirestoreUsers(markerid);
+
+                      var posts = settingsController
+                          .instance.settingsUserPostDetails.value;
+
+                      for (int i = 0; i < posts.length; i++) {
+                        if (posts[i]['desc'] == text) {
+                          posts.removeAt(i);
+
+                          settingsController.instance.update();
+                          break;
+                        }
+                      }
                     },
                     child: const Text(
                       "Delete",
@@ -550,23 +560,15 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Delete a specific marker from the Markers using id
-  void deleteMarkerFromFixedandUpdateMarkers(int markerid) {
-    Marker? markerToRemove;
-
+  Future<void> deleteMarkerFromFixedandUpdateMarkers(int markerid) async {
     for (Marker marker in fixedMarkers) {
       if (marker.markerId == MarkerId(markerid.toString())) {
-        markerToRemove = marker;
+        fixedMarkers.remove(marker);
+        markers.clear();
+        markers.addAll(fixedMarkers);
+        print('Marker with id $markerid removed from fixedMarker');
         break;
       }
-    }
-
-    if (markerToRemove != null) {
-      fixedMarkers.remove(markerToRemove);
-      markers.remove(markerToRemove);
-
-      print('Marker with id $markerid removed from fixedMarker');
-    } else {
-      print('Marker with id $markerid not found in fixedMarker');
     }
   }
 

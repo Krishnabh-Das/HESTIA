@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/state_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_for_profile/firebase_query_for_profile.dart';
@@ -29,6 +30,7 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _initData() async {
     try {
       await settingsController1.getSettingsUserPostData();
+      print("User Post dat has been called");
     } catch (e) {
       print("Settings Screen Error: $e");
     }
@@ -48,99 +50,100 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: Color(0xff1F616B),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Obx(
-            () => Column(
-              children: [
-                // Primary Header
+      backgroundColor: Color(0xff1F616B),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            // -- Primary Header
 
-                primaryHeader(
-                    screenWidth: screenWidth,
-                    settingsController1: settingsController1),
+            primaryHeader(
+                screenWidth: screenWidth,
+                settingsController1: settingsController1),
 
-                // Post & Profile Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      postButton(settingsController1: settingsController1),
-                      profileButton(settingsController1: settingsController1),
-                    ],
-                  ),
-                ),
+            // -- Post & Profile Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  postButton(settingsController1: settingsController1),
+                  profileButton(settingsController1: settingsController1),
+                ],
+              ),
+            ),
 
-                // Post & Profile Button Tabs
-                Container(
-                  child: settingsController1.isPostSelected.value
-                      // User Post
-                      ? Padding(
-                          padding: const EdgeInsets.only(
-                              left: 22, right: 22, top: 0, bottom: 22),
-                          child: userPostsListView(
-                              settingsController1: settingsController1),
-                        )
-                      // User Profile
-                      : Padding(
-                          padding: const EdgeInsets.only(
-                              left: 22, right: 22, top: 30, bottom: 22),
-                          child: Obx(
-                            () => Column(
-                              children: [
-                                settingsProfileField(
-                                  column1String: "Name",
-                                  column2String:
-                                      settingsController.instance.name.value,
-                                  onPressed: () {
-                                    profileEditDialog(
-                                        context,
-                                        nameTextEditingController,
-                                        "Name",
-                                        Icons.person);
-                                  },
-                                ),
-                                SizedBox(height: 20),
-                                settingsProfileField(
-                                  column1String: "Email ID",
-                                  column2String:
-                                      FirebaseAuth.instance.currentUser?.email,
-                                  isEditable: false,
-                                ),
-                                SizedBox(height: 20),
-                                settingsProfileField(
-                                  column1String: "Date Of Birth",
-                                  column2String:
-                                      settingsController.instance.dob.value,
-                                  onPressed: () {
-                                    profileEditDialog(
-                                        context,
-                                        dobTextEditingController,
-                                        "Date Of Birth",
-                                        Icons.calendar_month);
-                                  },
-                                ),
-                                SizedBox(height: 20),
-                                settingsProfileField(
-                                  column1String: "Total Posts",
-                                  column2String:
-                                      "${settingsController1.totalPost.value}",
-                                  isEditable: false,
-                                ),
-                              ],
-                            ),
+            // -- Post & Profile Button Tabs
+            Obx(
+              () => Container(
+                child: settingsController1.isPostSelected.value
+                    // User Post
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                            left: 22, right: 22, top: 0, bottom: 22),
+                        child: userPostsListView(
+                            settingsController1: settingsController1),
+                      )
+                    // User Profile
+                    : Padding(
+                        padding: const EdgeInsets.only(
+                            left: 22, right: 22, top: 30, bottom: 22),
+                        child: Obx(
+                          () => Column(
+                            children: [
+                              settingsProfileField(
+                                column1String: "Name",
+                                column2String:
+                                    settingsController.instance.name.value,
+                                onPressed: () {
+                                  profileEditDialog(
+                                      context,
+                                      nameTextEditingController,
+                                      "Name",
+                                      Icons.person);
+                                },
+                              ),
+                              SizedBox(height: 20),
+                              settingsProfileField(
+                                column1String: "Email ID",
+                                column2String:
+                                    FirebaseAuth.instance.currentUser?.email,
+                                isEditable: false,
+                              ),
+                              SizedBox(height: 20),
+                              settingsProfileField(
+                                column1String: "Date Of Birth",
+                                column2String:
+                                    settingsController.instance.dob.value,
+                                onPressed: () {
+                                  profileEditDialog(
+                                      context,
+                                      dobTextEditingController,
+                                      "Date Of Birth",
+                                      Icons.calendar_month);
+                                },
+                              ),
+                              SizedBox(height: 20),
+                              settingsProfileField(
+                                column1String: "Total Posts",
+                                column2String:
+                                    "${settingsController1.totalPost.value}",
+                                isEditable: false,
+                              ),
+                            ],
                           ),
                         ),
-                ),
-
-                SizedBox(
-                  height: 10,
-                )
-              ],
+                      ),
+              ),
             ),
-          ),
-        ));
+
+            SizedBox(
+              height: 10,
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Future<dynamic> profileEditDialog(
@@ -600,18 +603,20 @@ class userPostsListView extends StatelessWidget {
     return Obx(
       () => ListView.builder(
         itemBuilder: (_, index) {
-          return Column(
-            children: [
-              settingsUserPost(
-                image: settingsController1.settingsUserPostDetails[index]
-                    ["image"],
-                description: settingsController1.settingsUserPostDetails[index]
-                    ["desc"],
-              ),
-              SizedBox(
-                height: 15,
-              )
-            ],
+          return Obx(
+            () => Column(
+              children: [
+                settingsUserPost(
+                  image: settingsController1.settingsUserPostDetails[index]
+                      ["image"],
+                  description: settingsController1
+                      .settingsUserPostDetails[index]["desc"],
+                ),
+                SizedBox(
+                  height: 15,
+                )
+              ],
+            ),
           );
         },
         itemCount: settingsController1.settingsUserPostDetails.length,

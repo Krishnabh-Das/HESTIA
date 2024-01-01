@@ -76,8 +76,7 @@ class MarkerMapScreen extends StatelessWidget {
                           .customInfoWindowController.value.hideInfoWindow!();
                       if (markerMapController.IsInfoWindowOpen.value == false &&
                           !markerMapController.isSearchBarVisible.value) {
-                        markerMapController.addTapMarkers(
-                            latLng, markerMapController.id++);
+                        markerMapController.addTapMarkers(latLng, "tap Marker");
                         markerMapController.tapPosition = latLng;
                       }
                       markerMapController.changeValueOfInfoWindowOpen(false);
