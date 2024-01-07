@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"notebook.output.scrolling": true,
+		"bookmarks.sideBar.expanded": true,
+		"bookmarks.useWorkaroundForFormatters": true,
+		"jupyter.themeMatplotlibPlots": true,
+		"editor.wordWrap": "on",
+		"editor.wordWrapColumn": 40
+	}
+}
