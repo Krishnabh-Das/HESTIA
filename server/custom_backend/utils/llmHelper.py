@@ -17,7 +17,7 @@ load_dotenv()
 
 genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
 
-model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
+model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.7)
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
 
@@ -53,8 +53,9 @@ def GetPromptTemplate():
     prompt = PromptTemplate(
         input_variables=["history", "context", "question"],
         template=(
-            """Answer the question as precisely as possible using the provided context. If the answer is
-           not contained in the context, also refer to the summary of past conversations. Say "answer not available in context":
+            """Act a a guide who answers queries regarding homelessness use the history and context to provide well informed answers, if dont know the
+            answer as well as te context and history dont know it reply "I am nor aware of it yet", if the data is not in context just tell"contact your 
+            support team for more answers" dont't mention any thing reading context or historoy in your reply saying that"result not context or history".
 
         History:{history}\n
         Context:{context}\n

@@ -2,15 +2,15 @@ import os
 from dotenv import load_dotenv
 
 import firebase_admin
+from firebase_admin import firestore
 from firebase_admin import credentials
 
 load_dotenv()
 
-
 creds_path = "configs/serviceAccountKey.json"
 cred = credentials.Certificate(creds_path)
 firebase_admin.initialize_app(cred)
-
+firestoreDB = firestore.client()
 
 def get_ASTRA_DB_COLLECTION_NAME():
     """
