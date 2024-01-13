@@ -1,2 +1,8 @@
 notebooks/keys/*
 notebooks/keys/serviceAccountKey.json
+server/custom_backend/configs/serviceAccountKey.json
+server/custom_backend/.env
+server/custom_backend/utils/__pycache__
+server/custom_backend/schemas/__pycache__
+server/custom_backend/configs/__pycache__
+server/custom_backend/__pycache__
