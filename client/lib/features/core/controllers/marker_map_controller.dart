@@ -1,8 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
+import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
+import 'package:hestia/utils/constants/api_constants.dart';
+import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:http/http.dart' as http;
 import 'package:custom_info_window/custom_info_window.dart';
@@ -12,14 +19,25 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/AddMarkerDetailsScreen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MarkerMapController extends GetxController {
   static MarkerMapController get instance => Get.find();
 
+  Rx<bool> isProfileImageLoaded = false.obs;
+
+  // Search Bar
+  Rx<String?> sessionToken = Rx<String?>(null);
+  var searchController = TextEditingController();
+  RxList<dynamic> placesList = [].obs;
+  Rx<bool> isSearchBarVisible = false.obs;
+
   // -- CHANGING MAP TYPE
-  final Rx<MapType> _currentMapType = MapType.normal.obs;
+  Rx<MapType> _currentMapType = MapType.normal.obs;
   MapType get currentMapType => _currentMapType.value;
   void toggleMap() {
     _currentMapType.value = _currentMapType.value == MapType.normal
@@ -42,12 +60,18 @@ class MarkerMapController extends GetxController {
     }
   }
 
+  // -- CHECK IF INFO WINDOW OPENED OR CLOSED
+  Rx<bool> IsInfoWindowOpen = false.obs;
+  void changeValueOfInfoWindowOpen(bool value) {
+    IsInfoWindowOpen.value = value;
+  }
+
   // -- MARKERS
   RxSet<Marker> markers = <Marker>{}.obs;
   Set<Marker> fixedMarkers = <Marker>{};
 
   // Add Markers when tapped
-  void addTapMarkers(LatLng position, int id) {
+  void addTapMarkers(LatLng position, dynamic id) {
     markers.clear();
     markers.add(
       Marker(
@@ -71,7 +95,7 @@ class MarkerMapController extends GetxController {
 
   // Add a specific made up marker (but not adding Current Location in fixed)
   void addSpecificMarker(Marker marker, bool isCurr) {
-    print("inside addspecificmarker: ${markers}");
+    print("inside addspecificmarker: $markers");
     if (!isCurr) {
       print("Added fixedMarkers");
       fixedMarkers.add(marker);
@@ -127,17 +151,43 @@ class MarkerMapController extends GetxController {
   LatLng? tapPosition;
 
   // -- Unique MarkerId & Image
-  int id = 1;
+
   late File image = File('');
 
   // -- Animate Camera to current Location
-  late final GoogleMapController googleMapController;
+  late GoogleMapController googleMapController;
 
   // ------------------------------- FUNCTIONS ---------------------------------
+
+  // -- Search Bar
+  void onChange(Uuid uuid) {
+    if (sessionToken.value == null) {
+      sessionToken.value = uuid.v4();
+    }
+    getSuggesstion(searchController.text);
+  }
+
+  void getSuggesstion(String input) async {
+    String baseUrl =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json";
+    String request =
+        '$baseUrl?input=$input&key=${APIConstants.google_api_key}&sessiontoken=${sessionToken.value}';
+
+    var response = await http.get(Uri.parse(request));
+    print("Response: ${response.body.toString()}");
+
+    if (response.statusCode == 200) {
+      placesList = jsonDecode(response.body.toString())['predictions'];
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
   // -- Take permission and get current location
   Future<void> getUserLocation() async {
     try {
+      print("getUser is called");
+
       bool serviceEnabled;
       PermissionStatus permissionGranted;
 
@@ -172,18 +222,52 @@ class MarkerMapController extends GetxController {
 
       updateCurrPos(
           LatLng(currentLocation.latitude!, currentLocation.longitude!));
+    } catch (e) {
+      print("Error getting user location: $e");
+    }
+  }
+
+  Future<void> createAndAddCurrMarker() async {
+    try {
+      // Wait for the image loading process to complete before creating the icon
+      BitmapDescriptor icon =
+          await widgetToIcon(settingsController.instance.profileImage.value);
 
       Marker currPosMarker = Marker(
         markerId: const MarkerId('currentLocation'),
         position: currPos.value!,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        icon: icon,
         infoWindow: const InfoWindow(
           title: "Your Current Location",
         ),
       );
+
+      print("Current Position Marker: $currPosMarker");
+
+      tapPosition = currPos.value;
+
       addSpecificMarker(currPosMarker, true);
-    } catch (e) {
-      print("Error getting user location: $e");
+    } catch (error) {
+      print("Error in createAndAddCurrMarker: $error");
+      // Handle the error as needed
+    }
+  }
+
+  Future<BitmapDescriptor> widgetToIcon(File? imageFile) async {
+    try {
+      // Ensure CircularWidget is correctly loading the image asynchronously
+      BitmapDescriptor icon = await CircularWidget(
+        imageFile: imageFile,
+      ).toBitmapDescriptor(
+        logicalSize: const Size(50, 50),
+        imageSize: const Size(180, 180),
+      );
+
+      print("Custom icon created");
+      return icon;
+    } catch (error) {
+      print("Error in widgetToIcon: ${error.toString()}");
+      throw error;
     }
   }
 
@@ -202,7 +286,6 @@ class MarkerMapController extends GetxController {
           () => ImageScreen(
             image: image,
             position: tapPosition!,
-            id: id,
             customInfoWindowController: customInfoWindowController.value,
           ),
         );
@@ -211,7 +294,6 @@ class MarkerMapController extends GetxController {
         if (result != null) {
           // Add the returned marker to the _markers list
           addSpecificMarker(result, false);
-          id++;
         }
       }
     } catch (e) {
@@ -220,16 +302,36 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Add the marker of the current location and move the camera there
-  Future<void> moveToCurrLocation() async {
+  Future<void> moveToCurrLocation(File? imageFile) async {
+    print(
+        "customInfoWindowController type: ${customInfoWindowController.runtimeType}");
+    print("googleMapController type: ${googleMapController.runtimeType}");
+
     customInfoWindowController.value.hideInfoWindow!();
-    googleMapController
-        .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
+    if (googleMapController != null) {
+      print("Animating camera...");
+      try {
+        await googleMapController
+            .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
+        print("Animate Camera Called");
+      } catch (e) {
+        print("Error animating camera: $e");
+      }
+    } else {
+      print("GoogleMapController is null");
+    }
 
     final marker = Marker(
-        markerId: const MarkerId("currentLocation"),
-        position: currPos.value!,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        infoWindow: const InfoWindow(title: "Current Location"));
+      markerId: const MarkerId("currentLocation"),
+      position: currPos.value!,
+      icon: await CircularWidget(
+        imageFile: imageFile,
+      ).toBitmapDescriptor(
+        logicalSize: const Size(50, 50),
+        imageSize: const Size(175, 175),
+      ),
+      infoWindow: const InfoWindow(title: "Current Location"),
+    );
 
     homeMarkerAdd(marker);
   }
@@ -240,7 +342,8 @@ class MarkerMapController extends GetxController {
     LatLng position,
     CustomInfoWindowController customInfoWindowController,
     String desc,
-    File image,
+    Timestamp? time,
+    String imageUrl,
     bool hasDelete,
   ) {
     print('Creating marker with id: $id');
@@ -248,23 +351,21 @@ class MarkerMapController extends GetxController {
     Marker marker = Marker(
       markerId: MarkerId('$id'),
       position: position,
-      draggable: true,
-      onDrag: (LatLng value) {
-        print('Marker $id dragged to position: $value');
-
-        // Store the new position
-        position = value;
-
-        // Add a new info window at the updated position
-        customInfoWindowController.addInfoWindow!(
-          infoWindow(desc, image, id, hasDelete),
-          value,
-        );
-      },
-      onTap: () {
+      onTap: () async {
         print('Marker $id tapped');
+
         customInfoWindowController.addInfoWindow!(
-            infoWindow(desc, image, id, hasDelete), position);
+            infoWindow(desc, null, id, time, hasDelete), position);
+
+        Directory tempDir = await getTemporaryDirectory();
+        String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
+        File? imageFile = File('$appDirPath/image_file$id.png');
+
+        File? image = imageFile.existsSync()
+            ? imageFile
+            : await getImageFile(imageUrl, id);
+        customInfoWindowController.addInfoWindow!(
+            infoWindow(desc, image, id, time, hasDelete), position);
       },
       icon: BitmapDescriptor.defaultMarkerWithHue(
         BitmapDescriptor.hueRed,
@@ -276,13 +377,15 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Making Custom Info Window For Custom Marker (or Fixed Markers)
-  Widget infoWindow(String text, File image, int markerid, bool hasDelete) {
+  Widget infoWindow(
+      String text, File? image, int markerid, Timestamp? time, bool hasDelete) {
     print('Creating info window for marker $markerid');
+    changeValueOfInfoWindowOpen(true);
 
     return GestureDetector(
       onTap: () {
         print('Info window tapped for marker $markerid');
-        MarkerDetailsBottomSheet(image, text);
+        MarkerDetailsBottomSheet(image, text, time);
       },
       child: Container(
         width: 250,
@@ -300,14 +403,38 @@ class MarkerMapController extends GetxController {
               width: 280,
               height: 100,
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(image),
-                  fit: BoxFit.fitWidth,
-                  filterQuality: FilterQuality.high,
-                ),
+                image: image != null
+                    ? DecorationImage(
+                        image: FileImage(image),
+                        fit: BoxFit.fitWidth,
+                        filterQuality: FilterQuality.high,
+                      )
+                    : null,
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                 color: Colors.red[400],
               ),
+              child: image == null
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 4,
+                      ),
+                    )
+                  : time != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              formatTimestamp(time),
+                              style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                        )
+                      : null,
             ),
             Padding(
               padding: const EdgeInsets.all(10),
@@ -318,7 +445,7 @@ class MarkerMapController extends GetxController {
                 style: const TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.w500,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
             ),
@@ -327,28 +454,52 @@ class MarkerMapController extends GetxController {
                 ? TextButton(
                     onPressed: () async {
                       print('Delete button pressed for marker $markerid');
+                      await deleteMarkerFromFixedandUpdateMarkers(markerid);
                       customInfoWindowController.value.hideInfoWindow!();
-                      deleteMarkerFromFixedandUpdateMarkers(markerid);
                       await FirebaseQueryForUsers()
                           .deleteImageFromFirebaseStorage(
                               "MarkerImages/$markerid");
                       await FirebaseQueryForUsers()
                           .deleteMarkerFromFirestoreUsers(markerid);
+
+                      var posts = settingsController
+                          .instance.settingsUserPostDetails.value;
+
+                      for (int i = 0; i < posts.length; i++) {
+                        if (posts[i]['desc'] == text) {
+                          posts.removeAt(i);
+
+                          settingsController.instance.update();
+                          break;
+                        }
+                      }
                     },
                     child: const Text(
                       "Delete",
                       style: TextStyle(color: Colors.red),
                     ),
                   )
-                : TextButton(onPressed: () {}, child: Text("Other's Marker")),
+                : TextButton(
+                    onPressed: () {}, child: const Text("Other's Marker")),
           ],
         ),
       ),
     );
   }
 
+  String formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+
+    String formattedTime = DateFormat.jm().format(dateTime); // Format: 11:15 AM
+    String formattedDate =
+        DateFormat('d MMM, y').format(dateTime); // Format: 12 Sept, 2023
+
+    return '$formattedTime, $formattedDate';
+  }
+
   // -- Bottom Sheet for getting Marker Details
-  Future<dynamic> MarkerDetailsBottomSheet(File image, String text) {
+  Future<dynamic> MarkerDetailsBottomSheet(
+      File? image, String text, Timestamp? time) {
     return showModalBottomSheet(
         backgroundColor: Colors.white,
         isScrollControlled: true,
@@ -362,23 +513,36 @@ class MarkerMapController extends GetxController {
                   padding: const EdgeInsets.fromLTRB(MyAppSizes.defaultSpace, 4,
                       MyAppSizes.defaultSpace, MyAppSizes.defaultSpace),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         width: double.infinity,
                         height: 200,
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: FileImage(image),
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high,
-                          ),
+                          image: image != null
+                              ? DecorationImage(
+                                  image: FileImage(image),
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.high,
+                                )
+                              : null,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(25)),
                           color: Colors.red[400],
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
+                      ),
+                      time != null
+                          ? Text(formatTimestamp(time),
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w400))
+                          : Container(),
+                      const SizedBox(
+                        height: 10,
                       ),
                       Text(
                         text,
@@ -396,29 +560,20 @@ class MarkerMapController extends GetxController {
   }
 
   // -- Delete a specific marker from the Markers using id
-  void deleteMarkerFromFixedandUpdateMarkers(int markerid) {
-    Marker? markerToRemove;
-
+  Future<void> deleteMarkerFromFixedandUpdateMarkers(int markerid) async {
     for (Marker marker in fixedMarkers) {
       if (marker.markerId == MarkerId(markerid.toString())) {
-        markerToRemove = marker;
+        fixedMarkers.remove(marker);
+        markers.clear();
+        markers.addAll(fixedMarkers);
+        print('Marker with id $markerid removed from fixedMarker');
         break;
       }
-    }
-
-    if (markerToRemove != null) {
-      fixedMarkers.remove(markerToRemove);
-      markers
-        ..clear()
-        ..addAll(fixedMarkers);
-      print('Marker with id $markerid removed from fixedMarker');
-    } else {
-      print('Marker with id $markerid not found in fixedMarker');
     }
   }
 
   // -- Get Image From URL (Use to get the firebase Storage Images)
-  Future<File> getImageFile(String imageUrl, int id) async {
+  Future<File> getImageFile(String imageUrl, dynamic id) async {
     final response = await http.get(Uri.parse(imageUrl));
 
     // Convert the response body to bytes
@@ -462,8 +617,8 @@ class MarkerMapController extends GetxController {
 
         if (position != null) {
           print('User marker position: $position');
-          File? image = await getImageFile(map["imageUrl"], map["id"]);
-          print('User marker image loaded: $image');
+          // File? image = await getImageFile(map["imageUrl"], map["id"]);
+          // print('User marker image loaded: $image');
 
           bool isUsersMarker;
           if (map["userid"] == userID) {
@@ -477,7 +632,8 @@ class MarkerMapController extends GetxController {
             position,
             customInfoWindowController.value,
             map["description"] ?? "",
-            image ?? File(""),
+            map["time"],
+            map["imageUrl"],
             isUsersMarker,
           );
 
@@ -490,7 +646,7 @@ class MarkerMapController extends GetxController {
       }
 
       print('End makeMarkersFromJson');
-      print("Markers List: ${markers}");
+      print("Markers List: $markers");
     } catch (error) {
       print('Error making markers: $error');
     }

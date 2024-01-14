@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 
 class FirebaseQueryForMarkers {
@@ -23,15 +22,9 @@ class FirebaseQueryForMarkers {
           await FirebaseFirestore.instance.collection('Markers').get();
       print("Markers retrieved from Markers");
 
-      List<Map<String, dynamic>> allMarkers = [];
-
-      String? userId = AuthRepository().getUserId();
-
-      for (var doc in snapshot.docs) {
-        allMarkers.add(doc.data());
-      }
-
-      return allMarkers;
+      return snapshot.docs
+          .map((doc) => doc.data())
+          .toList(); // List of all the Json
     } catch (error) {
       print('Error getting markers: $error');
       return [];
