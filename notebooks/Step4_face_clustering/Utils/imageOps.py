@@ -97,8 +97,8 @@ def rotate_opencv(img, nose_center, angle):
 
 
 def rotation_detection_dlib(img, mode, show=False):
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor('shape_predictor_5_face_landmarks.dat')
+    detector = dlib.get_frontal_face_detector()#type:ignore
+    predictor = dlib.shape_predictor('shape_predictor_5_face_landmarks.dat')#type:ignore
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     rects = detector(gray, 0)
     if len(rects) > 0:
