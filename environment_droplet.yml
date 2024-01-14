@@ -1,8 +1,9 @@
-name: HESTIA
+name: HESTIA2
 channels:
   - defaults
+  - conda_forge
 dependencies:
-  - _libgcc_mutex=0.1=main
+  - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=5.1=1_gnu
   - bzip2=1.0.8=h7b6447c_0
   - ca-certificates=2023.12.12=h06a4308_0
@@ -345,4 +346,4 @@ dependencies:
       - xlsxwriter==3.1.9
       - yarl==1.9.4
       - zipp==3.17.0
-prefix: /home/spritan/.conda/envs/HESTIA
+prefix: /home/spritan/.conda/envs/HESTIA2
