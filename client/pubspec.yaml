@@ -18,18 +18,16 @@ dependencies:
   iconsax: ^0.0.8
 
   # Utility Packages
-  http: ^1.1.2
+  http: 
   intl: ^0.18.1
   logger: ^2.0.2+1
   url_launcher: ^6.2.1
   path_provider: ^2.0.8
+  widget_to_marker: ^1.0.4
 
   # State Management 
   get: ^4.6.5
   get_storage: ^2.1.1
-
-  # Splash Screen
-  flutter_native_splash: ^2.3.6
 
   # Page Indicator
   smooth_page_indicator: ^1.1.0
@@ -39,6 +37,9 @@ dependencies:
 
   # Read More
   readmore: ^2.2.0
+
+  # Expandable Floating Button
+  flutter_speed_dial: ^7.0.0
 
   # Text
   google_fonts: ^6.1.0
@@ -50,14 +51,20 @@ dependencies:
   cloud_firestore: ^4.13.6
   firebase_auth: ^4.15.3
   firebase_storage: ^11.5.6
+
   
 
   # Google Maps
-  google_maps_flutter: ^2.5.0
+  google_maps_flutter: ^2.0.1
   location: ^5.0.3
   image_picker: ^1.0.5
   custom_info_window: ^1.0.1
   custom_marker: ^1.0.0
+  uuid: ^4.3.1  # used to get the id of the device
+  geocoding: ^2.1.1
+
+  # App Icon 
+  flutter_launcher_icons: ^0.13.1
 
 
 dev_dependencies:
@@ -66,6 +73,11 @@ dev_dependencies:
 
   flutter_lints: ^2.0.0
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/appIcon.png"
+
 flutter:
 
   uses-material-design: true
@@ -73,6 +85,8 @@ flutter:
   assets:
     - assets/images/authentication/
     - assets/images/gif/
+    - assets/images/profile/
+    - assets/icons/
    
 
 

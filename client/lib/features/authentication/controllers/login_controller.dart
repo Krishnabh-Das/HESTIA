@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/MapScreen.dart';
 
@@ -20,7 +21,7 @@ class LoginController extends GetxController {
       passwordString,
       () {
         if (_auth.auth.currentUser!.emailVerified) {
-          Get.offAll(() => MarkerMapScreen(key: UniqueKey()));
+          Get.offAll(() => bottomNavBar());
         }
       },
     );
