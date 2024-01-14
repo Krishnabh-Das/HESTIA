@@ -1,123 +1,69 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 
 class FloatingButtonsMarkerMapScreen extends StatelessWidget {
   const FloatingButtonsMarkerMapScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 50),
-      padding: const EdgeInsets.only(top: 28, right: 12),
-      alignment: Alignment.topRight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+    return Positioned(
+      right: 10,
+      bottom: 120,
+      child: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        animatedIconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.black,
+        buttonSize: Size(45, 45),
+        childrenButtonSize: Size(42, 42),
+        spacing: 15,
         children: [
-          FloatingActionButton(
-            heroTag: "changeMap",
-            onPressed: () => MarkerMapController.instance.toggleMap(),
-            backgroundColor: const Color.fromARGB(255, 89, 187, 92),
-            mini: true,
-            child: const Icon(
-              Icons.map,
-              size: 30,
-              color: Colors.white,
+          SpeedDialChild(
+            label: "Logout",
+            child: Icon(
+              Icons.logout,
             ),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Get.offAll(() => LoginScreen());
+            },
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "moveToCurr",
-            onPressed: () => MarkerMapController.instance.moveToCurrLocation(),
-            backgroundColor: Colors.indigoAccent,
-            mini: true,
-            child: const Icon(
-              Icons.track_changes_outlined,
-              size: 25,
-              color: Colors.white,
+          SpeedDialChild(
+            label: "Region Map",
+            child: Icon(
+              Icons.change_circle,
             ),
+            onTap: () => MarkerMapController.instance.toggleShowPolygon(),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "OpenCamera",
-            onPressed: () => MarkerMapController.instance.getImage(true),
-            backgroundColor: Colors.red[400],
-            mini: true,
-            child: const Icon(
-              Icons.camera_alt,
-              size: 25,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "OpenGallery",
-            onPressed: () => MarkerMapController.instance.getImage(false),
-            backgroundColor: Colors.indigo[400],
-            mini: true,
-            child: const Icon(
-              Icons.photo,
-              size: 25,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "DeleteMarker",
-            onPressed: () =>
-                MarkerMapController.instance.deleteMarkersExceptFixed(),
-            backgroundColor: Colors.yellow[600],
-            mini: true,
-            child: const Icon(
-              Icons.delete,
-              size: 25,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            heroTag: "ShowPolygons",
-            onPressed: () => MarkerMapController.instance.toggleShowPolygon(),
-            backgroundColor: Colors.pink[300],
-            mini: true,
-            child: const Icon(
-              Icons.polymer_rounded,
-              size: 25,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            height: 70,
-          ),
-          SizedBox(
-            height: 50,
-            width: 50,
-            child: FloatingActionButton(
-              heroTag: "logout",
-              onPressed: () async =>
-                  await FirebaseAuth.instance.signOut().then((value) {
-                Get.offAll(() => LoginScreen());
-              }),
-              backgroundColor: Colors.redAccent,
-              mini: true,
-              child: const Icon(
-                Icons.logout,
-                size: 30,
-                color: Colors.white,
+          SpeedDialChild(
+              label: "Delete Marker",
+              child: Icon(
+                Icons.delete,
               ),
-            ),
+              onTap: () =>
+                  MarkerMapController.instance.deleteMarkersExceptFixed()),
+          SpeedDialChild(
+              label: "Gallery",
+              child: Icon(Icons.photo),
+              onTap: () => MarkerMapController.instance.getImage(false)),
+          SpeedDialChild(
+            label: "Camera",
+            child: Icon(Icons.camera_alt),
+            onTap: () => MarkerMapController.instance.getImage(true),
+          ),
+          SpeedDialChild(
+              label: "Current Location",
+              child: Icon(Icons.track_changes_outlined),
+              onTap: () => MarkerMapController.instance.moveToCurrLocation(
+                  settingsController.instance.profileImage.value)),
+          SpeedDialChild(
+            label: "Change Map",
+            child: Icon(Icons.map),
+            onTap: () => MarkerMapController.instance.toggleMap(),
           ),
         ],
       ),
