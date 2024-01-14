@@ -14,7 +14,6 @@ from configs.db import firestoreDB
 from utils.GeoLoc import geoLoc
 from utils.ragPipeline import getResponse, querySimilarSearch
 from utils.llmHelper import FireStoreInitiate, GetLLMChain, GetPromptTemplate, GetSummaryMemory, model
-# from 
 
 # ------------------------ Init FastAPI -------------------------#
 app = FastAPI()
@@ -77,7 +76,7 @@ async def chat_send(chat: chatSchema):
         # Handle exceptions or validation errors and return an appropriate HTTP response code.
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
-    
+# --------------------------  Location Service  ----------------------------#
 @app.post("/location/get")
 async def location_get(getLoc: getLocSchema):
     """
@@ -116,12 +115,13 @@ async def location_get(getLoc: getLocSchema):
     lon = getLoc.lon
     try:
         locname = geoLoc.reverse(f"{lat}, {lon}")
-        res_json = {"address":locname.address}
+        res_json = {"address":locname.address} #type:ignore
         return JSONResponse(content=res_json, status_code=200) 
     except Exception as e:
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
+# --------------------------  User Services  ----------------------------#
 @app.post("/user/getNamebyID")
 async def User_Name(userId: userId):
     id = userId.id
