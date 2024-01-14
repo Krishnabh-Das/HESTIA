@@ -42,7 +42,7 @@ class FirebaseQueryForUsers {
 
   // -- Add Marker Details in FireStore
   Future<void> addMarkerToUser(double lat, double long, File image,
-      String description, int randomMarkerID) async {
+      String description, int randomMarkerID, Timestamp time) async {
     String? userId = AuthRepository().getUserId();
 
     // After getting uid do the Write Operation
@@ -59,6 +59,7 @@ class FirebaseQueryForUsers {
         'formattedTime': formattedTime,
         'imageUrl': imageUrl,
         'description': description,
+        'time': time
       };
 
       await FirebaseFirestore.instance
@@ -114,6 +115,7 @@ class FirebaseQueryForUsers {
   // Retrieve Marker details from Firestore (as List of Map)
   Future<List<Map<String, dynamic>>> getMarkersFromUsers() async {
     String? userId = AuthRepository().getUserId();
+    print("userId for settings: $userId");
 
     try {
       final snapshot = await FirebaseFirestore.instance
@@ -127,10 +129,28 @@ class FirebaseQueryForUsers {
         markers.add(doc.data());
       }
 
+      print("heastia Markers: ${markers}");
       return markers;
     } catch (error) {
       print('Error getting markers: $error');
       return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> getProfileFromUsers() async {
+    String? userId = AuthRepository().getUserId();
+    print("print user ID ${userId}");
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Profile')
+          .get();
+
+      return snapshot.docs[0].data();
+    } catch (error) {
+      print('Error getting markers: $error');
+      return {};
     }
   }
 }
