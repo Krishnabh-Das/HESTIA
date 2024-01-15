@@ -8,4 +8,6 @@ pydantic==2.5.3
 python-dotenv==1.0.0
 astrapy
 geopy
+selenium
+unstructured[all]
 uvicorn[standard]
