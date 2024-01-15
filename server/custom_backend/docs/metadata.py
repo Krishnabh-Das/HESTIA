@@ -5,7 +5,7 @@ tags_metadata = [
     },
     {
         "name": "Chatbot",
-        "description": "Routes to interact with chatbot.",
+        "description": "Routes to interact with Gemini Pro and langchain based chatbot.",
     },
     {
         "name": "Utils",
