@@ -1,0 +1,11 @@
+fastapi==0.109.0
+firebase_admin==6.3.0
+langchain==0.1.0
+langchain_community==0.0.11
+langchain_google_genai==0.0.5
+protobuf==4.25.2
+pydantic==2.5.3
+python-dotenv==1.0.0
+astrapy
+geopy
+uvicorn[standard]
