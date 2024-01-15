@@ -9,10 +9,28 @@ from geopy.distance import geodesic
 from configs.db import firestoreDB
 
 def calculate_convex_hull_area(coords):
+    """
+    Calculates the area of the convex hull formed by a set of coordinates.
+
+    Args:
+    - `coords` (list of tuples): List of coordinate tuples (latitude, longitude).
+
+    Returns:
+    - float: The area of the convex hull.
+    """
     hull = ConvexHull(coords)
     return hull.volume
 
 def select_bounding_coords(coordinates:list)->list:
+    """
+    Selects the bounding coordinates with the maximum convex hull area.
+
+    Args:
+    - `coordinates` (list of GeoPoint): List of GeoPoint coordinates.
+
+    Returns:
+    - list of GeoPoint: Bounding coordinates with the maximum convex hull area.
+    """
     max_area = 0
     max_area_coords = None
 
@@ -30,25 +48,64 @@ def select_bounding_coords(coordinates:list)->list:
     return coordList
 
 def get_dict_by_regionMapId(regionMaps, regionMap_id):
+    """
+    Retrieves a dictionary containing region map data based on the regionMap_id.
+
+    Args:
+    - `regionMaps` (list of dict): List of region map dictionaries.
+    - `regionMap_id` (str): ID of the region map.
+
+    Returns:
+    - dict or None: Dictionary containing region map data or None if not found.
+    """
     for region_map in regionMaps:
         if region_map['regionMap_id'] == regionMap_id:
             return region_map
     return None
 
 def get_marker_cord_by_id(markers_, marker_id):
+    """
+    Retrieves the GeoPoint coordinates of a marker based on its ID.
+
+    Args:
+    - `markers_` (list of dict): List of marker dictionaries.
+    - `marker_id` (str): ID of the marker.
+
+    Returns:
+    - GeoPoint or None: GeoPoint coordinates of the marker or None if not found.
+    """
     for marker in markers_:
         if marker['marker-id'] == marker_id:
             return GeoPoint(marker['marker_cord'][0],marker['marker_cord'][1])
     return None
 
 def get_marker_cord_by_id_tuple(markers_, marker_id):
+    """
+    Retrieves the coordinates tuple of a marker based on its ID.
+
+    Args:
+    - `markers_` (list of dict): List of marker dictionaries.
+    - `marker_id` (str): ID of the marker.
+
+    Returns:
+    - tuple or None: Coordinates tuple of the marker or None if not found.
+    """
     for marker in markers_:
         if marker['marker-id'] == marker_id:
             return marker['marker_cord']
     return None
 
 def markersDB(start_date, end_date):
-    
+    """
+    Retrieves markers from Firestore within a specified date range.
+
+    Args:
+    - `start_date` (datetime): Start date of the range.
+    - `end_date` (datetime): End date of the range.
+
+    Returns:
+    - list of dict: List of marker dictionaries.
+    """
     markers_ = []
     markers_get = firestoreDB.collection('Markers').where(filter=FieldFilter('time', ">=", start_date)).where(filter=FieldFilter('time', "<", end_date)).get()
     # markers_get = db.collection('Markers').get()
@@ -62,12 +119,27 @@ def markersDB(start_date, end_date):
     return markers_
 
 def is_within_distance(coord1, coord2, max_distance:int=2000):
-    # Calculate distance in meters using geopy
+    """
+    Checks if two coordinates are within a specified distance.
+
+    Args:
+    - `coord1` (GeoPoint): First coordinate.
+    - `coord2` (GeoPoint): Second coordinate.
+    - `max_distance` (int): Maximum distance threshold (default is 2000 meters).
+
+    Returns:
+    - bool: True if within distance, False otherwise.
+    """
     distance = geodesic(coord1, coord2).meters
     return distance <= max_distance
 
 def getRegionmapDB():
-    
+    """
+    Retrieves region maps from Firestore.
+
+    Returns:
+    - tuple: A tuple containing Firestore query result and a list of region map dictionaries.
+    """
     regionMaps = []
     regionMaps_get = firestoreDB.collection('RegionMap').get()
     for m in regionMaps_get:
@@ -82,6 +154,17 @@ def getRegionmapDB():
     return regionMaps_get, regionMaps
 
 def getParings(markers_, regionMaps):
+    """
+    Finds pairings between markers and region maps based on distance.
+
+    Args:
+    - `markers_` (list of dict): List of marker dictionaries.
+    - `regionMaps` (list of dict): List of region map dictionaries.
+
+    Returns:
+    - dict: Dictionary containing marker IDs
+    and corresponding region map IDs based on proximity.
+    """
     parings = {}
     for marker in markers_:
         marker_coord = marker['marker_cord']
@@ -93,6 +176,15 @@ def getParings(markers_, regionMaps):
     return parings
 
 def createCoordinateCluster(coordinates):
+    """
+    Creates clusters of coordinates based on proximity.
+
+    Args:
+    - `coordinates` (list of GeoPoint): List of GeoPoint coordinates.
+
+    Returns:
+    - list of lists: List of coordinate clusters.
+    """
     coordinate_clusters = []
 
     # Iterate through each coordinate
@@ -112,6 +204,16 @@ def createCoordinateCluster(coordinates):
     return coordinate_clusters
 
 def addNewRegionMaps(coordinate_clusters, markers_):
+    """
+    Creates and adds new region maps to the Firestore database.
+
+    Args:
+    - coordinate_clusters (list): A list of lists, where each inner list contains coordinates (latitude, longitude).
+    - markers_ (list): A list of dictionaries representing markers with 'marker-id' and 'marker_cord' keys.
+
+    Returns:
+    list: A list of dictionaries representing the added region maps, each containing 'central_coord', 'coords', and 'markers'.
+    """
     region_data = []
     for coords_lst in coordinate_clusters:
         marker_ids = [entry['marker-id'] for entry in markers_ if entry['marker_cord'] in coords_lst]

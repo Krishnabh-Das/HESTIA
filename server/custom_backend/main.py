@@ -18,8 +18,13 @@ from configs.db import firestoreDB, firestore
 from docs.metadata import tags_metadata
 
 # from loggingUtil.logshandeller import logGenerator
-from utils.datetimeUtils import startEndTime, testStarttime
-from utils.GeoLoc import geoLoc
+from utils.datetimeUtils import (
+    startEndTime, 
+    testStarttime
+)
+from utils.GeoLoc import (
+    geoLoc
+)
 from utils.ragPipeline import (
     addDocVectorStore,
     getResponse,
@@ -105,7 +110,7 @@ async def chat_send(chat: chatSchema):
 
 
 @app.put("/chat/add_context/byURL", tags=["Chatbot"])
-async def add_contest_URL(urlContext: urlContextSchema):
+async def add_context_URL(urlContext: urlContextSchema):
     """
     Endpoint to add a contest context by providing a URL.
 
@@ -224,7 +229,16 @@ async def User_Name(userId: userId):
 
 
 @app.put("/admin/regionMapGen", tags=["Admin"])
-def regionMapGen(Initator: Initator):
+def regionMapGen(Initator: Initator):   
+    """
+    Endpoint to generate region maps and update Firestore.  
+    
+    Args:
+    - `Initator` (Initator): Schema containing the initiator's ID.
+
+    Returns:
+    - JSONResponse: Response indicating success or failure.
+    """
     try:
         markers_ = markersDB(start_date, end_date)
         # logger.info(markers_)
