@@ -36,3 +36,173 @@ Our range of features include -
 * **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identifying potential criminals, identification of specific people who are need of required resources by NGOs or Government Agencies, or monitor suspicious individuals.
 * **Community Page** - Display events with address and time, post announcements, request donations, donate to causes, help find missing individuals, and general community engagement.
 * **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on a regional and global leaderboards.
+
+
+
+## Team
+<div style="max-width: 800px;">
+<div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
+
+
+  <div style="display: flex; flex-direction: column; align-items: center; padding:10px; border: 2px solid; border-radius: 8px;  background-color: #a399b2;
+background-image: linear-gradient(147deg, #a399b2 0%, #4d4855 74%); height: 300px; width:150px
+">
+    <a href="https://github.com/Tirthankar03">
+    <div style="">
+      <img src="https://github.com/Tirthankar03.png" height="140" width="140" alt="image" style="border-radius:8px; overflow:hidden;"/>
+  </div>
+    </a>
+    <div style="text-align: center; background-color:white; color:black; width:100px; border-radius: 20px">
+      Tirthankar03
+    </div>
+    <div style="text-align: center; margin:10px">
+      <a href="https://eggsy.xyz">🔗</a> -
+      <a href="https://linkedin.com/in/abdulbaki-dursun">💼</a>
+    </div>
+    <div style="display:flex; gap: 5px; width:100px; flex-wrap:wrap">
+
+  <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="25" height="25"/>
+
+
+  <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="25" height="25"/>
+  
+ 
+  <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="25" height="25"/>
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="25" height="25"/>
+
+
+  <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="postman" width="25" height="25"/>
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
+ 
+
+
+
+
+  </div>
+  </div>
+
+
+
+  <div style="display: flex; flex-direction: column; align-items: center; padding:10px; border: 2px solid; border-radius: 8px;background-color: #015d00;
+background-image: linear-gradient(314deg, #015d00 0%, #04bf00 74%); height: 300px; width:150px
+">
+    <a href="https://github.com/spritan">
+      <img src="https://github.com/spritan.png" height="140" width="140" alt="image" style="border-radius:8px; overflow:hidden;"/>
+    </a>
+    <div style="text-align: center; background-color:white; color:black; width:60px; border-radius: 20px">
+      spritan
+    </div>
+    <div style="text-align: center; margin:10px; display:flex">
+      <a href="https://merloss.netlify.app">🔗 </a> 
+      <div style="color:white; background-color:darkgreen; border:2px solid; border-radius:20px; width:50px">Leader</div>
+      <a href="https://linkedin.com/in/kerimkara0">💼</a>
+    </div>
+        <div style="display:flex; gap: 5px; width:100px; flex-wrap:wrap">
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" alt="linux" width="25" height="25"/>
+
+  <img src="https://www.vectorlogo.zone/logos/opencv/opencv-icon.svg" alt="opencv" width="25" height="25"/>
+
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="25" height="25"/>
+ 
+  <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="25" height="25"/>
+
+  <img src="https://www.vectorlogo.zone/logos/google_cloud/google_cloud-icon.svg" alt="gcp" width="25" height="25"/>
+
+  <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="25" height="25"/>
+
+
+
+ <img src="https://www.vectorlogo.zone/logos/gnu_bash/gnu_bash-icon.svg" alt="bash" width="25" height="25"/>
+
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="25" height="25"/>
+
+
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg" alt="scikit_learn" width="25" height="25"/>
+
+  </div>
+  </div>
+
+
+
+  <div style="display: flex; flex-direction: column; align-items: center; padding:10px; border: 2px solid; border-radius: 8px;  background-color: #bf033b;
+background-image: linear-gradient(315deg, #bf033b 0%, #ffc719 74%); height: 300px; width:150px
+ ">
+     <a href="https://github.com/pparthiv">
+    <img src="https://github.com/pparthiv.png" height="140" width="140" alt="image" style="border-radius:8px; overflow:hidden;"/>
+    </a>
+        <div style="text-align: center; background-color:white; color:black; width:64px; border-radius: 20px">
+      pparthiv
+    </div>
+    <div style="text-align: center; margin:10px">
+      <a href="https://semihozdas.com.tr/">🔗</a> -
+      <a href="https://linkedin.com/in/semihozdas">💼</a>
+    </div>
+        <div style="display:flex; gap: 5px; width:100px; flex-wrap:wrap">
+
+  <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="25" height="25"/>
+ 
+  
+  <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="25" height="25"/>
+  
+<img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="25" height="25"/>
+
+<img src="https://www.vectorlogo.zone/logos/google_cloud/google_cloud-icon.svg" alt="gcp" width="25" height="25"/>
+
+
+  <img src="https://www.vectorlogo.zone/logos/opencv/opencv-icon.svg" alt="opencv" width="25" height="25"/>
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/photoshop/photoshop-line.svg" alt="photoshop" width="25" height="25"/>
+
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="25" height="25"/>
+
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg" alt="scikit_learn" width="25" height="25"/>
+
+  <img src="https://www.vectorlogo.zone/logos/tensorflow/tensorflow-icon.svg" alt="tensorflow" width="25" height="25"/>
+
+  </div>
+  </div>
+
+
+
+  <div style="display: flex; flex-direction: column; align-items: center; padding:10px; border: 2px solid; border-radius: 8px; background-color: #182b3a;
+background-image: linear-gradient(315deg, #182b3a 0%, #20a4f3 74%); height: 300px; width:150px
+">
+     <a href="https://github.com/krishnabh-das">
+    <img src="https://github.com/krishnabh-das.png" height="140" width="140" alt="image" style="border-radius:8px; overflow:hidden;"/>
+    </a>
+    <div style="text-align: center; background-color:white; color:black; width:110px; border-radius: 20px">
+      Krishnabh-Das
+    </div>
+    <div style="text-align: center; margin:10px">
+      <a href="https://semihozdas.com.tr/">🔗</a> -
+      <a href="https://linkedin.com/in/semihozdas">💼</a>
+    </div>
+      <div style="display:flex; gap: 5px; width:100px; flex-wrap:wrap">
+  <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="25" height="25"/>
+
+  <img src="https://www.vectorlogo.zone/logos/dartlang/dartlang-icon.svg" alt="dart" width="25" height="25"/> 
+
+  <img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="25" height="25"/>
+
+  <img src="https://www.vectorlogo.zone/logos/google_cloud/google_cloud-icon.svg" alt="gcp" width="25" height="25"/>
+  
+  <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="25" height="25"/>
+  
+  <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="postman" width="25" height="25"/>
+
+
+  </div>
+    
+
+
+</div>
+
+
+
+
+</div>
