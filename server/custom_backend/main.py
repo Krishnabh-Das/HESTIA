@@ -105,7 +105,9 @@ async def chat_send(chat: chatSchema):
         return JSONResponse(content=res_json, status_code=200)
     except Exception as e:
         # Handle exceptions or validation errors and return an appropriate HTTP response code.
-        error_message = {"detail": f"An error occurred: {str(e)}"}
+        traceback_str = traceback.format_exc()
+        error_message = {"detail": f"An error occurred: {str(e)}",
+                         "traceback":traceback_str}
         return JSONResponse(content=error_message, status_code=500)
 
 
@@ -291,10 +293,7 @@ def regionMapGen(Initator: Initator):
             current_datetime = datetime.now()
             current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             data = {"timStamp": current_datetime_str, "User_id": Initator.id}
-            CSL_ref = firestoreDB.collection("RegionMap_logs").document(
-                current_datetime_str
-            )
-            CSL_ref.set(data)
+            CSL_ref = firestoreDB.collection("RegionMap_logs").add(data)
         except Exception as e:
             traceback_str = traceback.format_exc()
             error_message = {"detail": f"An error occurred: {str(e)}",
