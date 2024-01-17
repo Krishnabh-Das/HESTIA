@@ -18,16 +18,15 @@ class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Container(
         width: double.infinity,
-        height: 68,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-        ),
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: const [BoxShadow(color: Colors.teal, blurRadius: 8)]),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 1, 0, 0),
+          padding: const EdgeInsets.fromLTRB(20, 5, 0, 5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -47,33 +46,34 @@ class Cart extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.teal[400],
-                    maxRadius: 22,
+                    maxRadius: 18,
                     child: Text(
                       "$number",
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall!
-                          .copyWith(color: Colors.white, fontSize: 16),
+                          .copyWith(color: Colors.white, fontSize: 15),
                     ),
                   ),
                   const SizedBox(
                     width: 10,
                   ),
                   Container(
-                    height: 45,
-                    width: 45,
+                    height: 36,
+                    width: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color:
-                              color == Colors.yellow ? Colors.black54 : color),
+                          color: color == Colors.yellow
+                              ? Colors.yellow.shade700
+                              : color),
                       color: color.withOpacity(0.4),
                     ),
                     child: Center(
                       child: Text(
                         "$rating",
                         style:
-                            const TextStyle(fontSize: 16, color: Colors.black),
+                            const TextStyle(fontSize: 15, color: Colors.black),
                       ),
                     ),
                   ),

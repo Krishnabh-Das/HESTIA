@@ -10,17 +10,17 @@ class halfMapSOS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 115,
+      top: 75,
       right: 7,
       child: InkWell(
         onTap: () => Get.to(
           () => const SOSScreen(),
           transition: Transition.topLevel,
-          duration: const Duration(milliseconds: 600),
+          duration: const Duration(milliseconds: 1000),
         ),
         child: Container(
-            height: 48,
-            padding: const EdgeInsets.fromLTRB(12, 10, 7, 6),
+            height: 45,
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.white),
             child: const Image(

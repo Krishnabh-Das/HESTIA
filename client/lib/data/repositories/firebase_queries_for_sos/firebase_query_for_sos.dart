@@ -17,14 +17,14 @@ class FirebaseQueryForSOS {
     return downloadUrl;
   }
 
-  Future<void> saveData({
-    required String incidentDescription,
-    String? incidentAddress,
-    required LatLng position,
-    required DateTime incidentTime,
-    required String incidentCategory,
-    File? incidentImage,
-  }) async {
+  Future<void> saveData(
+      {required String incidentDescription,
+      String? incidentAddress,
+      required LatLng position,
+      required DateTime incidentTime,
+      required String incidentCategory,
+      File? incidentImage,
+      String? senderID}) async {
     try {
       String imageUrl = "";
       String address = "";
@@ -53,6 +53,7 @@ class FirebaseQueryForSOS {
         "incidentTime": incidentTime,
         "incidentCategory": incidentCategory,
         "incidentImageLink": imageUrl,
+        "senderID": senderID
       });
       print("Report Submitted");
     } catch (err) {

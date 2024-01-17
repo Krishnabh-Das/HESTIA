@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hestia/features/authentication/controllers/onBoarding_controller.dart';
+import 'package:hestia/features/authentication/screens/on_board/widgets/onBoard_page.dart';
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
@@ -14,11 +15,14 @@ class OnBoarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
+
     return Scaffold(
       body: Stack(
         children: [
+          // -- On Board Pages
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
             child: PageView(
               controller: onBoardController.pageController,
               onPageChanged: (value) {
@@ -28,24 +32,26 @@ class OnBoarding extends StatelessWidget {
                 onBoardPage(
                   title: 'Welcome To HESTIA',
                   subTitle:
-                      "Hestia is a Goddess Who Helps Everyone in Struggle Through Innovative Assistance",
+                      "HESTIA means Helping Everyone in Struggle Through Innovative Assistance. Our mission is to provide help to homeless people by involving our community.",
                   imageString: MyAppImages.onBoard1,
                 ),
                 onBoardPage(
                   title: 'Add Marker, Save Life',
                   subTitle:
-                      "You can add Markers in Map, which helps the social bodies to Navigate them, and securing their future",
+                      "You can mark homeless people who need help in our map powered by Google Maps and we will share that information to people or groups who can help.",
                   imageString: MyAppImages.onBoard2,
                 ),
                 onBoardPage(
                   title: 'SOS System',
                   subTitle:
-                      "If you found any Criminal Activity than Report the Incident in the SOS System.",
+                      "You can also send SOS reports when you see a criminal incident against homeless people. We will send SOS alerts to the appropriate authorities.",
                   imageString: MyAppImages.onBoard3,
                 ),
               ],
             ),
           ),
+
+          // --Skip Button
           Positioned(
             bottom: 40,
             left: 30,
@@ -56,10 +62,12 @@ class OnBoarding extends StatelessWidget {
                 style: GoogleFonts.kanit(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black54),
+                    color: dark ? MyAppColors.textWhite : Colors.black54),
               ),
             ),
           ),
+
+          // --Navigation Dots
           Positioned(
             bottom: 48,
             left: MyAppHelperFunctions.screenWidth() / 2 - 50,
@@ -67,10 +75,13 @@ class OnBoarding extends StatelessWidget {
               controller: onBoardController.pageController,
               count: 3,
               onDotClicked: onBoardController.dotNavigationClick,
-              effect: const ExpandingDotsEffect(
-                  activeDotColor: MyAppColors.dark, dotHeight: 6),
+              effect: ExpandingDotsEffect(
+                  activeDotColor: dark ? MyAppColors.grey : MyAppColors.dark,
+                  dotHeight: 6),
             ),
           ),
+
+          // --Next Button
           Positioned(
             bottom: 40,
             right: 30,
@@ -81,55 +92,12 @@ class OnBoarding extends StatelessWidget {
                 style: GoogleFonts.kanit(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black87),
+                    color: dark ? MyAppColors.textWhite : Colors.black87),
               ),
             ),
           )
         ],
       ),
-    );
-  }
-}
-
-class onBoardPage extends StatelessWidget {
-  const onBoardPage({
-    super.key,
-    required this.title,
-    required this.subTitle,
-    required this.imageString,
-  });
-
-  final String title, subTitle, imageString;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 130,
-        ),
-        Image(
-          image: AssetImage(imageString),
-          fit: BoxFit.fitHeight,
-          height: 260,
-        ),
-        const SizedBox(
-          height: 50,
-        ),
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.kanit(fontSize: 28, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(
-          height: 18,
-        ),
-        Text(
-          subTitle,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.oswald(fontSize: 16, fontWeight: FontWeight.w400),
-        )
-      ],
     );
   }
 }

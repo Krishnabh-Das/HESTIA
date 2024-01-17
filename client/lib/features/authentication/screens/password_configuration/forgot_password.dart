@@ -1,15 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/common/widgets/appbar/appbar.dart';
-import 'package:hestia/features/authentication/screens/password_configuration/reset_password.dart';
+import 'package:hestia/features/authentication/screens/login/login_screen.dart';
+import 'package:hestia/features/authentication/screens/password_configuration/widgets/forgot_password_heading.dart';
 import 'package:hestia/utils/constants/colors.dart';
-import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:hestia/utils/constants/text_strings.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ForgotPassword extends StatelessWidget {
-  const ForgotPassword({super.key});
+  ForgotPassword({super.key});
+
+  var emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,31 +28,20 @@ class ForgotPassword extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ///Headings
-              Text(
-                MyAppTexts.forgetPasswordTitle,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(
-                height: MyAppSizes.spaceBtwItems,
-              ),
-              Text(
-                MyAppTexts.forgetPasswordSubTitle,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(
-                height: MyAppSizes.spaceBtwSections,
-              ),
+              // --Headings
+              const ForgotPasswordHeading(),
 
-              ///Text Field
+              // --E-Mail
               SizedBox(
                 height: MyAppSizes.textFormFieldHeight,
                 child: TextFormField(
+                  controller: emailController,
                   decoration: const InputDecoration(
                       labelText: MyAppTexts.email,
                       prefixIcon: Icon(Iconsax.direct_right)),
                 ),
               ),
+
               const SizedBox(
                 height: MyAppSizes.spaceBtwSections * 0.7,
               ),
@@ -58,12 +50,16 @@ class ForgotPassword extends StatelessWidget {
               SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: () => Get.off(() => VerifyAuthentication(
-                            buttonText: MyAppTexts.resendEmail,
-                            image: MyAppImages.email_verification,
-                            title: MyAppTexts.changeYourPasswordTitle,
-                            subtitle: MyAppTexts.changeYourPasswordSubTitle,
-                          )),
+                      onPressed: () {
+                        FirebaseAuth.instance
+                            .sendPasswordResetEmail(
+                                email: emailController.text.toString())
+                            .then((value) {
+                          Get.off(() => LoginScreen());
+                        }).onError((error, stackTrace) {
+                          print("Forgot Password Error: $error");
+                        });
+                      },
                       child: Text(
                         MyAppTexts.submit,
                         style: Theme.of(context)

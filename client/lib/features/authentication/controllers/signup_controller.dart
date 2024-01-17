@@ -13,10 +13,22 @@ class SignupController extends GetxController {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
+  Rx<bool> signUpPasswordObscureText = true.obs;
+  Rx<bool> signUpConfirmPasswordObscureText = true.obs;
 
   String get emailString => email.text;
   String get passwordString => password.text;
   String get confirmPasswordString => confirmPassword.text;
+
+  void toggleSignUpPasswordObscureText() {
+    SignupController.instance.signUpPasswordObscureText.value =
+        !SignupController.instance.signUpPasswordObscureText.value;
+  }
+
+  void toggleSignUpConfirmPasswordObscureText() {
+    SignupController.instance.signUpConfirmPasswordObscureText.value =
+        !SignupController.instance.signUpConfirmPasswordObscureText.value;
+  }
 
   void signup() async {
     if (passwordString != confirmPasswordString) {

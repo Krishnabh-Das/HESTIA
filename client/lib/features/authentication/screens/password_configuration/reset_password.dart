@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:hestia/common/widgets/Screen/success.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
+import 'package:hestia/features/authentication/screens/password_configuration/widgets/reset_password_heading.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
@@ -38,48 +39,24 @@ class VerifyAuthentication extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-              onPressed: () => Get.back(), icon: const Icon(Icons.cancel_sharp))
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(MyAppSizes.defaultSpace),
           child: Column(
             children: [
-              /// Image
+              // --Image
               Image(
                 image: AssetImage(image),
                 width: MyAppHelperFunctions.screenWidth(),
               ),
+
               const SizedBox(
                 height: MyAppSizes.spaceBtwSections,
               ),
 
-              /// Title & Subtitle
-              Text(
-                title,
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium!
-                    .copyWith(fontSize: 22),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: MyAppSizes.spaceBtwItems,
-              ),
-              Text(
-                subtitle,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: MyAppSizes.spaceBtwSections,
-              ),
+              // --Title & Subtitle
+              ResetPasswordHeading(title: title, subtitle: subtitle),
 
               TextButton(
                   onPressed: () => _auth.sendEmailVerification(),
