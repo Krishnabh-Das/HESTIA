@@ -1,22 +1,15 @@
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/state_manager.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hestia/data/repositories/firebase_query_for_profile/firebase_query_for_profile.dart';
-import 'package:hestia/features/core/controllers/marker_map_controller.dart';
-import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/indivitual_profile_field.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/logout_button.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/post_tab_button.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/primary_header.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/profile_tab_button.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/user_post_list_view.dart';
 
-import 'package:hestia/utils/constants/images_strings.dart';
-import 'package:hestia/utils/device/device_utility.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:widget_to_marker/widget_to_marker.dart';
 
 class SettingsScreen extends StatelessWidget {
   final settingsController settingsController1 = Get.find();
@@ -50,14 +43,13 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Color(0xff1F616B),
+      backgroundColor: const Color(0xff1F616B),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
             // -- Primary Header
-
-            primaryHeader(
+            PrimaryHeader(
                 screenWidth: screenWidth,
                 settingsController1: settingsController1),
 
@@ -67,8 +59,8 @@ class SettingsScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  postButton(settingsController1: settingsController1),
-                  profileButton(settingsController1: settingsController1),
+                  PostTabButton(settingsController1: settingsController1),
+                  ProfileTabButton(settingsController1: settingsController1),
                 ],
               ),
             ),
@@ -77,21 +69,23 @@ class SettingsScreen extends StatelessWidget {
             Obx(
               () => Container(
                 child: settingsController1.isPostSelected.value
-                    // User Post
+
+                    /// User Post
                     ? Padding(
                         padding: const EdgeInsets.only(
                             left: 22, right: 22, top: 0, bottom: 22),
-                        child: userPostsListView(
+                        child: UserPostsListView(
                             settingsController1: settingsController1),
                       )
-                    // User Profile
+
+                    /// User Profile
                     : Padding(
                         padding: const EdgeInsets.only(
                             left: 22, right: 22, top: 30, bottom: 22),
                         child: Obx(
                           () => Column(
                             children: [
-                              settingsProfileField(
+                              IndivitualProfileField(
                                 column1String: "Name",
                                 column2String:
                                     settingsController.instance.name.value,
@@ -103,15 +97,19 @@ class SettingsScreen extends StatelessWidget {
                                       Icons.person);
                                 },
                               ),
-                              SizedBox(height: 20),
-                              settingsProfileField(
+
+                              const SizedBox(height: 20),
+
+                              IndivitualProfileField(
                                 column1String: "Email ID",
                                 column2String:
                                     FirebaseAuth.instance.currentUser?.email,
                                 isEditable: false,
                               ),
-                              SizedBox(height: 20),
-                              settingsProfileField(
+
+                              const SizedBox(height: 20),
+
+                              IndivitualProfileField(
                                 column1String: "Date Of Birth",
                                 column2String:
                                     settingsController.instance.dob.value,
@@ -123,13 +121,22 @@ class SettingsScreen extends StatelessWidget {
                                       Icons.calendar_month);
                                 },
                               ),
-                              SizedBox(height: 20),
-                              settingsProfileField(
-                                column1String: "Total Posts",
-                                column2String:
-                                    "${settingsController1.totalPost.value}",
-                                isEditable: false,
+
+                              const SizedBox(height: 20),
+
+                              Obx(
+                                () => IndivitualProfileField(
+                                  column1String: "Total Posts",
+                                  column2String:
+                                      "${settingsController1.totalPost.value}",
+                                  isEditable: false,
+                                ),
                               ),
+
+                              const SizedBox(height: 30),
+
+                              // -- Log Out Button
+                              const LogOutButton()
                             ],
                           ),
                         ),
@@ -137,7 +144,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 10,
             )
           ],
@@ -145,6 +152,8 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
+
+  // --------------------------------------  FUNCTIONS  -------------------------------------------
 
   Future<dynamic> profileEditDialog(
       BuildContext context,
@@ -155,20 +164,20 @@ class SettingsScreen extends StatelessWidget {
         context: context,
         builder: (context) {
           return Dialog(
-            child: Container(
+            child: SizedBox(
               height: 200,
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     TextField(
                       maxLines: 1,
                       controller: textEditingController,
                       decoration: InputDecoration(
-                          constraints: BoxConstraints(minHeight: 14.0),
+                          constraints: const BoxConstraints(minHeight: 14.0),
                           prefixIcon:
                               textEditingController == nameTextEditingController
                                   ? Icon(icon)
@@ -176,7 +185,7 @@ class SettingsScreen extends StatelessWidget {
                                       context, textEditingController, icon),
                           labelText: labelName),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     SizedBox(
@@ -231,460 +240,6 @@ class SettingsScreen extends StatelessWidget {
               icon,
               size: 20,
             )),
-      ),
-    );
-  }
-}
-
-class primaryHeader extends StatelessWidget {
-  const primaryHeader({
-    super.key,
-    required this.screenWidth,
-    required this.settingsController1,
-  });
-
-  final double screenWidth;
-  final settingsController settingsController1;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: screenWidth * 0.95,
-      child: Stack(
-        children: [
-          // Background Circle
-          Positioned(
-            top: -screenWidth / 4.8,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: screenWidth,
-              width: screenWidth,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(
-                        MyAppDeviceUtils.getScreenWidth(context)),
-                    bottomRight: Radius.circular(
-                        MyAppDeviceUtils.getScreenWidth(context))),
-                gradient: LinearGradient(
-                  colors: [
-                    Color.fromARGB(0, 7, 112, 82),
-                    Color(0xFF00D47E),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.0, 1.0],
-                ),
-              ),
-            ),
-          ),
-
-          // App Bar
-          Positioned(
-            left: 0,
-            right: 0,
-            top: -10,
-            child: AppBar(
-              title: Text(
-                "Settings",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-              centerTitle: true,
-              leading: Icon(
-                Iconsax.setting,
-                color: Colors.white,
-              ),
-            ),
-          ),
-
-          // Name & Email
-          Padding(
-            padding: const EdgeInsets.only(top: 130),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Obx(
-                  () => Text(
-                    settingsController.instance.name.value,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 21,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.email,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "${FirebaseAuth.instance.currentUser?.email}",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // Profile Image
-          Positioned(
-            top: screenWidth * 0.6,
-            left: MyAppDeviceUtils.getScreenWidth(context) / 2 - 48,
-            child: Container(
-              height: 110,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.grey.shade300),
-              child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          spreadRadius: 5,
-                          blurRadius: 10,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Obx(
-                      () => CircleAvatar(
-                        radius: 50,
-                        backgroundImage:
-                            settingsController1.profileImage.value != null
-                                ? Image.file(
-                                        settingsController1.profileImage.value!)
-                                    .image
-                                : AssetImage(MyAppImages.profile2),
-                      ),
-                    ),
-                  )),
-            ),
-          ),
-          Positioned(
-              top: screenWidth * 0.79,
-              left: MyAppDeviceUtils.getScreenWidth(context) / 1.75,
-              child: IconButton(
-                  onPressed: () async {
-                    try {
-                      final pickedFile = await ImagePicker().pickImage(
-                        source: ImageSource.gallery,
-                      );
-
-                      if (pickedFile != null) {
-                        File? image = File(pickedFile.path);
-
-                        await firebaseQueryForProfile()
-                            .uploadImageToBackend(image);
-
-                        settingsController1.profileImage.value = image;
-
-                        addNewCustomMarkerInMapScreen(image);
-
-                        settingsController1.update();
-                      }
-                    } catch (e) {
-                      print("Error picking image: $e");
-                    }
-                  },
-                  icon: Icon(
-                    Icons.camera_alt,
-                    size: 30,
-                    color: Colors.white,
-                  )))
-        ],
-      ),
-    );
-  }
-
-  Future<void> addNewCustomMarkerInMapScreen(File image) async {
-    final marker = Marker(
-      markerId: const MarkerId("currentLocation"),
-      position: MarkerMapController.instance.currPos.value!,
-      icon: await CircularWidget(
-        imageFile: image,
-      ).toBitmapDescriptor(
-        logicalSize: const Size(50, 50),
-        imageSize: const Size(175, 175),
-      ),
-      infoWindow: const InfoWindow(title: "Current Location"),
-    );
-
-    MarkerMapController.instance.homeMarkerAdd(marker);
-  }
-}
-
-class settingsProfileField extends StatelessWidget {
-  const settingsProfileField({
-    super.key,
-    required this.column1String,
-    this.column2String,
-    this.isEditable = true,
-    this.onPressed,
-  });
-
-  final String column1String;
-  final String? column2String;
-  final bool isEditable;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40), color: Colors.grey.shade300),
-      child: Padding(
-        padding: isEditable
-            ? EdgeInsets.fromLTRB(30, 18, 10, 18)
-            : EdgeInsets.fromLTRB(30, 18, 35, 18),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 100,
-              child: Text(
-                column1String,
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                column2String ?? "--------",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (isEditable) ...[
-              SizedBox(
-                width: 7,
-              ),
-              Container(
-                width: 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(width: 0.5, color: Colors.grey)),
-                child: IconButton(
-                    onPressed: onPressed,
-                    icon: Icon(
-                      Icons.edit,
-                    )),
-              )
-            ]
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class profileButton extends StatelessWidget {
-  const profileButton({
-    super.key,
-    required this.settingsController1,
-  });
-
-  final settingsController settingsController1;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => settingsController1.toggleIsPostSelected(),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(100),
-                bottomRight: Radius.circular(100)),
-            color: !settingsController1.isPostSelected.value
-                ? Color.fromARGB(204, 0, 212, 127)
-                : Colors.grey),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(20, 7, 30, 7),
-          child: Row(
-            children: [
-              Icon(
-                Icons.person,
-                color: Colors.white,
-                size: 35,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Profile",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class postButton extends StatelessWidget {
-  const postButton({
-    super.key,
-    required this.settingsController1,
-  });
-
-  final settingsController settingsController1;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => settingsController1.toggleIsPostSelected(),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(100),
-                bottomLeft: Radius.circular(100)),
-            color: settingsController1.isPostSelected.value
-                ? Color.fromARGB(204, 0, 212, 127)
-                : Colors.grey),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(30, 7, 40, 7),
-          child: Row(
-            children: [
-              Icon(
-                Icons.handshake_outlined,
-                color: Colors.white,
-                size: 35,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Posts",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// User Post list View
-class userPostsListView extends StatelessWidget {
-  const userPostsListView({
-    super.key,
-    required this.settingsController1,
-  });
-
-  final settingsController settingsController1;
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => ListView.builder(
-        itemBuilder: (_, index) {
-          return Obx(
-            () => Column(
-              children: [
-                settingsUserPost(
-                  image: settingsController1.settingsUserPostDetails[index]
-                      ["image"],
-                  description: settingsController1
-                      .settingsUserPostDetails[index]["desc"],
-                ),
-                SizedBox(
-                  height: 15,
-                )
-              ],
-            ),
-          );
-        },
-        itemCount: settingsController1.settingsUserPostDetails.length,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-      ),
-    );
-  }
-}
-
-// Indivitual User Post
-class settingsUserPost extends StatelessWidget {
-  const settingsUserPost({
-    super.key,
-    required this.image,
-    required this.description,
-    this.location = "Guwahati Railway Station",
-  });
-
-  final File image;
-  final String description;
-  final String location;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white.withOpacity(0.9)),
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              child: Image.file(image),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                  size: 30,
-                ),
-                Expanded(
-                  child: Text(
-                    "Guwahati Railway Station",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                  ),
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-              child: Text(
-                description,
-                style: TextStyle(color: Colors.black54, fontSize: 12),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

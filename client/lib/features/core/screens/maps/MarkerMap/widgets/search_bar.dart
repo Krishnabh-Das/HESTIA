@@ -28,16 +28,16 @@ class searchBar extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 hintText: "Search Places",
-                hintStyle: TextStyle(fontSize: 16),
-                prefixIcon: Icon(
+                hintStyle: const TextStyle(fontSize: 16),
+                prefixIcon: const Icon(
                   Iconsax.search_normal,
                   color: Colors.black,
                 ),
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                     color: Colors.black), // Adjust label text color if needed
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
-                constraints: BoxConstraints(minHeight: 20),
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+                constraints: const BoxConstraints(minHeight: 20),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),

@@ -1,59 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/tokens_controller.dart';
+import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
-import 'package:hestia/features/core/screens/Donation/donation_Screen.dart';
+import 'package:hestia/features/core/screens/ChatBot/chat_bot.dart';
+import 'package:hestia/features/core/screens/Tokens/tokens.dart';
 import 'package:hestia/features/core/screens/home/home.dart';
-import 'package:hestia/features/core/screens/maps/MarkerMap/MapScreen.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/features/personalization/screens/settings/settings_screen.dart';
 import 'package:iconsax/iconsax.dart';
 
 class bottomNavBar extends StatelessWidget {
-  const bottomNavBar({Key? key});
+  bottomNavBar({super.key}) {
+    MarkerMapController.instance.initData();
+  }
 
   @override
   Widget build(BuildContext context) {
     final navBarController = Get.put(NavigationController());
-    return Scaffold(
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
-          destinations: const [
-            NavigationDestination(icon: Icon(Iconsax.home), label: "Home"),
-            NavigationDestination(
-                icon: Icon(Iconsax.message_question), label: "Question"),
-            NavigationDestination(icon: Icon(Icons.help), label: "Donate"),
-            NavigationDestination(
-                icon: Icon(Iconsax.setting), label: "Settings"),
+    final pageController = PageController();
+
+    return PopScope(
+      onPopInvoked: (didPop) {
+        MarkerMapController.instance.dispose();
+        settingsController.instance.dispose();
+        HalfMapController.instance.dispose();
+        TokensController.instance.dispose();
+        ChatBotController.instance.dispose();
+        NavigationController.instance.dispose();
+        print("Will Pop Called");
+      },
+      child: Scaffold(
+        bottomNavigationBar: Obx(
+          () => NavigationBar(
+            destinations: const [
+              NavigationDestination(icon: Icon(Iconsax.home), label: "Home"),
+              NavigationDestination(
+                  icon: Icon(Icons.leaderboard_outlined), label: "Tokens"),
+              NavigationDestination(
+                  icon: Icon(Icons.chat_bubble_outline_sharp),
+                  label: "ChatBot"),
+              NavigationDestination(
+                  icon: Icon(Iconsax.setting), label: "Settings"),
+            ],
+            elevation: 0,
+            height: 80,
+            selectedIndex: navBarController.selectedIndex.value,
+            onDestinationSelected: (value) {
+              pageController.animateToPage(
+                value,
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeInOutCubicEmphasized,
+              );
+            },
+          ),
+        ),
+        body: PageView(
+          controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            HomeScreen(),
+            Tokens(),
+            ChatScreen(),
+            SettingsScreen(),
           ],
-          elevation: 0,
-          height: 80,
-          selectedIndex: navBarController.selectedIndex.value,
-          onDestinationSelected: (value) {
-            navBarController.selectedIndex.value = value;
+          onPageChanged: (index) {
+            navBarController.selectedIndex.value = index;
           },
         ),
-      ),
-      body: Obx(
-        () => navBarController.screens[navBarController.selectedIndex.value],
       ),
     );
   }
 }
 
 class NavigationController extends GetxController {
-  Rx<int> selectedIndex = 0.obs;
+  static NavigationController get instance => Get.find();
 
-  // Use a Map to store instances of the screens
-  final screens = [
-    MarkerMapScreen(),
-    HomeScreen(),
-    DonationScreen(),
-    SettingsScreen(),
-  ];
+  Rx<int> selectedIndex = 0.obs;
 
   @override
   void onClose() {
-    // Perform cleanup or reset when the controller is closed
     print('NavigationController closed');
+
     super.onClose();
   }
 }

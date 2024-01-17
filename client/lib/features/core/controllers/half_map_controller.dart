@@ -24,7 +24,8 @@ class HalfMapController extends GetxController {
         } else {
           isUsersMarker = false;
         }
-        allHalfMapMarkers.add(Marker(
+
+        Marker marker = Marker(
             markerId: MarkerId("${map["id"]}"),
             position: position,
             infoWindow: isUsersMarker
@@ -33,8 +34,21 @@ class HalfMapController extends GetxController {
             icon: isUsersMarker
                 ? BitmapDescriptor.defaultMarker
                 : BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueGreen)));
+                    BitmapDescriptor.hueGreen));
+
+        allHalfMapMarkers.add(marker);
       }
     }
+  }
+
+  Future<void> removeMarkerFromHalfMap(String markerId) async {
+    late Marker markerToRemove;
+    for (var marker in allHalfMapMarkers) {
+      if (marker.markerId.value == markerId) {
+        markerToRemove = marker;
+      }
+    }
+
+    allHalfMapMarkers.remove(markerToRemove);
   }
 }

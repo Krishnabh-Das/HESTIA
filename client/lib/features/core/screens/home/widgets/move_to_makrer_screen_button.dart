@@ -10,9 +10,10 @@ class halfMapMoveToMarkerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 240,
+      top: 130,
       right: 7,
       child: Container(
+          height: 45,
           decoration:
               const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
           child: IconButton(
@@ -24,6 +25,7 @@ class halfMapMoveToMarkerScreen extends StatelessWidget {
               icon: const Icon(
                 Icons.pin_drop_rounded,
                 color: Colors.redAccent,
+                size: 25,
               ))),
     );
   }

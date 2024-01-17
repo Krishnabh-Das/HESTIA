@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/bottom_nav_bar.dart';
+import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
-import 'package:hestia/features/core/screens/maps/MarkerMap/MapScreen.dart';
+import 'package:iconsax/iconsax.dart';
 
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
@@ -10,20 +12,36 @@ class LoginController extends GetxController {
 
   var email = TextEditingController();
   var password = TextEditingController();
+  Rx<bool> loginObscureText = true.obs;
 
   String get emailString => email.text;
   String get passwordString => password.text;
 
-  void signin() async {
+  void toggleLoginObscureText() {
+    loginObscureText.value = !loginObscureText.value;
+  }
+
+  void signin(BuildContext context) async {
     print("Signing In...");
-    _auth.signInWithEmailAndPassword(
-      emailString,
-      passwordString,
-      () {
-        if (_auth.auth.currentUser!.emailVerified) {
-          Get.offAll(() => bottomNavBar());
-        }
-      },
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailString,
+        password: passwordString,
+      );
+
+      if (_auth.auth.currentUser!.emailVerified) {
+        showCustomToast(context,
+            color: Colors.green.shade400,
+            text: "Login Successful",
+            icon: Iconsax.tick_circle);
+        Get.offAll(() => bottomNavBar());
+      }
+    } on FirebaseAuthException catch (e) {
+      print("Error signing in: $e");
+      showCustomToast(context,
+          color: Colors.red.shade400,
+          text: e.code,
+          icon: Iconsax.close_square);
+    }
   }
 }
