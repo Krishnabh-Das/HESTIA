@@ -6,7 +6,7 @@
 1. About HESTIA
 2. Features
 3. Project Structure
-4. UML
+4. Diagrams
 5. Kanban Board
 6. Technologies Used
 7. Future Plans
@@ -24,7 +24,9 @@ While commendable efforts are being made by government agencies, NGOs, and shelt
 ### Solution
 
 We introduce **HESTIA**, a community based application that helps the community help homeless people by integrating various features that can help them.
-Through HESTIA, we promote the United Nations's sustainable goals - _1. No Poverty, 10. Reduced Inequalities, 11. Sustainable Cities and Communities, and 16. Peace, Justice and Strong Institutions_. \
+Through HESTIA, we promote the United Nations's sustainable goals - _1. No Poverty, 10. Reduced Inequalities, 11. Sustainable Cities and Communities, and 16. Peace, Justice and Strong Institutions_.
+![UN SDGs](./assets/UN_SDG_Banner.png)
+ \
 Our range of features include -
 * **Crowdsourced Geotag Time Series Database Creation** - Collaborative data collection for mapping homeless populations over time.
 * **Visualization through Region Maps and Markers** - Intuitive visual representation of homelessness trends using interactive maps and markers. These cover the regional stats in the form of -  total homeless sightings, crime incidents upon homeless people, upcoming events and functions organised by NGOs or Government Agencies, and finally a rating of the region determined by comprehensing the other fields.
@@ -37,9 +39,48 @@ Our range of features include -
 * **Community Page** - Display events with address and time, post announcements, request donations, donate to causes, help find missing individuals, and general community engagement.
 * **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on a regional and global leaderboards.
 
+## Project Structure
+```
+```
+
+## Diagrams
+
+### Class Diagram
+
+### Machine Learning Pipeline
+![Machine Learning Pipeline](./assets/ML_Pipeline.png)
+
+### App Architecture
+![General App Architecture](./assets/General_Architecture_App.pdf)
+
+## Kanban Board
+
+![HESTIA Project Kanban Board](./assets/HESTIA%20Project%20Kanban%20Board.png)
+
+## Technologies Used
+* **Android** - Flutter
+* **Frontend** - React, Redux, MUI
+* **Backend** - Firebase, FastAPI
+* **Database** - Firestore, AstraDB
+* **DevOps** - GitHub, Google Cloud Platform, Docker
+* **Design** - Figma, FigJam, PlantUML, Canva
+* **Machine Learning** - TensorFlow, scikit-learn, OpenCV, Langchain, Gemini-Pro
+* **Google Technologies Used** - Flutter, Firebase, Google Cloud Platform, Tensorflow, Google Colab, Google Maps Platform, Google Analytics, Gemini-Pro
+
+## Future Plans
+* Establish alliances with global organizations for increased use and promotion.
+* Adapt the platform to make it relevant worldwide and accessible to people of different clutlure and background.
+* Form business alliances to promote sponsorship and workforce collaboration.
+* Integrate social media for optimal reach and simple sharing.
+* Use innovative and advanced analytics tools to gain insights in realtime.
+* Improve AI capabilities to provide more precise support.
+* Create agreements for data exchange with organizations.
+* Improve leaderboard functionality to maintain long-term user interest.
+* Ally with government organizations to ensure that the transfer of resources to the homeless is properly monitored.
+* Redeem HESTIA tokens to get merchandise featuring homelessness awareness on t-shirts and other items.
 
 
-## Team
+## Team HESTIA
 <div style="max-width: 800px;">
 <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
 
