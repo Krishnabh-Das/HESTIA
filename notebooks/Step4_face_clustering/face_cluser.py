@@ -86,7 +86,7 @@ class FaceCluster:
         qx = ox + np.cos(angle) * (px - ox) - np.sin(angle) * (py - oy)
         qy = oy + np.sin(angle) * (px - ox) + np.cos(angle) * (py - oy)
         return qx, qy
-    
+     
     def cosine_formula(self, length_line1: float, length_line2: float, length_line3: float) -> float:
         """
         Compute the cosine of an angle using the cosine formula.
