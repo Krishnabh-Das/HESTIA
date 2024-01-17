@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,18 +9,15 @@ class firebaseQueryForProfile {
   FirebaseStorage storage = FirebaseStorage.instance;
 
   Future<void> uploadImageToBackend(File image) async {
-    var _auth = AuthRepository().auth;
-    if (_auth == null) {
-      return;
-    }
+    var auth = AuthRepository().auth;
 
     try {
       // -- Upload Image in Cache
-      await addImageInCache(image, _auth.currentUser!.email!);
+      await addImageInCache(image, auth.currentUser!.email!);
 
       // -- Upload Image in Storage
       final userFireStoreReference =
-          storage.ref().child("ProfileImages/${_auth.currentUser!.email}");
+          storage.ref().child("ProfileImages/${auth.currentUser!.email}");
 
       final UploadTask uploadTask = userFireStoreReference.putFile(image);
 
@@ -76,7 +72,7 @@ class firebaseQueryForProfile {
       String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
       Directory(appDirPath).createSync(recursive: true);
 
-      File imageFile = File('$appDirPath/image_file${email}.png');
+      File imageFile = File('$appDirPath/image_file$email.png');
 
       if (imageFile.existsSync()) {
         imageFile.deleteSync();
@@ -93,11 +89,8 @@ class firebaseQueryForProfile {
 
   Future<void> updateProfileFieldsInProfile(
       String type, String fieldValue) async {
-    var _auth = AuthRepository().auth;
-    if (_auth == null) {
-      return;
-    }
-    var userId = _auth.currentUser!.uid;
+    var auth = AuthRepository().auth;
+    var userId = auth.currentUser!.uid;
 
     try {
       final userRef = FirebaseFirestore.instance
@@ -110,7 +103,7 @@ class firebaseQueryForProfile {
         // Document exists, update the field
         for (var doc in snapshot.docs) {
           Map<String, dynamic> existingData =
-              doc.data() as Map<String, dynamic>;
+              doc.data();
           existingData[type] = fieldValue;
           await userRef.doc(doc.id).set(existingData, SetOptions(merge: true));
         }

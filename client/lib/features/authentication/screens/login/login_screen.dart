@@ -10,12 +10,12 @@ import 'package:hestia/utils/constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
-import 'package:stroke_text/stroke_text.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final controller = Get.put(LoginController());
+  final _formKeyLogin = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,39 +39,34 @@ class LoginScreen extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: [
-                    dark
-                        ? Text(
-                            "Welcome Back,",
-                            style: GoogleFonts.robotoCondensed(
-                              color: MyAppColors.textWhite,
-                              fontSize: 38,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        : StrokeText(
-                            text: "Welcome Back,",
-                            textStyle: GoogleFonts.robotoCondensed(
-                              color: MyAppColors.textWhite,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            strokeColor: Colors.black,
-                            strokeWidth: 3,
-                          ),
+                    /// Heading
+                    Text(
+                      "Welcome Back,",
+                      style: GoogleFonts.robotoCondensed(
+                        color: dark ? MyAppColors.textWhite : MyAppColors.black,
+                        fontSize: 38,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
                     const SizedBox(
                       height: MyAppSizes.spaceBtwSections / 1.5,
                     ),
 
-                    // Input Text Form Fields
-                    LoginTextField(
-                        email: controller.email, password: controller.password),
+                    /// Input Text Form Fields
+                    Form(
+                      key: _formKeyLogin,
+                      child: LoginTextField(
+                          email: controller.email,
+                          password: controller.password),
+                    ),
 
+                    /// Forgot Password Text Button
                     Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () => Get.to(() => const ForgotPassword()),
-                          child: Text("Forgot Password",
+                          onPressed: () => Get.to(() => ForgotPassword()),
+                          child: Text("Forgot Password?",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -83,10 +78,15 @@ class LoginScreen extends StatelessWidget {
                                       fontWeight: FontWeight.w400)),
                         )),
 
+                    /// Login Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => controller.signin(),
+                        onPressed: () {
+                          if (_formKeyLogin.currentState!.validate()) {
+                            controller.signin(context);
+                          }
+                        },
                         child: Text(
                           "Login",
                           style: Theme.of(context)
@@ -98,11 +98,12 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+
                     const SizedBox(
                       height: MyAppSizes.spaceBtwSections / 1.5,
                     ),
 
-                    // Sign Up Button
+                    /// Go to Sign Up Text Button
                     authenticationRichText(
                       text: "Don't have an account? ",
                       OnPressText: "Sign Up",

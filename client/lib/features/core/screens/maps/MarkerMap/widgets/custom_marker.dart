@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 
+// ignore: must_be_immutable
 class CircularWidget extends StatelessWidget {
-  CircularWidget({required this.imageFile});
+  CircularWidget({super.key, required this.imageFile});
 
   File? imageFile;
 
@@ -27,7 +25,7 @@ class CircularWidget extends StatelessWidget {
                 image: Image.file(imageFile!).image,
                 fit: BoxFit.cover,
               )
-            : Image(
+            : const Image(
                 image: AssetImage(MyAppImages.profile2),
                 fit: BoxFit.cover,
               ),

@@ -24,6 +24,7 @@ dependencies:
   url_launcher: ^6.2.1
   path_provider: ^2.0.8
   widget_to_marker: ^1.0.4
+  fluttertoast: ^8.0.2
 
   # State Management 
   get: ^4.6.5
@@ -45,14 +46,13 @@ dependencies:
   google_fonts: ^6.1.0
   font_awesome_flutter: ^10.6.0
   stroke_text: any
+  animated_text_kit: ^4.2.2
 
   # Firebase
   firebase_core: ^2.24.2
   cloud_firestore: ^4.13.6
   firebase_auth: ^4.15.3
   firebase_storage: ^11.5.6
-
-  
 
   # Google Maps
   google_maps_flutter: ^2.0.1
@@ -62,9 +62,9 @@ dependencies:
   custom_marker: ^1.0.0
   uuid: ^4.3.1  # used to get the id of the device
   geocoding: ^2.1.1
+  google_geocoding_api: ^1.4.1
 
-  # App Icon 
-  flutter_launcher_icons: ^0.13.1
+  
 
 
 dev_dependencies:
@@ -73,19 +73,23 @@ dev_dependencies:
 
   flutter_lints: ^2.0.0
 
+  # App Icon 
+  flutter_launcher_icons: ^0.13.1
+
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icons/appIcon.png"
+  remove_alpha_ios: true
+  image_path: "assets/icons/HESTIA_splash.png"
 
 flutter:
-
   uses-material-design: true
 
   assets:
     - assets/images/authentication/
     - assets/images/gif/
     - assets/images/profile/
+    - assets/images/background/
     - assets/icons/
    
 

@@ -2,16 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
+import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
+import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/tokens_controller.dart';
+import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
-import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/custom_marker.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
-import 'package:hestia/utils/constants/api_constants.dart';
+import 'package:hestia/utils/constants/api_constant.dart';
 import 'package:hestia/utils/theme/theme.dart';
-import 'package:widget_to_marker/widget_to_marker.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,27 +29,52 @@ Future<void> main() async {
       ),
     );
   } else {
-    await Firebase.initializeApp();
+    try {
+      await Firebase.initializeApp();
+    } catch (e) {
+      print("Firebase Initialize App $e");
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+      runApp(const App());
+    }
   }
 
+  await GetStorage.init();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const App());
 }
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var currentUser = FirebaseAuth.instance.currentUser;
+
     Get.put(MarkerMapController());
     Get.put(settingsController());
+    Get.put(HalfMapController());
+    Get.put(TokensController());
+    Get.put(ChatBotController());
+
+    bool onboardingShown = GetStorage().read('onboardingShown') ?? true;
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: MyAppTheme.lightTheme,
       darkTheme: MyAppTheme.darkTheme,
-      home: currentUser == null ? LoginScreen() : bottomNavBar(),
+      home: onboardingShown
+          ? OnBoarding()
+          : currentUser == null
+              ? LoginScreen()
+              : bottomNavBar(),
     );
   }
 }

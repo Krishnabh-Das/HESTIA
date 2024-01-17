@@ -41,8 +41,14 @@ class FirebaseQueryForUsers {
   }
 
   // -- Add Marker Details in FireStore
-  Future<void> addMarkerToUser(double lat, double long, File image,
-      String description, int randomMarkerID, Timestamp time) async {
+  Future<void> addMarkerToUser(
+      double lat,
+      double long,
+      File image,
+      String description,
+      int randomMarkerID,
+      Timestamp time,
+      String address) async {
     String? userId = AuthRepository().getUserId();
 
     // After getting uid do the Write Operation
@@ -52,10 +58,13 @@ class FirebaseQueryForUsers {
       DateTime now = DateTime.now();
       String formattedTime = DateFormat('hh:mm a, EEE, MM/yyyy').format(now);
 
+      print("Address of LATLNG: $address");
+
       Map<String, dynamic> json = {
         'id': randomMarkerID,
         'lat': lat,
         'long': long,
+        'address': address,
         'formattedTime': formattedTime,
         'imageUrl': imageUrl,
         'description': description,
@@ -129,7 +138,7 @@ class FirebaseQueryForUsers {
         markers.add(doc.data());
       }
 
-      print("heastia Markers: ${markers}");
+      print("heastia Markers: $markers");
       return markers;
     } catch (error) {
       print('Error getting markers: $error');
@@ -139,7 +148,7 @@ class FirebaseQueryForUsers {
 
   Future<Map<String, dynamic>> getProfileFromUsers() async {
     String? userId = AuthRepository().getUserId();
-    print("print user ID ${userId}");
+    print("print user ID $userId");
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection('Users')

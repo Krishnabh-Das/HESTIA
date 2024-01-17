@@ -2,16 +2,20 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
+import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:path_provider/path_provider.dart';
 
 // ignore: must_be_immutable
-class ImageScreen extends StatelessWidget {
-  ImageScreen(
+class AddMarkerDetailsScreen extends StatelessWidget {
+  AddMarkerDetailsScreen(
       {super.key,
       required this.image,
       required this.position,
@@ -92,6 +96,11 @@ class ImageScreen extends StatelessWidget {
                         )
                       : const Text("Post"),
                   onPressed: () async {
+                    showCustomToast(context,
+                        color: Colors.yellow.shade600,
+                        text: "Please Wait.......",
+                        icon: Icons.hourglass_empty,
+                        duration: 2000);
                     MarkerMapController.instance.toggleIsLoading();
                     int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
                     Timestamp time = Timestamp.now();
@@ -117,18 +126,46 @@ class ImageScreen extends StatelessWidget {
                             "",
                             true);
 
+                    var address = await getPlacemarks(
+                        position.latitude, position.longitude);
+
                     // Adding Marker details in Firestore
                     await FirebaseQueryForUsers()
                         .addMarkerToUser(position.latitude, position.longitude,
-                            image, desc.text, randomMarkerID, time)
+                            image, desc.text, randomMarkerID, time, address)
                         .then((value) =>
                             MarkerMapController.instance.toggleIsLoading())
-                        .onError((error, stackTrace) =>
-                            MarkerMapController.instance.toggleIsLoading());
+                        .onError((error, stackTrace) {
+                      MarkerMapController.instance.toggleIsLoading();
+                      showCustomToast(context,
+                          color: Colors.red.shade400,
+                          text: "Error Uploaing Data in Database: $error",
+                          icon: Icons.warning,
+                          duration: 2000);
+                    });
+
+                    HalfMapController.instance.allHalfMapMarkers.add(Marker(
+                        markerId: MarkerId("$randomMarkerID"),
+                        position: position,
+                        infoWindow: const InfoWindow(title: "Your Marker"),
+                        icon: BitmapDescriptor.defaultMarker));
 
                     // Updating the setttings Post
                     settingsController.instance.settingsUserPostDetails.value
-                        .add({"image": image, "desc": desc.text});
+                        .add({
+                      "image": image,
+                      "desc": desc.text,
+                      "address": address
+                    });
+
+                    settingsController.instance.totalPost.value =
+                        ++settingsController.instance.totalPost.value;
+
+                    showCustomToast(context,
+                        color: Colors.green.shade400,
+                        text: "Post Uploaded Successfully",
+                        icon: Iconsax.tick_circle,
+                        duration: 2000);
 
                     // Returing the Marker
                     Navigator.pop(context, marker);
@@ -140,5 +177,43 @@ class ImageScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<String> getPlacemarks(double lat, double long) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+
+      var address = '';
+
+      if (placemarks.isNotEmpty) {
+        // Concatenate non-null components of the address
+
+        var streets = placemarks.reversed
+            .map((placemark) => placemark.street)
+            .where((street) => street != null);
+
+        // Filter out unwanted parts
+        streets = streets.where((street) =>
+            street!.toLowerCase() !=
+            placemarks.reversed.last.locality!
+                .toLowerCase()); // Remove city names
+        streets =
+            streets.where((street) => !street!.contains('+')); // Remove codes
+
+        address += streets.join(', ');
+
+        address += ', ${placemarks.reversed.last.subLocality ?? ''}';
+        address += ', ${placemarks.reversed.last.locality ?? ''}';
+        address += ', ${placemarks.reversed.last.subAdministrativeArea ?? ''}';
+        address += ', ${placemarks.reversed.last.administrativeArea ?? ''}';
+        address += ', ${placemarks.reversed.last.postalCode ?? ''}';
+        address += ', ${placemarks.reversed.last.country ?? ''}';
+      }
+
+      return address;
+    } catch (e) {
+      print("Error getting placemarks: $e");
+      return "No Address";
+    }
   }
 }

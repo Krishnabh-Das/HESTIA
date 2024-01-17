@@ -9,12 +9,12 @@ import 'package:hestia/features/authentication/screens/signup/widgets/signup_Tex
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/constants/sizes.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
-import 'package:stroke_text/stroke_text.dart';
 
 class signupScreen extends StatelessWidget {
   signupScreen({super.key});
 
-  final controller = Get.put(SignupController());
+  final signUpController = Get.put(SignupController());
+  final _formKeySignup = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,47 +38,42 @@ class signupScreen extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: [
-                    dark
-                        ? Text(
-                            "Create Account,",
-                            style: GoogleFonts.robotoCondensed(
-                              color: MyAppColors.textWhite,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        : StrokeText(
-                            text: "Create Account,",
-                            textStyle: GoogleFonts.robotoCondensed(
-                              color: MyAppColors.textWhite,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            strokeColor: Colors.black,
-                            strokeWidth: 3,
-                          ),
+                    /// Heading
+                    Text(
+                      "Create Account,",
+                      style: GoogleFonts.robotoCondensed(
+                        color: dark ? MyAppColors.textWhite : MyAppColors.black,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
                     const SizedBox(
                       height: MyAppSizes.spaceBtwSections / 1.5,
                     ),
 
-                    // Input Text Form Fields
-                    SignupTextField(
-                        email: controller.email,
-                        password: controller.password,
-                        confirmPassword: controller.confirmPassword),
-
-                    const SizedBox(
-                      height: MyAppSizes.spaceBtwItems,
+                    /// Input Text Form Fields
+                    Form(
+                      key: _formKeySignup,
+                      child: SignupTextField(
+                          email: signUpController.email,
+                          password: signUpController.password,
+                          confirmPassword: signUpController.confirmPassword),
                     ),
 
                     const SizedBox(
-                      height: MyAppSizes.spaceBtwItems / 1.7,
+                      height: MyAppSizes.spaceBtwItems * 1.59,
                     ),
+
+                    /// Sign Up Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => controller.signup(),
+                        onPressed: () {
+                          if (_formKeySignup.currentState!.validate()) {
+                            signUpController.signup();
+                          }
+                        },
                         child: Text(
                           "Sign Up",
                           style: Theme.of(context)
@@ -95,7 +90,7 @@ class signupScreen extends StatelessWidget {
                       height: MyAppSizes.spaceBtwSections / 1.5,
                     ),
 
-                    // Sign Up Button
+                    // Go to Sign In Text Button
                     authenticationRichText(
                       text: "Already have an account? ",
                       OnPressText: "Sign In",
@@ -110,6 +105,4 @@ class signupScreen extends StatelessWidget {
       ),
     );
   }
-
-  //------------------------------------ Functions ------------------------------------
 }

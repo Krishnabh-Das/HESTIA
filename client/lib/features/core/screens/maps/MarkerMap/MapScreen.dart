@@ -1,49 +1,18 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/Floating_Buttons_Mark_map_Screen.dart';
 import 'package:hestia/features/core/screens/maps/MarkerMap/widgets/search_bar.dart';
-import 'package:hestia/features/personalization/controllers/settings_controller.dart';
-import 'package:hestia/utils/constants/api_constants.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
-import 'package:geocoding/geocoding.dart';
 
-var uuid = Uuid();
+import 'package:iconsax/iconsax.dart';
 
 class MarkerMapScreen extends StatelessWidget {
   // --- MAP CONTROLLER
   final MarkerMapController markerMapController = Get.find();
 
-  MarkerMapScreen({super.key}) {
-    _initData();
-  }
-
-  Future<void> _initData() async {
-    print("Init is called");
-
-    await markerMapController.getUserLocation();
-
-    markerMapController.searchController.addListener(() {
-      markerMapController.onChange(uuid);
-    });
-    await markerMapController.makeMarkersFromJson();
-    await settingsController.instance
-        .getProfileImageFromBackend()
-        .then((value) {
-      markerMapController.isProfileImageLoaded.value = true;
-
-      settingsController.instance.profileImage.value = value;
-    });
-    await markerMapController.createAndAddCurrMarker();
-  }
+  MarkerMapScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +22,14 @@ class MarkerMapScreen extends StatelessWidget {
         body: Obx(
       () => (markerMapController.currPos.value == null &&
               !markerMapController.isProfileImageLoaded.value)
-          ? const Center(
-              child: Text("Loading..."),
+          ? Center(
+              child: Text(
+                "Loading...",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: Colors.black, fontWeight: FontWeight.w500),
+              ),
             )
           : Stack(
               children: <Widget>[
@@ -70,7 +45,9 @@ class MarkerMapScreen extends StatelessWidget {
                           markerMapController.currPos.value;
                     },
                     initialCameraPosition: CameraPosition(
-                        target: markerMapController.currPos.value!, zoom: 16),
+                        target: markerMapController.currPos.value!,
+                        zoom: 16,
+                        tilt: 40),
                     onTap: (latLng) {
                       markerMapController
                           .customInfoWindowController.value.hideInfoWindow!();
@@ -105,16 +82,36 @@ class MarkerMapScreen extends StatelessWidget {
                   offset: 35,
                 ),
 
+                // -- Floating Buttons
+                const FloatingButtonsMarkerMapScreen(),
+
+                // -- Back Button
+                Positioned(
+                    top: 66,
+                    left: 20,
+                    child: CircleAvatar(
+                      backgroundColor: const Color(0xFF1F616B),
+                      child: Center(
+                        child: IconButton(
+                            onPressed: () => Get.back(),
+                            icon: const Icon(
+                              Icons.arrow_back_sharp,
+                              size: 26,
+                              color: Colors.white,
+                            )),
+                      ),
+                    )),
+
                 // -- Search Bar
                 if (!markerMapController.isSearchBarVisible.value) ...[
                   Positioned(
-                      top: 80,
+                      top: 60,
                       right: 10,
                       child: FloatingActionButton(
-                          backgroundColor: Colors.black,
+                          backgroundColor: const Color(0xFF1F616B),
                           heroTag: "Search FAB",
-                          shape: CircleBorder(eccentricity: 0),
-                          child: Icon(
+                          shape: const CircleBorder(eccentricity: 0),
+                          child: const Icon(
                             Iconsax.search_normal,
                             color: Colors.white,
                           ),
@@ -123,9 +120,6 @@ class MarkerMapScreen extends StatelessWidget {
                 ] else if (markerMapController.isSearchBarVisible.value) ...[
                   searchBar(markerMapController: markerMapController),
                 ],
-
-                // -- Floating Buttons
-                const FloatingButtonsMarkerMapScreen(),
               ],
             ),
     ));

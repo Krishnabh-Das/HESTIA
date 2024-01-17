@@ -11,13 +11,15 @@ class ChatBotController extends GetxController {
   RxList<List<String>> msgList = [
     [
       "Hello, my name is Hestia! I'm here to guide you. Is there anything particular you'd like to know about homelessness?",
-      "c"
+      "c",
+      "Now" // If Text Generated Now than animate otherwise Not
     ],
   ].obs;
 
   Future<void> uploadAndGetResponseFromChatbot(String userMsg) async {
     try {
-      var url = Uri.http('hestia-xzg1.onrender.com', '/chat/send');
+      var url =
+          Uri.https('hestiabackend-vu6qon67ia-el.a.run.app', '/chat/send');
 
       var payload = {
         "question": userMsg,
@@ -28,14 +30,15 @@ class ChatBotController extends GetxController {
 
       var response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json; charset=utf-8'},
         body: body,
       );
 
       if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
+        var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         ChatBotController.instance.isMsgTyped.value = false;
-        ChatBotController.instance.msgList.add([jsonResponse['reply'], "c"]);
+        ChatBotController.instance.msgList
+            .add([jsonResponse['reply'], "c", "Now"]);
         print("Reply: ${jsonResponse['reply']}");
       } else {
         print("Request failed with status: ${response.statusCode}");

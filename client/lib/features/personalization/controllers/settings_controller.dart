@@ -6,16 +6,12 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_query_for_profile/firebase_query_for_profile.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
-import 'package:hestia/features/personalization/screens/settings/settings_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
 class settingsController extends GetxController {
   static settingsController get instance => Get.find();
 
   Rx<bool> isPostSelected = true.obs;
-  void toggleIsPostSelected() {
-    isPostSelected.value = !isPostSelected.value;
-  }
 
   RxList<dynamic> settingsUserPostDetails = <dynamic>[].obs;
 
@@ -44,7 +40,11 @@ class settingsController extends GetxController {
 
       String description = marker["description"];
 
-      Map userPostData = {"image": image, "desc": description};
+      Map userPostData = {
+        "image": image,
+        "desc": description,
+        "address": marker["address"]
+      };
       returnList.add(userPostData);
     }
 
@@ -82,11 +82,8 @@ class settingsController extends GetxController {
   }
 
   Future<File?> getProfileImageFromBackend() async {
-    var _auth = AuthRepository().auth;
-    if (_auth == null) {
-      return File("");
-    }
-    String email = _auth.currentUser!.email!;
+    var auth = AuthRepository().auth;
+    String email = auth.currentUser!.email!;
 
     try {
       Directory tempDir = await getTemporaryDirectory();
@@ -94,7 +91,7 @@ class settingsController extends GetxController {
       String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
       Directory(appDirPath).createSync(recursive: true);
 
-      File imageFile = File('$appDirPath/image_file${email}.png');
+      File imageFile = File('$appDirPath/image_file$email.png');
 
       if (imageFile.existsSync()) {
         print("image exists in cache");
@@ -104,7 +101,7 @@ class settingsController extends GetxController {
 
       File? image = imageFile.existsSync()
           ? imageFile
-          : await getImageFromProfile(_auth.currentUser!.uid, email);
+          : await getImageFromProfile(auth.currentUser!.uid, email);
 
       print('Image added to cache: ${imageFile.path}');
 
