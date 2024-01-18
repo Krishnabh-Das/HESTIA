@@ -3,30 +3,30 @@
 ![HESTIA COVER IMAGE](./assets/cover_image.jpg)
 
 ## Table of Contents
-1. About HESTIA
-2. Features
-3. Project Structure
-4. Diagrams
-5. Kanban Board
-6. Technologies Used
-7. Future Plans
-8. Team Members
+1. [About HESTIA](#about-hestia)
+2. [Features](#features)
+3. [Project Structure](#project-structure)
+4. [Diagrams](#diagrams)
+5. [Kanban Board](#kanban-board)
+6. [Technologies Used](#technologies-used)
+7. [Future Plans](#future-plans)
+8. [Team Members](#team-hestia)
 
 ## About HESTIA
 
 ### Problem Statement
 
-
-In our world today, a significant challenge we face is the widespread issue of homelessness, affecting approximately 2% of the global population, which translates to around 150 million people. However, accurately understanding the extent of this crisis is complicated by various factors. Homeless individuals often avoid official registration due to fears of legal consequences, potential loss of custody, or societal stigma. This reluctance to be counted is a major obstacle in addressing the problem effectively.\
-Zooming in on India, where more than four million people are reported to be homeless, poverty compounds the issue, exacerbated by the country's large population. Yet, there is a concern that these reported numbers may not capture the true magnitude of the problem due to challenges in data collection. The situation is no less dire on a regional scale, such as in Assam, where annual floods force nearly 300,000 people into temporary relief camps. The aftermath of these natural disasters leaves individuals disconnected from their families, with limited resources and, in some cases, no way of reconnecting.\
-While commendable efforts are being made by government agencies, NGOs, and shelters to address homelessness, there remains a crucial gap in engaging the broader community in this collective endeavor. Our prototype app aims to fill this void by encouraging community participation and facilitating better collaboration between existing support systems and those affected by homelessness. By doing so, we hope to contribute to a more comprehensive and inclusive approach to alleviating the challenges faced by homeless individuals.
+Approximately 150 million people, or 2% of the world's population, are affected by homelessness, which is a global issue today. The fact that many are avoiding official registration out of fear of the law and social stigma make it difficult to accurately measure this situation. Poverty exacerbates the issue of homelessness in India, where over four million individuals are thought to be homeless; however, difficulties in gathering data may understate the issue. The situation is made worse by regional issues, such as the yearly floods in Assam, which force about 300,000 people into relief camps. In spite of the wonderful efforts made by many organizations, community involvement is essential. By encouraging community involvement and improving coordination across support systems, our prototype app aims to close this gap and address homelessness from a more inclusive perspective.
 
 ### Solution
 
 We introduce **HESTIA**, a community based application that helps the community help homeless people by integrating various features that can help them.
 Through HESTIA, we promote the United Nations's sustainable goals - _1. No Poverty, 10. Reduced Inequalities, 11. Sustainable Cities and Communities, and 16. Peace, Justice and Strong Institutions_.
 ![UN SDGs](./assets/UN_SDG_Banner.png)
- \
+
+
+ ## Features
+
 Our range of features include -
 * **Crowdsourced Geotag Time Series Database Creation** - Collaborative data collection for mapping homeless populations over time.
 * **Visualization through Region Maps and Markers** - Intuitive visual representation of homelessness trends using interactive maps and markers. These cover the regional stats in the form of -  total homeless sightings, crime incidents upon homeless people, upcoming events and functions organised by NGOs or Government Agencies, and finally a rating of the region determined by comprehensing the other fields.
@@ -51,7 +51,7 @@ Our range of features include -
 ![Machine Learning Pipeline](./assets/ML_Pipeline.png)
 
 ### App Architecture
-![General App Architecture](./assets/General_Architecture_App.pdf)
+![General App Architecture](./assets/app-arch.png)
 
 ## Kanban Board
 
@@ -214,7 +214,7 @@ background-image: linear-gradient(315deg, #bf033b 0%, #ffc719 74%); height: 300p
 background-image: linear-gradient(315deg, #182b3a 0%, #20a4f3 74%); height: 300px; width:150px
 ">
      <a href="https://github.com/krishnabh-das">
-    <img src="https://github.com/krishnabh-das.png" height="140" width="140" alt="image" style="border-radius:8px; overflow:hidden;"/>
+    <img src="https://github.com/krishnabh-das.png" height="140" width="140"  alt="image" style="border-radius:8px; overflow:hidden;"/>
     </a>
     <div style="text-align: center; background-color:white; color:black; width:110px; border-radius: 20px">
       Krishnabh-Das
