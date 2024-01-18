@@ -1,7 +1,6 @@
 import os
 import traceback
 from datetime import datetime
-from venv import logger
 from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, WebSocket, Request
@@ -17,7 +16,6 @@ from configs.db import firestoreDB, firestore
 
 from docs.metadata import tags_metadata
 
-# from loggingUtil.logshandeller import logGenerator
 from utils.datetimeUtils import (
     startEndTime, 
     testStarttime
@@ -70,7 +68,6 @@ app.add_middleware(
 
 start_date, end_date = startEndTime()
 
-
 # ---------------------------  Chat  ----------------------------#
 @app.post("/chat/send", tags=["Chatbot"])
 async def chat_send(chat: chatSchema):
@@ -109,7 +106,6 @@ async def chat_send(chat: chatSchema):
         error_message = {"detail": f"An error occurred: {str(e)}",
                          "traceback":traceback_str}
         return JSONResponse(content=error_message, status_code=500)
-
 
 @app.put("/chat/add_context/byURL", tags=["Chatbot"])
 async def add_context_URL(urlContext: urlContextSchema):
@@ -151,7 +147,6 @@ async def add_context_URL(urlContext: urlContextSchema):
     except Exception as e:
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
-
 
 # --------------------------  Utils  ----------------------------#
 @app.post("/location/get", tags=["Utils"])
@@ -198,7 +193,6 @@ async def location_get(getLoc: getLocSchema):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # --------------------------  User ----------------------------#
 @app.post("/user/getNamebyID", tags=["Users"])
 async def User_Name(userId: userId):
@@ -226,9 +220,7 @@ async def User_Name(userId: userId):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # --------------------------  Admin  ----------------------------#
-
 
 @app.put("/admin/regionMapGen", tags=["Admin"])
 def regionMapGen(Initator: Initator):   
