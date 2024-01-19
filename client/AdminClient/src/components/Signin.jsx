@@ -38,13 +38,21 @@ import { ref, uploadBytes } from "firebase/storage";
 
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
+import { useDispatch } from "react-redux";
+import { setUser, setAuthChecked, selectUser } from "../state/userSlice";
 // import { Navigate, } from "react-router-dom";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
+
+
+
 export default function SignIn() {
+
+  const dispatch = useDispatch();
+
 
   const navigate = useNavigate(); 
 
@@ -83,6 +91,9 @@ export default function SignIn() {
               console.log(user);
               console.log(user.email);
               console.log(user.uid);
+
+
+              dispatch(setUser(user));
 
 
             navigate('/')
