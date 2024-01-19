@@ -6,6 +6,7 @@ import numpy as np
 from itertools import combinations
 from geopy.distance import geodesic
 
+from utils.GeoLoc import geoLoc
 from configs.db import firestoreDB
 
 def calculate_convex_hull_area(coords):
@@ -220,11 +221,14 @@ def addNewRegionMaps(coordinate_clusters, markers_):
         
         average_latitude = sum(lat for lat, lon in coords_lst) / len(coords_lst)
         average_longitude = sum(lon for lat, lon in coords_lst) / len(coords_lst)
+        
+        locname = geoLoc.reverse(f"{average_latitude}, {average_longitude}")
 
         central_coord = GeoPoint(average_latitude, average_longitude)
 
         data = {
             "central_coord": central_coord,
+            "location": locname.address,
             "coords": [GeoPoint(x[0],x[1]) for x in coords_lst],
             "markers":marker_ids
         }

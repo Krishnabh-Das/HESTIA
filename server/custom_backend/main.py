@@ -257,11 +257,14 @@ def regionMapGen(Initator: Initator):
 
             average_latitude = sum(lat for lat, lon in result_dict["coords"]) / len(result_dict["coords"])  # type: ignore
             average_longitude = sum(lon for lat, lon in result_dict["coords"]) / len(result_dict["coords"])  # type: ignore
+            
+            locname = geoLoc.reverse(f"{average_latitude}, {average_longitude}")
 
             central_coord = GeoPoint(average_latitude, average_longitude)
             ref.update(
                 {
                     "central_coord": central_coord,
+                    "location": locname.address,
                     "coords": firestore.ArrayUnion([get_marker_cord_by_id(markers_, key)]),  # type: ignore
                     "markers": firestore.ArrayUnion([key]),  # type: ignore
                 }
