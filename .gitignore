@@ -57,7 +57,6 @@ app.*.map.json
 **/web/firebase-config.js
 
 # Remove from version control
-**/lib/utils/constants/api_constants.dart
 **/ios/Runner.xcodeproj/project.pbxproj/GoogleService-Info.plist
 **/android/app/build.gradle/google-services.json
 
@@ -66,3 +65,4 @@ app.*.map.json
 **/ios/Runner/AppDelegate.swift
 **/web/index.html
 
+/client/UserClient/lib/utils/constants/api_constant.dart

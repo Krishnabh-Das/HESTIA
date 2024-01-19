@@ -1,7 +1,6 @@
 import os
 import traceback
 from datetime import datetime
-from venv import logger
 from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, WebSocket, Request
@@ -17,7 +16,6 @@ from configs.db import firestoreDB, firestore
 
 from docs.metadata import tags_metadata
 
-# from loggingUtil.logshandeller import logGenerator
 from utils.datetimeUtils import (
     startEndTime, 
     testStarttime
@@ -70,7 +68,6 @@ app.add_middleware(
 
 start_date, end_date = startEndTime()
 
-
 # ---------------------------  Chat  ----------------------------#
 @app.post("/chat/send", tags=["Chatbot"])
 async def chat_send(chat: chatSchema):
@@ -105,9 +102,10 @@ async def chat_send(chat: chatSchema):
         return JSONResponse(content=res_json, status_code=200)
     except Exception as e:
         # Handle exceptions or validation errors and return an appropriate HTTP response code.
-        error_message = {"detail": f"An error occurred: {str(e)}"}
+        traceback_str = traceback.format_exc()
+        error_message = {"detail": f"An error occurred: {str(e)}",
+                         "traceback":traceback_str}
         return JSONResponse(content=error_message, status_code=500)
-
 
 @app.put("/chat/add_context/byURL", tags=["Chatbot"])
 async def add_context_URL(urlContext: urlContextSchema):
@@ -149,7 +147,6 @@ async def add_context_URL(urlContext: urlContextSchema):
     except Exception as e:
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
-
 
 # --------------------------  Utils  ----------------------------#
 @app.post("/location/get", tags=["Utils"])
@@ -196,7 +193,6 @@ async def location_get(getLoc: getLocSchema):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # --------------------------  User ----------------------------#
 @app.post("/user/getNamebyID", tags=["Users"])
 async def User_Name(userId: userId):
@@ -224,9 +220,7 @@ async def User_Name(userId: userId):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # --------------------------  Admin  ----------------------------#
-
 
 @app.put("/admin/regionMapGen", tags=["Admin"])
 def regionMapGen(Initator: Initator):   
@@ -263,11 +257,14 @@ def regionMapGen(Initator: Initator):
 
             average_latitude = sum(lat for lat, lon in result_dict["coords"]) / len(result_dict["coords"])  # type: ignore
             average_longitude = sum(lon for lat, lon in result_dict["coords"]) / len(result_dict["coords"])  # type: ignore
+            
+            locname = geoLoc.reverse(f"{average_latitude}, {average_longitude}")
 
             central_coord = GeoPoint(average_latitude, average_longitude)
             ref.update(
                 {
                     "central_coord": central_coord,
+                    "location": locname.address,
                     "coords": firestore.ArrayUnion([get_marker_cord_by_id(markers_, key)]),  # type: ignore
                     "markers": firestore.ArrayUnion([key]),  # type: ignore
                 }
@@ -291,10 +288,7 @@ def regionMapGen(Initator: Initator):
             current_datetime = datetime.now()
             current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             data = {"timStamp": current_datetime_str, "User_id": Initator.id}
-            CSL_ref = firestoreDB.collection("RegionMap_logs").document(
-                current_datetime_str
-            )
-            CSL_ref.set(data)
+            CSL_ref = firestoreDB.collection("RegionMap_logs").add(data)
         except Exception as e:
             traceback_str = traceback.format_exc()
             error_message = {"detail": f"An error occurred: {str(e)}",
