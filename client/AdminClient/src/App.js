@@ -37,19 +37,19 @@ function App() {
   const user = useSelector(selectUser);
 
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
 
-    if (storedUser) {
-      dispatch(setUser(JSON.parse(storedUser)));
-    }
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      dispatch(setUser(user));
-      dispatch(setAuthChecked());
-    });
+  //   if (storedUser) {
+  //     dispatch(setUser(JSON.parse(storedUser)));
+  //   }
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     dispatch(setUser(user));
+  //     dispatch(setAuthChecked());
+  //   });
 
-    return () => unsubscribe();
-  }, [dispatch]);
+  //   return () => unsubscribe();
+  // }, [dispatch]);
 
 
 
@@ -66,7 +66,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-          <Route path="/auth" element={!user ? (<Signin/>):(<Navigate to="/"/>)} />
+          <Route path="/auth" element={user ? (<Navigate to="/"/>) : (<Signin/>)} />
             {/* <Route path="/auth" element={ !user ? <AuthPage/> : <Navigate to="/"/> }/> */}
             <Route element={<Layout />}>
               <Route path="/" element={user? (<Navigate to="/dashboard" replace />):(<Navigate to="/auth" replace />)} />
