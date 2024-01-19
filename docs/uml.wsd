@@ -1,15 +1,21 @@
-@startuml
+@startuml hestia
+
 class Users {
   #userId: string
   +email: string
   -password: string
   +chat(question: string, userId: string): Chat_message
+  +ReportSOS(SOS:SOS_Reports): SOS_Reports
+  +CrateMarker(marker:Markers): Markers
+  +ViewRegionMap(RegionMap: RegionMap): RegionMap
 }
 
 class Profile {
   +name: string
   +imageUrl: string
   +dob: string
+  -EditProfile(args*): Profile
+  +ViewProfile(): Profile
 }
 
 class Markers {
@@ -20,6 +26,7 @@ class Markers {
   +lat: number
   +long: number
   +time: timestamp
+  +ViewMarkers(): Markers
 }
 
 class SOS_Reports {
@@ -40,6 +47,7 @@ class RegionMap {
 class Admin extends Users {
   -isAdmin: true
   +createRegionMap(markers: Markers[]): RegionMap
+  +ViewSOS(): RegionMap
 }
 
 class Chatbot_source_list {
@@ -61,4 +69,5 @@ Admin }|--{ Chatbot_source_list: Creates chatbot sources
 Users ||--|| Chat_message: Can chat
 Admin ||--o{ RegionMap: Creates
 Admin ||--{ Markers: Uses
+
 @enduml
