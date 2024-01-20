@@ -9,7 +9,10 @@ class FirebaseQueryForMarkers {
         "userid": userid,
       });
 
-      await FirebaseFirestore.instance.collection('Markers').add(json);
+      await FirebaseFirestore.instance
+          .collection('Markers')
+          .doc(json["id"])
+          .set(json);
       print('Marker added successfully in Markers!');
     } else {
       print("User ID is null");
