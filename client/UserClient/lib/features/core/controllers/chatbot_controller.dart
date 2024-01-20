@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hestia/utils/formatters/formatter.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
@@ -37,8 +38,9 @@ class ChatBotController extends GetxController {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         ChatBotController.instance.isMsgTyped.value = false;
-        ChatBotController.instance.msgList
-            .add([jsonResponse['reply'], "c", "Now"]);
+        var formattedReply =
+            MyAppFormatter.formatStringSpaces(jsonResponse['reply']);
+        ChatBotController.instance.msgList.add([formattedReply, "c", "Now"]);
         print("Reply: ${jsonResponse['reply']}");
       } else {
         print("Request failed with status: ${response.statusCode}");

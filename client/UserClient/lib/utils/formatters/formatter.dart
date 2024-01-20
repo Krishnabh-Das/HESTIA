@@ -6,6 +6,14 @@ class MyAppFormatter {
     return DateFormat('dd-MMM-yyyy').format(date);
   }
 
+  static String formatStringSpaces(String input) {
+    // Define a regular expression pattern to match leading and trailing spaces
+    RegExp pattern = RegExp(r'^\s+|\s+$');
+
+    // Replace leading and trailing spaces with an empty string
+    return input.replaceAll(pattern, '');
+  }
+
   static String formatCurrency(double amount) {
     return NumberFormat.currency(
       locale: 'en_US', // Customize the currency locale as needed

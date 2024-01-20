@@ -10,6 +10,7 @@ import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
 import 'package:hestia/features/authentication/screens/splash_screen.dart';
 import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
@@ -61,6 +62,7 @@ class App extends StatelessWidget {
     Get.put(HalfMapController());
     Get.put(TokensController());
     Get.put(ChatBotController());
+    Get.put(HomeStatsRatingController());
 
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,

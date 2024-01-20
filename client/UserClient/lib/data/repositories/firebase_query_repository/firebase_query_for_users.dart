@@ -80,8 +80,11 @@ class FirebaseQueryForUsers {
           .doc("$randomMarkerID")
           .set(json);
 
+      print("Added $json in User collection");
+
       // Sequencial Trigger of Functions (After User Adding the details in Markers)
-      await FirebaseQueryForMarkers().addMarkerToMarkers(json, userId);
+      await FirebaseQueryForMarkers()
+          .addMarkerToMarkers(json, userId, randomMarkerID);
       print('Marker added successfully in Users!');
     } catch (error) {
       print('Error adding marker in Users: $error');

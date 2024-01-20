@@ -3,7 +3,7 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 
 class FirebaseQueryForMarkers {
   Future<void> addMarkerToMarkers(
-      Map<String, dynamic> json, String? userid) async {
+      Map<String, dynamic> json, String? userid, int markerId) async {
     if (userid != null) {
       json.addAll({
         "userid": userid,
@@ -11,7 +11,7 @@ class FirebaseQueryForMarkers {
 
       await FirebaseFirestore.instance
           .collection('Markers')
-          .doc(json["id"])
+          .doc("$markerId")
           .set(json);
       print('Marker added successfully in Markers!');
     } else {
