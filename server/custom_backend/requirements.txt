@@ -13,3 +13,6 @@ pytz
 scipy
 unstructured[all]
 uvicorn[standard]
+colorlog
+scikit-learn
+pydantic[email]

@@ -1,4 +1,3 @@
-FROM ubuntu:22.04
 FROM selenium/standalone-chrome
 FROM python:3.11.7
 
