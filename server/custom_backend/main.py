@@ -20,10 +20,7 @@ from processor.StatsNearYou import stats
 from configs.db import firestoreDB, firestore
 
 from utils.GeoLoc import geoLoc
-from utils.datetimeUtils import (
-    startEndTime, 
-    testStarttime
-)
+from utils.datetimeUtils import startEndTime, testStarttime
 from utils.ragPipeline import (
     addDocVectorStore,
     getResponse,
@@ -52,7 +49,16 @@ from utils.regionMapHelper import (
 )
 
 # ------------------------ Init FastAPI -------------------------#
-app = FastAPI(openapi_tags=tags_metadata)
+app = FastAPI(
+    title="Hestia",
+    description="Routes for Hestia.",
+    version="0.0.3dev",
+    openapi_tags=tags_metadata,
+    license_info={
+        "name": "MIT License",
+        "url": "https://mit-license.org/",
+    },
+)
 
 # --------------------------- Config ----------------------------#
 load_dotenv()
@@ -71,17 +77,19 @@ start_date, end_date = startEndTime()
 
 handler = logging.StreamHandler()
 logging.getLogger().setLevel(logging.DEBUG)
-handler.setFormatter(colorlog.ColoredFormatter(
-    '%(log_color)s%(levelname)-8s%(reset)s - %(asctime)s - %(message)s',
-    log_colors={
-        'DEBUG': 'cyan',
-        'INFO': 'green',
-        'WARNING': 'yellow',
-        'ERROR': 'red',
-        'CRITICAL': 'red,bg_white',
-    },
-    datefmt='%Y-%m-%d %H:%M:%S'
-))
+handler.setFormatter(
+    colorlog.ColoredFormatter(
+        "%(log_color)s%(levelname)-8s%(reset)s - %(asctime)s - %(message)s",
+        log_colors={
+            "DEBUG": "cyan",
+            "INFO": "green",
+            "WARNING": "yellow",
+            "ERROR": "red",
+            "CRITICAL": "red,bg_white",
+        },
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+)
 logger.addHandler(handler)
 
 
@@ -172,7 +180,9 @@ async def add_context_URL(urlContext: urlContextSchema):
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
+
 # ----------------------- Visualization  ------------------------#
+
 
 @app.post("/viz/getStatsByCoord", tags=["Visualization"])
 async def getStatsByCoord(coords: coordSchema):
@@ -197,6 +207,7 @@ async def getStatsByCoord(coords: coordSchema):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
 
 # --------------------------  Utils  ----------------------------#
 @app.post("/location/get", tags=["Utils"])
@@ -274,6 +285,7 @@ async def User_Name(userId: userId):
 
 # --------------------------  Admin  ----------------------------#
 
+
 @app.put("/admin/regionMapGen", tags=["Admin"])
 def regionMapGen(Initator: Initator):
     """
@@ -316,7 +328,7 @@ def regionMapGen(Initator: Initator):
             ref.update(
                 {
                     "central_coord": central_coord,
-                    "location": locname.address, # type: ignore
+                    "location": locname.address,  # type: ignore
                     "coords": firestore.ArrayUnion([get_marker_cord_by_id(markers_, key)]),  # type: ignore
                     "markers": firestore.ArrayUnion([key]),  # type: ignore
                 }
@@ -341,11 +353,12 @@ def regionMapGen(Initator: Initator):
             current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")[
                 :-3
             ]
-            data = {"timStamp": current_datetime_str, 
-                    "User_id": Initator.id,
-                    "User_email": Initator.email,
-                    "type":"regionMapGen"
-                    }
+            data = {
+                "timStamp": current_datetime_str,
+                "User_id": Initator.id,
+                "User_email": Initator.email,
+                "type": "regionMapGen",
+            }
             firestoreDB.collection("Admin_logs").add(data)
         except Exception as e:
             traceback_str = traceback.format_exc()
@@ -363,6 +376,7 @@ def regionMapGen(Initator: Initator):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
 
 @app.put("/admin/UpdateClusterStats", tags=["Admin"])
 def UpdateClusterStats(Initator: Initator):
@@ -387,7 +401,7 @@ def UpdateClusterStats(Initator: Initator):
                 "timStamp": current_datetime_str,
                 "User_id": Initator.id,
                 "User_email": Initator.email,
-                "type":"UpdateClusterStats"
+                "type": "UpdateClusterStats",
             }
             firestoreDB.collection("Admin_logs").add(data)
         except Exception as e:
