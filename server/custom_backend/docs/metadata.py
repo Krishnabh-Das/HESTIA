@@ -4,6 +4,10 @@ tags_metadata = [
         "description": "Operations with users.",
     },
     {
+        "name": "Visualization",
+        "description": "Routes to get data for Visualization",
+    },
+    {
         "name": "Chatbot",
         "description": "Routes to interact with Gemini Pro and langchain based chatbot.",
     },

@@ -228,7 +228,7 @@ def addNewRegionMaps(coordinate_clusters, markers_):
 
         data = {
             "central_coord": central_coord,
-            "location": locname.address,
+            "location": locname.address, # type: ignore
             "coords": [GeoPoint(x[0],x[1]) for x in coords_lst],
             "markers":marker_ids
         }
