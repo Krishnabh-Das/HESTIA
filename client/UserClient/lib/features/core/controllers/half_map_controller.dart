@@ -5,6 +5,8 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 class HalfMapController extends GetxController {
   static HalfMapController get instance => Get.find();
 
+  late GoogleMapController halfMapGoogleMapController;
+
   RxSet<Marker> allHalfMapMarkers = <Marker>{}.obs;
 
   Future<void> makeHalfMapMarkers(var listofRetrievedMarkers) async {

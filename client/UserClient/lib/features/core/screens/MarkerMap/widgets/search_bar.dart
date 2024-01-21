@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/utils/constants/colors.dart';
+import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:iconsax/iconsax.dart';
 
 class searchBar extends StatelessWidget {
@@ -14,6 +16,7 @@ class searchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
     return Positioned(
       top: 50,
       left: 0,
@@ -24,19 +27,19 @@ class searchBar extends StatelessWidget {
           children: [
             TextFormField(
               controller: markerMapController.searchController,
+              style: TextStyle(color: MyAppColors.darkishGrey),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
                 hintText: "Search Places",
-                hintStyle: const TextStyle(fontSize: 16),
+                hintStyle:
+                    const TextStyle(fontSize: 16, color: MyAppColors.darkGrey),
                 prefixIcon: const Icon(
                   Iconsax.search_normal,
                   color: Colors.black,
                 ),
-                labelStyle: const TextStyle(
-                    color: Colors.black), // Adjust label text color if needed
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 12.0),
                 constraints: const BoxConstraints(minHeight: 20),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),

@@ -10,6 +10,8 @@ import 'package:hestia/data/repositories/firebase_query_repository/firebase_quer
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
+import 'package:hestia/utils/constants/colors.dart';
+import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -29,9 +31,19 @@ class AddMarkerDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = MyAppHelperFunctions.isDarkMode(context);
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: dark ? Colors.white : Colors.black,
+            )),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: ListView(
@@ -42,12 +54,17 @@ class AddMarkerDetailsScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(21),
                       border: Border.all(color: Colors.black, width: 0.9),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black38,
-                          blurRadius: 15,
-                          spreadRadius: 3,
-                        )
+                      boxShadow: [
+                        dark
+                            ? BoxShadow(
+                                color: MyAppColors.darkerGrey,
+                                blurRadius: 15,
+                                spreadRadius: 3)
+                            : BoxShadow(
+                                color: Colors.black38,
+                                blurRadius: 15,
+                                spreadRadius: 3,
+                              )
                       ],
                     ),
                     child: ClipRRect(
@@ -69,16 +86,21 @@ class AddMarkerDetailsScreen extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               maxLines: 5,
               minLines: 1,
+              style: TextStyle(color: dark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 labelText: "Add Description",
+                labelStyle: TextStyle(
+                    color: dark ? MyAppColors.darkGrey : Colors.black),
                 alignLabelWithHint: true,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(21),
-                  borderSide: const BorderSide(color: Colors.black26),
+                  borderSide: BorderSide(
+                      color: dark ? MyAppColors.grey : Colors.black26),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(21),
-                  borderSide: const BorderSide(color: Colors.black),
+                  borderSide:
+                      BorderSide(color: dark ? Colors.white : Colors.black),
                 ),
                 constraints: const BoxConstraints(minHeight: 14.0),
               ),
