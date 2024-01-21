@@ -21,6 +21,7 @@ class MyAppImages {
   static const String markerImage = "assets/icons/map_marker.png";
   static const String appIcon = "assets/icons/appIcon.png";
   static const String appIcon1 = "assets/icons/appIcon1.png";
+  static const String splashIcon = "assets/icons/HESTIA_splash.png";
 
   // On Boarding
   static const String onBoard1 = "assets/images/authentication/onBoard1.png";

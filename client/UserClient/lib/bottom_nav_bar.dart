@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
@@ -29,6 +30,7 @@ class bottomNavBar extends StatelessWidget {
         TokensController.instance.dispose();
         ChatBotController.instance.dispose();
         NavigationController.instance.dispose();
+        HomeStatsRatingController.instance.dispose();
         print("Will Pop Called");
       },
       child: Scaffold(

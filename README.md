@@ -15,9 +15,7 @@
 ## About HESTIA
 
 ### Problem Statement
-
 Approximately 150 million people, or 2% of the world's population, are affected by homelessness, which is a global issue today. The fact that many are avoiding official registration out of fear of the law and social stigma make it difficult to accurately measure this situation. Poverty exacerbates the issue of homelessness in India, where over four million individuals are thought to be homeless; however, difficulties in gathering data may understate the issue. The situation is made worse by regional issues, such as the yearly floods in Assam, which force about 300,000 people into relief camps. In spite of the wonderful efforts made by many organizations, community involvement is essential. By encouraging community involvement and improving coordination across support systems, our prototype app aims to close this gap and address homelessness from a more inclusive perspective.
-
 ### Solution
 
 We introduce **HESTIA**, a community based application that helps the community help homeless people by integrating various features that can help them.
@@ -28,6 +26,7 @@ Through HESTIA, we promote the United Nations's sustainable goals - _1. No Pover
 ## Features
 
 Our range of features include -
+
 * **Crowdsourced Geotag Time Series Database Creation** - Collaborative data collection for mapping homeless populations over time.
 * **Visualization through Region Maps and Markers** - Intuitive visual representation of homelessness trends using interactive maps and markers. These cover the regional stats in the form of -  total homeless sightings, crime incidents upon homeless people, upcoming events and functions organised by NGOs or Government Agencies, and finally a rating of the region determined by comprehensing the other fields.
 * **Awareness Chatbot** - A conversational interface providing general information, assistance, and awareness about homelessness. Also provides additional information regarding any schemes or subisidies announced for the benefit of the homeless.
@@ -139,7 +138,7 @@ Our range of features include -
 * Redeem HESTIA tokens to get merchandise featuring homelessness awareness on t-shirts and other items.
 
 
-## Team HESTIA
+## Team Team HESTIA
 <div style="max-width: 800px;">
 <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
 

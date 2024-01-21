@@ -4,13 +4,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: null,
+    user:  JSON.parse(localStorage.getItem('user')),
     authChecked: false,
   },
   reducers: {
     setUser: (state, action) => {
+      //bewware
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      // localStorage.setItem("user", JSON.stringify(action.payload));
     },
     setAuthChecked: (state) => {
       state.authChecked = true;
