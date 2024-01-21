@@ -69,10 +69,9 @@ const navItems = [
     icon: <WorkIcon />,
   },
   {
-    text: "RegionMapLogs",
+    text: "AdminLogs",
     icon: <BarChartIcon />,
   },
-
 ];
 
 const Sidebar = ({

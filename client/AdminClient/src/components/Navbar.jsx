@@ -30,6 +30,7 @@ import {
 } from "firebase/auth";
 
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { setUser, setAuthChecked, selectUser } from "../state/userSlice";
 
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
@@ -45,6 +46,10 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
     try {
       await signOut(auth);
       console.log(auth?.currentUser);
+      localStorage.removeItem("user")
+      dispatch(setUser(null))
+
+      // navigate('/auth')
 
       navigate('/auth')
   

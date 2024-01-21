@@ -46,25 +46,25 @@ import {
 
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
-function RegionMapLogs() {
+function AdminLogs() {
  
-const [regionMapLogList, setRegionMapLogList] = useState([]);
-const regionMapLogRef = collection(db, "RegionMap_logs");
+const [adminLogList, setAdminLogList] = useState([]);
+const adminLogRef = collection(db, "Admin_logs");
 
 
 const getRegionMapLogList = async () => {
   try {
-    const data = await getDocs(regionMapLogRef);
+    const data = await getDocs(adminLogRef);
 
     const filteredData = data.docs.map((doc) => ({id:doc.id,
       ...doc.data(),
     }));
 
-    setRegionMapLogList(filteredData)
+    setAdminLogList(filteredData)
 
-  console.log("filtered data in regionMapLogRef>>>>>>>>", filteredData);
+  console.log("filtered data in adminLogRef>>>>>>>>", filteredData);
   } catch (err) {
-    console.log("error in regionMapLogRef ref", err);
+    console.log("error in adminLogRef ref", err);
   }
 }
 
@@ -81,26 +81,33 @@ const getRegionMapLogList = async () => {
        }, []);
 
 
-       console.log("all region map log list>>>>>>>>>>>>>>>>>>>>>> ", regionMapLogList);
+       console.log("all region map log list>>>>>>>>>>>>>>>>>>>>>> ", adminLogList);
 
    const columns = [
+
      {
-       field: "User_id",
-       headerName: "userID",
-       flex: 1,
-     },
+      field: "User_email",
+      headerName: "Email",
+      flex: 1,
+    },
+    {
+      field: "type",
+      headerName: "Operation Type",
+      flex: 1,
+    },
      {
       field: "timStamp",
       headerName: "Timestamp",
       flex: 1,
     },
+
    ];
    return (
  
      <Box m="1.5rem 2.5rem"
      >
            <FlexBetween>
-         <Header title="REGION MAPS LOGS" subtitle="the users that have initiated region map " />
+         <Header title="ADMIN LOGS" subtitle="the users that have accessed admin actions " />
  
          <Box>
            <Button
@@ -161,7 +168,7 @@ const getRegionMapLogList = async () => {
            <DataGrid
              // loading={isLoading || !sosList}
              getRowId={(row) => row.id }
-             rows={(regionMapLogList && regionMapLogList) || []}
+             rows={(adminLogList && adminLogList) || []}
              columns={columns}
              // checkboxSelection
 
@@ -181,4 +188,4 @@ const getRegionMapLogList = async () => {
  
 
 
-export default RegionMapLogs
+export default AdminLogs
