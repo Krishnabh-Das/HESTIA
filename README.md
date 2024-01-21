@@ -42,48 +42,48 @@ Our range of features include -
 
 ## Project Structure
 ```
-├── assets
-├── client
-│   ├── AdminClient
-│   │   ├── jsconfig.json
-│   │   ├── package.json
-│   │   ├── package-lock.json
-│   │   ├── public
-│   │   └── src
-│   └── UserClient
-│       ├── analysis_options.yaml
-│       ├── android
-│       ├── assets
-│       ├── ios
-│       ├── lib
-│       ├── linux
-│       ├── macos
-│       ├── pubspec.lock
-│       ├── pubspec.yaml
-│       ├── README.md
-│       ├── test
-│       ├── web
-│       └── windows
-├── docs
-│   └── uml.wsd
-├── environment_droplet.yml
-├── HESTIA.code-workspace
-├── notebooks
-│   ├── data
-│   ├── keys
-│   ├── Step1_Firestore_regionmaps.ipynb
-│   ├── Step2_chatbot.ipynb
-│   ├── Step3_human_detection.ipynb
-│   ├── Step4_face_clustering
-│   ├── Step5_RegionMap_Scoring.ipynb
-│   ├── Step6_RadialStats.ipynb
-│   └── Step7_TakeInput.ipynb
-├── README.md
-└── server
+├── 🌐 assets
+├── 📱 client
+│   ├── 🧑‍💼 AdminClient
+│   │   ├── jsconfig.json
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── public
+│   │   └── src
+│   └── 👤 UserClient
+│       ├── analysis_options.yaml
+│       ├── android
+│       ├── assets
+│       ├── ios
+│       ├── lib
+│       ├── linux
+│       ├── macos
+│       ├── pubspec.lock
+│       ├── pubspec.yaml
+│       ├── README.md
+│       ├── test
+│       ├── web
+│       └── windows
+├── 📚 docs
+│   └── uml.wsd
+├── 📄 environment_droplet.yml
+├── 💼 HESTIA.code-workspace
+├── 📓 notebooks
+│   ├── 📂 data
+│   ├── 🔑 keys
+│   ├── Step1_Firestore_regionmaps.ipynb
+│   ├── Step2_chatbot.ipynb
+│   ├── Step3_human_detection.ipynb
+│   ├── Step4_face_clustering
+│   ├── Step5_RegionMap_Scoring.ipynb
+│   ├── Step6_RadialStats.ipynb
+│   └── Step7_TakeInput.ipynb
+├── 📝 README.md
+└── 🖥️ server
     ├── cloudFunctions
-    │   ├── firebase.json
-    │   ├── functions
-    │   └── README.md
+    │   ├── firebase.json
+    │   ├── functions
+    │   └── README.md
     └── custom_backend
         ├── configs
         ├── custoimErrors
@@ -97,6 +97,7 @@ Our range of features include -
         ├── requirements.txt
         ├── schemas
         └── utils
+
 ```
 
 ## Diagrams
