@@ -145,10 +145,18 @@ Our range of features include -
 
   <p align="center">
   <a href="https://github.com/Tirthankar03">
-  <img src="https://github.com/Krishnabh-Das/yt-transcript_summarizer/blob/e1f045d652a0a872ae95ca5157ef76f57c5eff85/titsthankar.png" width="220" alt="Image 1">
+  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Tirthankar03.png" width="220" alt="Image 1">
   </a>
   <a href="https://github.com/Spritan">
-  <img src="https://github.com/Krishnabh-Das/yt-transcript_summarizer/blob/e1f045d652a0a872ae95ca5157ef76f57c5eff85
+  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Spritan.png" width="220" alt="Image 2">
+  </a>
+  <a href="https://github.com/pparthiv">
+  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Pparthiv.png" width="220" alt="Image 3">
+  </a>
+  <a href="https://github.com/Krishnabh-Das">
+  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Krishnab.png" width="220" alt="Image 3">
+  </a>
+</p>
     
 
 
