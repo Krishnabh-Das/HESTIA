@@ -89,6 +89,8 @@ const SosReports = () => {
         fetchData();
       }, []);
 
+      console.log("SOS reports>>>>>>>>>>>>>>>>>>.", sosList);
+
 
   //MUI datagrid setup
 

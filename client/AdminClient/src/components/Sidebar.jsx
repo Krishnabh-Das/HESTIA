@@ -72,7 +72,6 @@ const navItems = [
     text: "RegionMapLogs",
     icon: <BarChartIcon />,
   },
-
 ];
 
 const Sidebar = ({

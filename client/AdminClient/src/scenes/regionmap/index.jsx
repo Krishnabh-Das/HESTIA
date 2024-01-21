@@ -32,6 +32,19 @@ import axios from 'axios';
 // import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
 
+//------------------------leaflet config------------------------
+import "../../leaflet_myconfig.css"
+import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import { useMapEvents } from 'react-leaflet/hooks'
+
+
+import pinIcon1 from '../../assets/placeholder.png'
+import pinIcon2 from '../../assets/pin.png'
+import pinIcon3 from '../../assets/destination.png'
+
+import { Icon, divIcon, point } from "leaflet";
 
 const Product = ({
 address
@@ -48,7 +61,7 @@ address
       }}
     >
                    <CardMedia
-        sx={{ height: 600, width:500, margin:3, objectFit: 'contain' }}
+        sx={{ height: 600, width:"100%", margin:3, objectFit: 'contain' }}
         image={mapImage}
 
         title="green iguana"
@@ -86,64 +99,16 @@ const RegionMap = () => {
       console.log("data in Region>>>>>>>>", data);
     //   setRegionList(filteredData);
 
-    const batch = writeBatch(db);
+    // const batch = writeBatch(db);
 
 
       console.log("filtered data in Region>>>>>>>>", filteredData);
-
-      const regionStats = filteredData.length;
-
-      console.log("regionStats------------------->", regionStats);
 
 
 
       console.log("regionList in Region>>>>>>>>", regionList);
 
-  const coordinates = await Promise.all(
-    filteredData.map(async (region) => {
-      const lat = region.central_coord._lat;
-      const lon = region.central_coord._long;
-      const postData = {
-        lat: lat.toString(),
-        lon: lon.toString(),
-      };
-
-      try {
-        let response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/location/get`,
-          postData,
-          {
-            headers: {
-              'Content-Type': "application/json",
-            },
-          }
-        );
-
-        console.log("address from the region map response -------------------->", response.data.address);
-  
-        // const regionDocRef = doc(db, "RegionMap", region.id);
-        // batch.update(regionDocRef, { address: response.data.address });
-
-        // console.log(`Successfully updated document ${region.id}`);
-
-
-        return { lat, lon, address: response.data.address };
-      } catch (err) {
-        console.log(
-          "Error in getting the address from coordinates: ",
-          err.message
-        );
-        console.log(`Failed to update document ${region.id}`);
-      }
-    }))
-  //coordinates that will be later used to display in the region map cards
-
-  //  writeBatch(batch)
-  
-  // console.log("Batch write completed.");
-
-  console.log('Coordinates for all regions:', coordinates);
-  setRegionList(coordinates)
+  setRegionList(filteredData)
 
   console.log("||||||||||||||||||||||||||");
 
@@ -164,33 +129,111 @@ const RegionMap = () => {
 
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
 
+  const theme = useTheme();
+
+
+//------------------leaflet--------------------
+
+
+const purpleOptions = { color: 'purple' }
+const redOptions = {color: 'red'}
+
+
+//icons
+const pin1 = new Icon({
+
+  iconUrl: pinIcon1,
+  iconSize: [38, 38] // size of the icon
+});
+
+
+const pin2 = new Icon({
+  iconUrl: pinIcon2,
+  iconSize: [38, 38] // size of the icon
+});
+
+const pin3 = new Icon({
+  iconUrl: pinIcon2,
+  iconSize: [38, 38] // size of the icon
+});
+
+
+// custom cluster icon
+const createClusterCustomIcon = function (cluster) {
+  return new divIcon({
+    html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
+    className: "custom-marker-cluster",
+    iconSize: point(33, 33, true)
+  });
+};
+
+
 
   return (
-    <Box m="1.5rem 2.5rem">
-      <Header title="REGION MAP" subtitle="See all the region maps here." />
-      {regionList.length !== 0  ? (
-        <Box
-          mt="20px"
-          display="grid"
-          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-          justifyContent="space-between"
-          rowGap="20px"
-          columnGap="1.33%"
-          sx={{
-            "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-          }}
+    <Box
+    m="1.5rem 2.5rem"
+    w="100%"
+    h="100%">
+      <Header title="REGION MAP" subtitle="See all the region maps here." />  
+
+      <Box
+      display="flex"
+      flexWrap="wrap"
+      gap={5}
+      justifyContent="center"
+      alignItems="center"
         >
-{regionList.map(({ address}) => (
-    <Product
-  address={address}
-    />
-))}
-        </Box>
-      ) : (
-        <>
-        <CircularProgress/>
-        </>
-      )}
+        {regionList.length ===0 ? <CircularProgress/> : (
+
+
+
+                  regionList.map((e) => (
+      <Card
+        sx={{
+          backgroundImage: 'none',
+          backgroundColor: theme.palette.background.alt,
+          borderRadius: '0.55rem',
+          marginTop: '20px', // Adjust margin top as needed
+          maxWidth: '400px', // Adjust the width as needed
+          width: '100%',
+          padding: "0px", // Ensures the Card takes full width if maxWidth is not reached
+          // margin: '0 auto', // Center the Card horizontally
+        }}
+      >
+         <CardContent>
+            <Box mb={4}>
+              <MapContainer center={[e.central_coord._lat , e.central_coord._long]} zoom={15}>
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MarkerClusterGroup
+                  chunkedLoading
+                  iconCreateFunction={createClusterCustomIcon}
+                >
+                    <Polygon
+                      pathOptions={purpleOptions}
+                      positions={e.coords.map(({ _lat, _long }) => [_lat, _long])}
+                    >
+                      <Popup>Popup in Polygon</Popup>
+                    </Polygon>
+                </MarkerClusterGroup>
+              </MapContainer>
+            </Box>
+            <Typography
+              sx={{ fontSize: 16, color: theme.palette.secondary[300], marginBottom: '20px', textAlign: "center" }}
+              gutterBottom
+            >
+              Address: {e.location}
+            </Typography>
+          </CardContent>
+      </Card>
+                  ))
+
+         )}
+
+</Box>
+
     </Box>
   );
 };

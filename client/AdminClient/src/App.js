@@ -17,6 +17,8 @@ import DetailPage from "components/DetailPage";
 import MarkerDetailPage from "components/MarkerDetailPage";
 import Signin from "components/Signin";
 
+import './App.css'
+
 
 import {auth} from "./config/firebase";
 
@@ -31,26 +33,7 @@ import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "./state/
 
 function App() {
 
-  const dispatch = useDispatch();
-
-
   const user = useSelector(selectUser);
-
-
-  // useEffect(() => {
-  //   const storedUser = localStorage.getItem("user");
-
-  //   if (storedUser) {
-  //     dispatch(setUser(JSON.parse(storedUser)));
-  //   }
-  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-  //     dispatch(setUser(user));
-  //     dispatch(setAuthChecked());
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [dispatch]);
-
 
 
   const mode = useSelector((state) => state.global.mode);
