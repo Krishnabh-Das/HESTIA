@@ -84,14 +84,15 @@ const getRegionMapLogList = async () => {
        console.log("all region map log list>>>>>>>>>>>>>>>>>>>>>> ", adminLogList);
 
    const columns = [
-     {
-       field: "User_id",
-       headerName: "userID",
-       flex: 1,
-     },
+
      {
       field: "User_email",
       headerName: "Email",
+      flex: 1,
+    },
+    {
+      field: "type",
+      headerName: "Operation Type",
       flex: 1,
     },
      {
