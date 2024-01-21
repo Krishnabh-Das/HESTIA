@@ -104,6 +104,8 @@ Our range of features include -
 
 ### Class Diagram
 
+![Class Diagram](./assets/class_diagram.png)
+
 ### Machine Learning Pipeline
 ![Machine Learning Pipeline](./assets/ML_Pipeline.png)
 
