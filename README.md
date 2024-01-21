@@ -138,7 +138,7 @@ Our range of features include -
 * Redeem HESTIA tokens to get merchandise featuring homelessness awareness on t-shirts and other items.
 
 
-## Team Team HESTIA
+## Team HESTIA
 <div style="max-width: 800px;">
 <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
 
