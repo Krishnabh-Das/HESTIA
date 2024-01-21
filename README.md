@@ -3,11 +3,12 @@
 ![HESTIA COVER IMAGE](./assets/cover_image.jpg)
 
 <p align="center">
-  <a href="https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing">
-  <img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="25" height="25"/> <strong>Try out the Flutter App »</strong></a>
+  <img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="25" height="25"/>
+  <a href="https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing"><strong>Try out the Flutter App »</strong></a>
 </p>
 <p align="center">
-  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/ <strong>Try out the Admin Portal »</strong></a>
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
+  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
 </p>
 
 ## Table of Contents
