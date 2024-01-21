@@ -142,10 +142,10 @@ Our range of features include -
 <div>
   <table>
     <tr>
-      <td><img src="./assets/Spritan.png" href="https://github.com/Spritan"></td>
-      <td><img src="./assets/Krishnab.png" href="https://github.com/Krishnabh-Das"></td>
-      <td><img src="./assets/Pparthiv.png" href="https://github.com/pparthiv"></td>
-      <td><img src="./assets/Tirthankar03.png" href="https://github.com/Tirthankar03"></td>
+      <td><a href="https://github.com/Spritan"><img src="./assets/Spritan.png"></a></td>
+      <td><a href="https://github.com/Krishnabh-Das"><img src="./assets/Krishnab.png"></a></td>
+      <td><a href="https://github.com/pparthiv"><img src="./assets/Pparthiv.png"></a></td>
+      <td><a href="https://github.com/Tirthankar03"><img src="./assets/Tirthankar03.png"></a></td>
     </tr>
   </table>
 </div>
