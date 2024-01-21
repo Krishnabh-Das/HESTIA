@@ -146,7 +146,7 @@ const handleRowSelection = (selection) => {
     <Box m="1.5rem 2.5rem"
     >
           <FlexBetween>
-        <Header title="SOSREPORTS" subtitle="see all the emergency sos here" />
+        <Header title="SOSREPORTS" subtitle="see all the emergency sos here (click for more info)" />
 
         <Box>
           <Button

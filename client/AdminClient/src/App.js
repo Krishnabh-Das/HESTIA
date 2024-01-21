@@ -8,7 +8,7 @@ import Dashboard from "scenes/dashboard";
 import Regionmap from "scenes/regionmap";
 // import Admin from "scenes/admin";
 import SosReports from "scenes/sosreports/SosReports";
-import RegionMapLogs from "scenes/regionmaplogs/RegionMapLogs";
+import AdminLogs from "scenes/adminlogs/AdminLogs";
 import AdminActions from "scenes/adminactions/AdminActions";
 
 import Markers from "scenes/markers/Markers";
@@ -58,7 +58,7 @@ function App() {
               <Route path="/details/:id" element={user? (<DetailPage />): (<Navigate to="/auth" replace />)} />
               <Route path="/markers/:id" element={user? (<MarkerDetailPage/>) : (<Navigate to="/auth" replace />)} />
               <Route path="/sosreports" element={user? (<SosReports />): (<Navigate to="/auth" replace />)} />
-              <Route path="/regionmaplogs" element={user? (<RegionMapLogs />): (<Navigate to="/auth" replace />)} />
+              <Route path="/adminlogs" element={user? (<AdminLogs />): (<Navigate to="/auth" replace />)} />
               <Route path="/markers" element={user? (<Markers />): (<Navigate to="/auth" replace />)} />
               <Route path="/regionmap" element={user? (<Regionmap />): (<Navigate to="/auth" replace />)} />
               {/* <Route path="/admin" element={user? (<Admin />) : (<Navigate to="/auth" replace />)} /> */}
