@@ -59,7 +59,6 @@ app = FastAPI(
         "url": "https://mit-license.org/",
     },
 )
-
 # --------------------------- Config ----------------------------#
 load_dotenv()
 
@@ -91,7 +90,6 @@ handler.setFormatter(
     )
 )
 logger.addHandler(handler)
-
 
 # ---------------------------  Chat  ----------------------------#
 @app.post("/chat/send", tags=["Chatbot"])
@@ -180,10 +178,7 @@ async def add_context_URL(urlContext: urlContextSchema):
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # ----------------------- Visualization  ------------------------#
-
-
 @app.post("/viz/getStatsByCoord", tags=["Visualization"])
 async def getStatsByCoord(coords: coordSchema):
     """
@@ -207,7 +202,6 @@ async def getStatsByCoord(coords: coordSchema):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
-
 
 # --------------------------  Utils  ----------------------------#
 @app.post("/location/get", tags=["Utils"])
@@ -254,7 +248,6 @@ async def location_get(getLoc: getLocSchema):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # --------------------------  User ----------------------------#
 @app.post("/user/getNamebyID", tags=["Users"])
 async def User_Name(userId: userId):
@@ -282,10 +275,7 @@ async def User_Name(userId: userId):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # --------------------------  Admin  ----------------------------#
-
-
 @app.put("/admin/regionMapGen", tags=["Admin"])
 def regionMapGen(Initator: Initator):
     """
@@ -377,7 +367,6 @@ def regionMapGen(Initator: Initator):
         }
         return JSONResponse(content=error_message, status_code=500)
 
-
 @app.put("/admin/UpdateClusterStats", tags=["Admin"])
 def UpdateClusterStats(Initator: Initator):
     """
@@ -404,6 +393,7 @@ def UpdateClusterStats(Initator: Initator):
                 "type": "UpdateClusterStats",
             }
             firestoreDB.collection("Admin_logs").add(data)
+            return JSONResponse(content={"Status": "done"}, status_code=500)
         except Exception as e:
             traceback_str = traceback.format_exc()
             error_message = {
