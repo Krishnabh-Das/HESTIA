@@ -286,12 +286,28 @@ const handleRowSelection =  (selection) => {
         </Box>
       </FlexBetween>
 
-      <Container maxWidth="lg">
+      <Container maxWidth="xl" 
+      sx={{
+      //   "&  .MuiContainer-maxWidthXl css-19r6kue-MuiContainer-root": {
+      //     margin: '0',
+      //     padding: '0'
+      // },
+      "& .MuiContainer-root":{
+                margin: '0',
+          padding: '0'
+      },
+      "& .MuiContainer-root":{
+                      margin: '0',
+          padding: '0'
+      
+      }}}
+      >
       <Box
     display="flex"
     flexWrap="wrap"
     alignItems="center"
     justifyContent="center"
+    gap={3}
     // height='30vh'
             
             
@@ -302,11 +318,8 @@ const handleRowSelection =  (selection) => {
 
 
             <Box
-        //   gridColumn="span 8"
-        //   gridRow="span 3"
-        mt={5}
           sx={{
-            height: 600, width:'100%',
+            height: 642, width:500,
             "& .MuiDataGrid-root": {
               border: "none",
               borderRadius: "5rem",
@@ -350,13 +363,15 @@ const handleRowSelection =  (selection) => {
         
 
 
+<Box>
+
             <Card
         sx={{
           backgroundImage: 'none',
           backgroundColor: theme.palette.background.alt,
           borderRadius: '0.55rem',
-          marginTop: '20px', // Adjust margin top as needed
-          minWidth: '400px', // Adjust the width as needed
+          // marginTop: '20px', // Adjust margin top as needed
+          minWidth: '600px', // Adjust the width as needed
           width: '400px',
           // height: '650px',
           padding: "0px", // Ensures the Card takes full width if maxWidth is not reached
@@ -383,13 +398,17 @@ const handleRowSelection =  (selection) => {
           </Marker>
         ))}
         {markerData &&
-        <FlyToMarker position={[markerData?.lat, markerData?.long]} zoom={15} />
+        <FlyToMarker position={[markerData?.lat, markerData?.long]} zoom={17} />
         }
                 </MarkerClusterGroup>
               </MapContainer>
             </Box>
           </CardContent>
       </Card>
+
+
+
+</Box>
 
 
 </> 
