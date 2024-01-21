@@ -3,11 +3,11 @@
 ![HESTIA COVER IMAGE](./assets/cover_image.jpg)
 
 <p align="center">
-  <a href="https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing"><strong>Try out the Flutter App »</strong></a>
+  <a href="https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing">
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Flutter-Dark.svg"><strong>Try out the Flutter App »</strong></a>
 </p>
-<br>
 <p align="center">
-  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><img src="[https://github.com/tandpfun/skill-icons/blob/main/icons/Flutter-Dark.svg](https://github.com/tandpfun/skill-icons/blob/main/icons/React-Dark.svg)"><strong>Try out the Admin Portal »</strong></a>
 </p>
 
 ## Table of Contents
