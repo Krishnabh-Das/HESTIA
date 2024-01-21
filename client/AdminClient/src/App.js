@@ -39,8 +39,9 @@ function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-  console.log("auth in App js>>>>>>>>>>>>>>>>>>>>>>>>>",auth?.currentUser?.email);
-  console.log("user in App js>>>>>>>>>>>>>>>>>>>>>>>>>",user?.email);
+  // console.log("auth in App js>>>>>>>>>>>>>>>>>>>>>>>>>",auth?.currentUser?.email);
+  // console.log("</> user  in App js>>>>>>>>>>>>>>>>>>>>>>>>>",user);
+  // console.log("</> user email in App js>>>>>>>>>>>>>>>>>>>>>>>>>",user?.email);
 
   console.log(auth?.currentUser?.uid);
   return (
