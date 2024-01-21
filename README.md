@@ -15,10 +15,10 @@
 ## About HESTIA
 
 ### Problem Statement
-Approximately 150 million people, or 2% of the world's population, are affected by homelessness, which is a global issue today. The fact that many are avoiding official registration out of fear of the law and social stigma make it difficult to accurately measure this situation. Poverty exacerbates the issue of homelessness in India, where over four million individuals are thought to be homeless; however, difficulties in gathering data may understate the issue. The situation is made worse by regional issues, such as the yearly floods in Assam, which force about 300,000 people into relief camps. In spite of the wonderful efforts made by many organizations, community involvement is essential. By encouraging community involvement and improving coordination across support systems, our prototype app aims to close this gap and address homelessness from a more inclusive perspective.
+Approximately 150 million people, or 2% of the world's population, are affected by homelessness, which is a global issue today. The fact that many are avoiding official registration out of fear of the law and social stigma makes it difficult to accurately measure this situation. Poverty exacerbates the issue of homelessness in India, where over four million individuals are thought to be homeless; however, difficulties in gathering data may understate the issue. The situation is made worse by regional issues, such as the yearly floods in Assam, which force about 300,000 people into relief camps. In spite of the wonderful efforts made by many organizations, community involvement is essential. By encouraging community involvement and improving coordination across support systems, our prototype app aims to close this gap and address homelessness from a more inclusive perspective.
 ### Solution
 
-We introduce **HESTIA**, a community based application that helps the community help homeless people by integrating various features that can help them.
+We introduce **HESTIA**, a community-based application that helps the community help homeless people by integrating various features that can help them.
 Through HESTIA, we promote the United Nations's sustainable goals - _1. No Poverty, 10. Reduced Inequalities, 11. Sustainable Cities and Communities, and 16. Peace, Justice and Strong Institutions_.
 ![UN SDGs](./assets/UN_SDG_Banner.png)
 
@@ -142,9 +142,9 @@ Our range of features include -
 <div>
   <table>
     <tr>
-      <td><img src="./assets/spritan.png" href="https://github.com/Spritan"></td>
-      <td><img src="./assets/Krishnabh-Das.png" href="https://github.com/Krishnabh-Das"></td>
-      <td><img src="./assets/pparthiv.png" href="https://github.com/pparthiv"></td>
+      <td><img src="./assets/Spritan.png" href="https://github.com/Spritan"></td>
+      <td><img src="./assets/Krishnabh.png" href="https://github.com/Krishnabh-Das"></td>
+      <td><img src="./assets/Pparthiv.png" href="https://github.com/pparthiv"></td>
       <td><img src="./assets/Tirthankar03.png" href="https://github.com/Tirthankar03"></td>
     </tr>
   </table>
