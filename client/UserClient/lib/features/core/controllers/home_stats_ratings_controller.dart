@@ -6,6 +6,7 @@ class HomeStatsRatingController extends GetxController {
   static HomeStatsRatingController get instance => Get.find();
 
   Rx<double> homelessSightingsRate = 0.0.obs;
+  Rx<double> crimeRate = 0.0.obs;
 
   Future<void> getHomelessSightingsRate(double? lat, double? long) async {
     try {
@@ -25,6 +26,8 @@ class HomeStatsRatingController extends GetxController {
             "Updated the Homeless Sightings Rate ${jsonResponse["marker_star"]}");
         homelessSightingsRate.value = jsonResponse["marker_star"]
             .toDouble(); // Updated the Homeless Sightings Rate
+        crimeRate.value = jsonResponse["SOS_Reports_star"]
+            .toDouble(); // Updated the Crime Rate
       } else {
         print("Request failed with status: ${response.statusCode}");
       }
