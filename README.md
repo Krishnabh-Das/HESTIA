@@ -25,7 +25,7 @@ Through HESTIA, we promote the United Nations's sustainable goals - _1. No Pover
 ![UN SDGs](./assets/UN_SDG_Banner.png)
 
 
- ## Features
+## Features
 
 Our range of features include -
 * **Crowdsourced Geotag Time Series Database Creation** - Collaborative data collection for mapping homeless populations over time.
@@ -38,6 +38,8 @@ Our range of features include -
 * **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identifying potential criminals, identification of specific people who are need of required resources by NGOs or Government Agencies, or monitor suspicious individuals.
 * **Community Page** - Display events with address and time, post announcements, request donations, donate to causes, help find missing individuals, and general community engagement.
 * **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on a regional and global leaderboards.
+
+![Application Screens](./assets/FINAL%20FEATURE%20LIST.png)
 
 ## Project Structure
 ```
