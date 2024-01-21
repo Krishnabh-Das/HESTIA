@@ -2,8 +2,13 @@
 
 ![HESTIA COVER IMAGE](./assets/cover_image.jpg)
 
-[Try out the Flutter App!](https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing)
-[Try out the Admin Portal!](https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/)
+<p align="center">
+  <a href="https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing"><strong>Try out the Flutter App »</strong></a>
+</p>
+<br>
+<p align="center">
+  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+</p>
 
 ## Table of Contents
 1. [About HESTIA](#about-hestia)
