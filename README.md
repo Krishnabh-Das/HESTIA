@@ -143,7 +143,7 @@ Our range of features include -
   <table>
     <tr>
       <td><img src="./assets/Spritan.png" href="https://github.com/Spritan"></td>
-      <td><img src="./assets/Krishnabh.png" href="https://github.com/Krishnabh-Das"></td>
+      <td><img src="./assets/Krishnab.png" href="https://github.com/Krishnabh-Das"></td>
       <td><img src="./assets/Pparthiv.png" href="https://github.com/pparthiv"></td>
       <td><img src="./assets/Tirthankar03.png" href="https://github.com/Tirthankar03"></td>
     </tr>
