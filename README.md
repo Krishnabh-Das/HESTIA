@@ -63,5 +63,40 @@ Our range of features include -
             <img src="./assets/Krishnab.png" alt="Team Member Image"/>
         </div>
     </a>
-
 </div>
+
+
+<svg fill="none" viewBox="0 0 600 900" width="1000" height="600" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        .container {
+          display: inline-block;
+          height: 400px;
+          width: 250px;
+      }
+    </style>
+    <div>
+        <a href="https://github.com/Tirthankar03" class="container">
+            <div class="container">
+                <img src="./assets/Tirthankar03.png" alt="Team Member Image"/>
+            </div>
+        </a>
+        <a href="https://github.com/Spritan" class="container">
+            <div class="container">
+                <img src="./assets/Spritan.png" alt="Team Member Image"/>
+            </div>
+        </a>
+        <a href="https://github.com/pparthiv" class="container">
+            <div class="container">
+                <img src="./assets/Pparthiv.png" alt="Team Member Image"/>
+            </div>
+        </a>
+        <a href="https://github.com/Krishnabh-Das" class="container">
+            <div class="container">
+                <img src="./assets/Krishnab.png" alt="Team Member Image"/>
+            </div>
+        </a>
+    </div>
+  </foreignObject>
+</svg>
