@@ -1,4 +1,5 @@
 import logging
+from pprint import pformat
 import colorlog
 import traceback
 from datetime import datetime
@@ -194,6 +195,7 @@ async def getStatsByCoord(coords: coordSchema):
     lon = float(coords.lon)
     try:
         stats_here = stats.statsByCoord(lat=lat, lon=lon)
+        logger.info(pformat(stats_here))
         return JSONResponse(content=stats_here, status_code=200)
     except Exception as e:
         traceback_str = traceback.format_exc()
@@ -379,8 +381,20 @@ def UpdateClusterStats(Initator: Initator):
         JSONResponse: Response indicating the success or failure of the operation.
     """
     try:
-        stats.getAllMarkers()
-        stats.cluster_markers_fn()
+        try:
+            stats.getAllMarkers()
+            stats.getAllSOS()
+            stats.cluster_markers_fn()
+            stats.cluster_SOS_Reports_fn()
+            stats.upadteClusterIDSOSfirestore()
+            stats.upadteClusterIDfirestore()
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            error_message = {
+                "detail": f"An error occurred: {str(e)}",
+                "traceback": traceback_str,
+            }
+            return JSONResponse(content=error_message, status_code=500)
         try:
             current_datetime = datetime.now()
             current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")[
@@ -393,7 +407,8 @@ def UpdateClusterStats(Initator: Initator):
                 "type": "UpdateClusterStats",
             }
             firestoreDB.collection("Admin_logs").add(data)
-            return JSONResponse(content={"Status": "done"}, status_code=500)
+            logger.info("Added to admin Logs")
+            return JSONResponse(content={"Status": "done"}, status_code=200)
         except Exception as e:
             traceback_str = traceback.format_exc()
             error_message = {
