@@ -7,7 +7,9 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
+import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/custom_marker.dart';
+import 'package:hestia/features/core/screens/home/homeless_sightings/homeless_sightings.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/api_constant.dart';
 import 'package:hestia/utils/constants/sizes.dart';
@@ -139,6 +141,8 @@ class MarkerMapController extends GetxController {
       settingsController.instance.profileImage.value = value;
     });
     await createAndAddCurrMarker();
+    await HomeStatsRatingController.instance.getHomelessSightingsRate(
+        currPos.value!.latitude, currPos.value!.longitude);
   }
 
   // Add Markers when tapped

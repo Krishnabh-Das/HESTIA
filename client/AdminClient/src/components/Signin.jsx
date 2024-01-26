@@ -49,6 +49,8 @@ const defaultTheme = createTheme();
 
 
 
+
+
 export default function SignIn() {
 
   const dispatch = useDispatch();
@@ -61,6 +63,8 @@ export default function SignIn() {
     try {
       await signOut(auth);
       console.log(auth?.currentUser);
+      localStorage.removeItem("user")
+      dispatch(setUser(null))
 
       navigate('/auth')
   
@@ -92,6 +96,7 @@ export default function SignIn() {
               console.log(user.email);
               console.log(user.uid);
 
+              localStorage.setItem("user", JSON.stringify(user));
 
               dispatch(setUser(user));
 

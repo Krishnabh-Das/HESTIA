@@ -8,7 +8,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
+import 'package:hestia/features/authentication/screens/splash_screen.dart';
 import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
@@ -55,26 +57,18 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = FirebaseAuth.instance.currentUser;
-
     Get.put(MarkerMapController());
     Get.put(settingsController());
     Get.put(HalfMapController());
     Get.put(TokensController());
     Get.put(ChatBotController());
-
-    bool onboardingShown = GetStorage().read('onboardingShown') ?? true;
+    Get.put(HomeStatsRatingController());
 
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      theme: MyAppTheme.lightTheme,
-      darkTheme: MyAppTheme.darkTheme,
-      home: onboardingShown
-          ? OnBoarding()
-          : currentUser == null
-              ? LoginScreen()
-              : bottomNavBar(),
-    );
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.system,
+        theme: MyAppTheme.lightTheme,
+        darkTheme: MyAppTheme.darkTheme,
+        home: SplashScreen());
   }
 }

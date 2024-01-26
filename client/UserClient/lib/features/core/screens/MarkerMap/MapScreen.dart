@@ -5,12 +5,14 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/Floating_Buttons_Mark_map_Screen.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/search_bar.dart';
+import 'package:hestia/utils/helpers/helper_function.dart';
 
 import 'package:iconsax/iconsax.dart';
 
 class MarkerMapScreen extends StatelessWidget {
   // --- MAP CONTROLLER
   final MarkerMapController markerMapController = Get.find();
+  String mapTheme = "";
 
   MarkerMapScreen({super.key});
 
@@ -18,6 +20,11 @@ class MarkerMapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     markerMapController.context = context;
 
+    DefaultAssetBundle.of(context)
+        .loadString("assets/map_style/aubergine.json")
+        .then((value) {
+      mapTheme = value;
+    });
     return Scaffold(
         body: Obx(
       () => (markerMapController.currPos.value == null &&
@@ -38,6 +45,10 @@ class MarkerMapScreen extends StatelessWidget {
                   () => GoogleMap(
                     onMapCreated: (controller) async {
                       markerMapController.googleMapController = controller;
+                      if (MyAppHelperFunctions.isNightTime()) {
+                        markerMapController.googleMapController
+                            .setMapStyle(mapTheme);
+                      }
                       markerMapController
                           .updateGoogleControllerForCustomInfoWindowController(
                               controller);

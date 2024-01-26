@@ -12,15 +12,21 @@ import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 
 class HomeHeaderMapWithButtons extends StatelessWidget {
-  const HomeHeaderMapWithButtons({
+  HomeHeaderMapWithButtons({
     super.key,
     required this.halfMapController,
   });
 
   final HalfMapController halfMapController;
+  String mapTheme = "";
 
   @override
   Widget build(BuildContext context) {
+    DefaultAssetBundle.of(context)
+        .loadString("assets/map_style/aubergine.json")
+        .then((value) {
+      mapTheme = value;
+    });
     return Stack(
       children: [
         // --Half Map Screen
@@ -42,6 +48,13 @@ class HomeHeaderMapWithButtons extends StatelessWidget {
                           target: MarkerMapController.instance.currPos.value!,
                           zoom: 16,
                           tilt: 50),
+                      onMapCreated: (controller) {
+                        if (MyAppHelperFunctions.isNightTime()) {
+                          controller.setMapStyle(mapTheme);
+                        }
+                        halfMapController.halfMapGoogleMapController =
+                            controller;
+                      },
                       markers: halfMapController.allHalfMapMarkers.value),
             ),
           ),

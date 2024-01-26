@@ -53,6 +53,13 @@ class MyAppHelperFunctions {
     );
   }
 
+  static bool isNightTime() {
+    DateTime now = DateTime.now();
+    int currentHour = now.hour;
+    return currentHour >= 18 ||
+        currentHour <= 6; // Assuming nighttime from 6 PM to 6 AM
+  }
+
   static void navigateToScreen(BuildContext context, Widget screen) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
   }

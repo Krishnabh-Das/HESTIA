@@ -30,32 +30,40 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import MuiAlert from "@mui/material/Alert";
 
 
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../../state/userSlice";
+
+
 import {
   onAuthStateChanged,
 } from "firebase/auth";
 
 
   const AdminActions = () => {
+
+    const user = useSelector(selectUser);
+    console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.email);
+    console.log("</>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user);
     // const theme = useTheme();
     const theme = useTheme();
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-    const [user, setUser] = useState("");
+    // const [user, setUser] = useState("");
 
 
 
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setUser(user);
-        // setAuthChecked(true); // Set to true once authentication state is checked
-      });
+    // useEffect(() => {
+    //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //     setUser(user);
+    //     // setAuthChecked(true); // Set to true once authentication state is checked
+    //   });
   
-      // Clean up the subscription when the component unmounts
-      return () => unsubscribe();
-    }, []);
+    //   // Clean up the subscription when the component unmounts
+    //   return () => unsubscribe();
+    // }, []);
 
-    console.log("user iin admin actions>>>>>>>>>>>>>>>>>>>>", user.uid);
+    // console.log("user iin admin actions>>>>>>>>>>>>>>>>>>>>", user.uid);
 
     const handleCloseSnackbar = (event, reason) => {
       if (reason === "clickaway") {
@@ -126,7 +134,7 @@ import {
               // Set loading to true when the button is clicked
       setLoading(true);
  
-        const response = await axios.put(`${actionRoute}`, { id:user.uid });
+        const response = await axios.put(`${actionRoute}`, { id:user.uid, email:user.email });
 
         const data = response.data;
 
