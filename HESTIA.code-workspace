@@ -14,6 +14,8 @@
 		"jupyter.themeMatplotlibPlots": true,
 		"editor.wordWrap": "on",
 		"editor.wordWrapColumn": 40,
-		"editor.autoIndent": "keep"
+		"editor.autoIndent": "keep",
+		"plantuml.render": "PlantUMLServer",
+		"plantuml.server": "https://www.plantuml.com/plantuml"
 	}
 }
