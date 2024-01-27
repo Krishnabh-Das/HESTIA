@@ -22,34 +22,38 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: APIConstants.firebase_api_key,
-        appId: APIConstants.firebase_app_id,
-        projectId: APIConstants.firebase_project_id,
-        messagingSenderId: APIConstants.firebase_messaging_sender_id,
-      ),
-    );
+    try {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: APIConstants.firebase_api_key,
+          appId: APIConstants.firebase_app_id,
+          projectId: APIConstants.firebase_project_id,
+          messagingSenderId: APIConstants.firebase_messaging_sender_id,
+        ),
+      );
+    } catch (e) {
+      print("Firebase Initialize App $e");
+    }
   } else {
     try {
       await Firebase.initializeApp();
     } catch (e) {
       print("Firebase Initialize App $e");
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-      runApp(const App());
     }
   }
 
-  await GetStorage.init();
+  // Check if Firebase has been successfully initialized
+  if (Firebase.apps.isNotEmpty) {
+    // Initialize GetStorage
+    await GetStorage.init();
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  runApp(const App());
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    runApp(const App());
+  }
 }
 
 class App extends StatelessWidget {

@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as path;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hestia/common/custom_toast_message.dart';
+import 'package:hestia/common/getPlacemart.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/custom_marker.dart';
-import 'package:hestia/features/core/screens/home/homeless_sightings/homeless_sightings.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/api_constant.dart';
 import 'package:hestia/utils/constants/sizes.dart';
@@ -141,8 +143,16 @@ class MarkerMapController extends GetxController {
       settingsController.instance.profileImage.value = value;
     });
     await createAndAddCurrMarker();
+
+    // Sequential Trigger of Rate than Getting Markers
     await HomeStatsRatingController.instance.getHomelessSightingsRate(
-        currPos.value!.latitude, currPos.value!.longitude);
+        MarkerMapController.instance.currPos.value!.latitude,
+        MarkerMapController.instance.currPos.value!.longitude);
+
+    await getPlacemarks(MarkerMapController.instance.currPos.value!.latitude,
+            MarkerMapController.instance.currPos.value!.longitude)
+        .then((value) =>
+            HomeStatsRatingController.instance.currentAddress.value = value);
   }
 
   // Add Markers when tapped

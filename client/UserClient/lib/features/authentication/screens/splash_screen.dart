@@ -8,6 +8,7 @@ import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
+import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';

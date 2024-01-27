@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/common/custom_toast_message.dart';
+import 'package:hestia/common/getPlacemart.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
@@ -199,43 +200,5 @@ class AddMarkerDetailsScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<String> getPlacemarks(double lat, double long) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-
-      var address = '';
-
-      if (placemarks.isNotEmpty) {
-        // Concatenate non-null components of the address
-
-        var streets = placemarks.reversed
-            .map((placemark) => placemark.street)
-            .where((street) => street != null);
-
-        // Filter out unwanted parts
-        streets = streets.where((street) =>
-            street!.toLowerCase() !=
-            placemarks.reversed.last.locality!
-                .toLowerCase()); // Remove city names
-        streets =
-            streets.where((street) => !street!.contains('+')); // Remove codes
-
-        address += streets.join(', ');
-
-        address += ', ${placemarks.reversed.last.subLocality ?? ''}';
-        address += ', ${placemarks.reversed.last.locality ?? ''}';
-        address += ', ${placemarks.reversed.last.subAdministrativeArea ?? ''}';
-        address += ', ${placemarks.reversed.last.administrativeArea ?? ''}';
-        address += ', ${placemarks.reversed.last.postalCode ?? ''}';
-        address += ', ${placemarks.reversed.last.country ?? ''}';
-      }
-
-      return address;
-    } catch (e) {
-      print("Error getting placemarks: $e");
-      return "No Address";
-    }
   }
 }

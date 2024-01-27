@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hestia/common/getPlacemart.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
+import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/core/screens/home/home_stats/crime_incidents/crime_incidents.dart';
 import 'package:hestia/features/core/screens/home/widgets/cart.dart';
 import 'package:hestia/features/core/screens/home/widgets/home_header_map_with_buttons.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
   final HalfMapController halfMapController = Get.find();
   final HomeStatsRatingController homeStatsRatingController = Get.find();
+
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,20 +101,21 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                Obx(
-                  () => Cart(
-                    title: "Events Organized",
-                    number: 6,
-                    rating: homeStatsRatingController.crimeRate.value,
-                    color: Colors.yellow,
-                  ),
+                Cart(
+                  title: "Events Organized",
+                  number: 6,
+                  rating: 4.8,
+                  color: Colors.yellow,
                 ),
 
-                const Cart(
-                  title: "Crime Incidents",
-                  number: 2,
-                  rating: 3.1,
-                  color: Colors.green,
+                Obx(
+                  () => Cart(
+                    title: "Crime Incidents",
+                    number: 2,
+                    rating: homeStatsRatingController.crimeRate.value,
+                    color: Colors.green,
+                    onPressed: () => Get.to(() => CrimeIncidents()),
+                  ),
                 ),
 
                 const SizedBox(

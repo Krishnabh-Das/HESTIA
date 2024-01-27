@@ -50,11 +50,13 @@ class bottomNavBar extends StatelessWidget {
             height: 80,
             selectedIndex: navBarController.selectedIndex.value,
             onDestinationSelected: (value) {
-              pageController.animateToPage(
-                value,
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeInOutCubicEmphasized,
-              );
+              // Set the selected index directly without animation
+              navBarController.selectedIndex.value = value;
+
+              // Jump directly to the selected page
+              pageController.animateToPage(value,
+                  curve: Curves.easeInOut,
+                  duration: Duration(milliseconds: 600));
             },
           ),
         ),
