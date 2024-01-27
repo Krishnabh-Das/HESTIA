@@ -407,11 +407,11 @@ class statsNearYou:
                 res_dict.update(data2.to_dict())
                 res_dict.update(
                     {
-                        "Marker_cluster:": int(marker["cluster_label"]), # type: ignore
-                        "SOS_cluster": int(SOS["cluster_label"]), # type: ignore
+                        "Marker_cluster:": int(marker["cluster_label"]),  # type: ignore
+                        "SOS_cluster": int(SOS["cluster_label"]),  # type: ignore
                     }
                 )
-            elif marker is None:
+            elif marker is None and SOS is not None:
                 data2 = (
                     self.firebaseClient.collection("Stats")
                     .document(f"SOS_{SOS['cluster_label']}")  # type: ignore
@@ -419,8 +419,14 @@ class statsNearYou:
                 )
                 logger.info("successfully got Stats for given coord")
                 res_dict = data2.to_dict()
-                res_dict.update({"SOS_cluster": int(SOS["cluster_label"])}) # type: ignore
-            else:
+                res_dict.update(
+                    {
+                        "SOS_cluster": int(SOS["cluster_label"]), # type: ignore
+                        "Marker_cluster:": int(-2),
+                        "marker_star": int(5),
+                    }
+                )  # type: ignore
+            elif SOS is None and marker is not None:
                 data = (
                     self.firebaseClient.collection("Stats")
                     .document(f"{marker['cluster_label']}")  # type: ignore
@@ -428,8 +434,21 @@ class statsNearYou:
                 )
                 logger.info("successfully got Stats for given coord")
                 res_dict = data.to_dict()
-                res_dict.update({"Marker_cluster": int(marker["cluster_label"])}) # type: ignore
-            return res_dict
+                res_dict.update(
+                    {
+                        "Marker_cluster": int(marker["cluster_label"]), # type: ignore
+                        "SOS_cluster": int(-2),
+                        "SOS_Reports_star": int(5),
+                    }
+                )  # type: ignore
+            else:
+                res_dict = {
+                    "Marker_cluster": int(-2),
+                    "SOS_cluster": int(-2),
+                    "SOS_Reports_star": int(5),
+                    "marker_star": int(5),
+                }
+            return res_dict # type: ignore
         except Exception as e:
             traceback_str = traceback.format_exc()
             logger.error("An error occurred: %s", str(e))
