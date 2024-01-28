@@ -18,7 +18,7 @@ import {
 } from "firebase/firestore";
 import CircularProgress from '@mui/material/CircularProgress';
 import { db, auth, storage } from "../../config/firebase";
-import Header from "components/Header";
+import Header from "../../components/Header";
 import { ref, uploadBytes } from "firebase/storage";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook

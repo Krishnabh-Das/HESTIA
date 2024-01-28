@@ -2,30 +2,28 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useMemo, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { themeSettings } from "theme";
-import Layout from "scenes/layout";
-import Dashboard from "scenes/dashboard";
-import Regionmap from "scenes/regionmap";
+import { themeSettings } from "./config/theme";
+import Layout from "./scenes/layout";
+import Dashboard from "./scenes/dashboard";
+import Regionmap from "./scenes/regionmap";
 // import Admin from "scenes/admin";
-import SosReports from "scenes/sosreports/SosReports";
-import AdminLogs from "scenes/adminlogs/AdminLogs";
-import AdminActions from "scenes/adminactions/AdminActions";
+import SosReports from "./scenes/sosreports/SosReports";
+import AdminLogs from "./scenes/adminlogs/AdminLogs";
+import AdminActions from "./scenes/adminactions/AdminActions";
 
-import Markers from "scenes/markers/Markers";
+import Markers from "./scenes/markers/Markers";
 
-import DetailPage from "components/DetailPage";
-import MarkerDetailPage from "components/MarkerDetailPage";
-import Signin from "components/Signin";
+import DetailPage from "./components/DetailPage";
+import MarkerDetailPage from "./components/MarkerDetailPage";
+import Signin from "./components/Signin";
 
 import './App.css'
-
 
 import {auth} from "./config/firebase";
 
 import {
   onAuthStateChanged,
 } from "firebase/auth";
-
 
 import { useDispatch, useSelector } from "react-redux";
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import FlexBetween from "components/FlexBetween";
-import Header from "components/Header";
+import FlexBetween from "../../components/FlexBetween";
+import Header from "../../components/Header";
 import axios from 'axios';
 
 import {
@@ -15,9 +15,9 @@ import {
   Container
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import BreakdownChart from "components/BreakdownChart";
-import OverviewChart from "components/OverviewChart";
-import StatBox from "components/StatBox";
+import BreakdownChart from "../../components/BreakdownChart";
+// import OverviewChart from "../../components/OverviewChart";
+import StatBox from "../../components/StatBox";
 
 // import { db, auth, storage } from "../../config/firebase";
 import {db} from "../../config/firebase";
