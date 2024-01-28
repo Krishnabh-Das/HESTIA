@@ -1,7 +1,9 @@
+from pprint import pformat
 from langchain.schema import Document
 from langchain_community.document_loaders import SeleniumURLLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from .vectorSearch import vector_store
+from main import logger
 
 
 def loadURLdata(
@@ -59,7 +61,7 @@ def addDocVectorStore(
         inserted_ids = vector_store.add_documents([t])
 
 
-def querySimilarSearch(question: str, k: int = 3):
+def querySimilarSearch(question: str, k: int = 4):
     """
     Query the vector store for similar documents based on a given question.
 
@@ -72,6 +74,7 @@ def querySimilarSearch(question: str, k: int = 3):
     """
     docs = vector_store.similarity_search(question, k=k)
     docs_str = [str(x.page_content) for x in docs]
+    logger.debug(pformat(docs_str))
     return docs_str
 
 

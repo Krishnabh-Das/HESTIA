@@ -1,5 +1,6 @@
 import logging
 from pprint import pformat
+import pprint
 import colorlog
 import traceback
 from datetime import datetime
@@ -92,6 +93,7 @@ handler.setFormatter(
 )
 logger.addHandler(handler)
 
+
 # ---------------------------  Chat  ----------------------------#
 @app.post("/chat/send", tags=["Chatbot"])
 async def chat_send(chat: chatSchema):
@@ -106,7 +108,7 @@ async def chat_send(chat: chatSchema):
     """
     logger.info("/chat/send: Route triggered")
     question = str(chat.question).lower()
-    print(question)
+    logger.critical(question)
     user = chat.user
     # add question to firebase chat
     try:
@@ -124,6 +126,11 @@ async def chat_send(chat: chatSchema):
             question=question,
         )
         logger.info("/chat/send: Similarity search stated")
+        # logger.debug(pformat({
+        #     "conversation":conversation, # type: ignore
+        #     "context":docs, # type: ignore
+        #     "question":question # type: ignore
+        # }))
         res = getResponse(conversation=conversation, context=docs, question=question)
         # add response to firebase chat
         res_json = {"reply": res["text"]}
@@ -135,6 +142,7 @@ async def chat_send(chat: chatSchema):
             "detail": f"An error occurred: {str(e)}",
             "traceback": traceback_str,
         }
+        logger.critical(pformat(error_message))
         return JSONResponse(content=error_message, status_code=500)
 
 
@@ -179,6 +187,7 @@ async def add_context_URL(urlContext: urlContextSchema):
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
+
 # ----------------------- Visualization  ------------------------#
 @app.post("/viz/getStatsByCoord", tags=["Visualization"])
 async def getStatsByCoord(coords: coordSchema):
@@ -204,6 +213,7 @@ async def getStatsByCoord(coords: coordSchema):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
 
 # --------------------------  Utils  ----------------------------#
 @app.post("/location/get", tags=["Utils"])
@@ -250,6 +260,7 @@ async def location_get(getLoc: getLocSchema):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
+
 # --------------------------  User ----------------------------#
 @app.post("/user/getNamebyID", tags=["Users"])
 async def User_Name(userId: userId):
@@ -276,6 +287,7 @@ async def User_Name(userId: userId):
     except Exception as e:
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
+
 
 # --------------------------  Admin  ----------------------------#
 @app.put("/admin/regionMapGen", tags=["Admin"])
@@ -368,6 +380,7 @@ def regionMapGen(Initator: Initator):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
 
 @app.put("/admin/UpdateClusterStats", tags=["Admin"])
 def UpdateClusterStats(Initator: Initator):

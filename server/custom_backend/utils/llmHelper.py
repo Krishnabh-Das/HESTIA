@@ -17,8 +17,8 @@ load_dotenv()
 
 genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
 
-model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.7)
-embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)  # type: ignore
+embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")  # type: ignore
 
 
 def FireStoreInitiate(
@@ -57,7 +57,7 @@ def GetPromptTemplate():
             answer as well as te context and history dont know it reply "I am nor aware of it yet", if the data is not in context just tell"contact your 
             support team for more answers" dont't mention any thing reading context or historoy in your reply saying that"result not context or history".
 
-        History:{history}\n
+
         Context:{context}\n
         Question:{question}\n
         """
@@ -94,7 +94,7 @@ def GetLLMChain(
     llm,
     memory,
     prompt,
-    verbose:bool=False,
+    verbose: bool = False,
 ):
     """
     Create and return LLMChain for managing language model-based conversations.
@@ -108,5 +108,5 @@ def GetLLMChain(
     Returns:
         LLMChain: Language model chain for conversation
     """
-    conversation = LLMChain(llm=llm, verbose=verbose, memory=memory, prompt=prompt)
+    conversation = LLMChain(llm=llm, memory=memory, verbose=verbose, prompt=prompt)
     return conversation
