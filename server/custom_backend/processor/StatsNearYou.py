@@ -10,7 +10,7 @@ from sklearn.cluster import DBSCAN
 
 from main import logger
 from configs.db import firestoreDB, GeoPoint
-from custoimErrors.Markers import MarkerNotFoundError
+from custoimErrors.Markers import MarkerNotFoundError, SOSNotFoundError
 
 dbscan = DBSCAN(eps=1.0, min_samples=2)
 
@@ -89,16 +89,20 @@ class statsNearYou:
             traceback_str = traceback.format_exc()
             logger.error("An error occurred: %s", str(e))
             logger.debug(f"Traceback: {traceback_str}")
-
-        for m in SOS_Reports_get:  # type: ignore
-            SOS_Report = {
-                "SOS_Reports-id": m.id,
-                "SOS_Reports_cord": (
-                    m.to_dict()["incidentPosition"].to_protobuf().latitude,
-                    m.to_dict()["incidentPosition"].to_protobuf().longitude,
-                ),
-            }
-            SOS_Reports.append(SOS_Report)
+        try:
+            for m in SOS_Reports_get:  # type: ignore
+                SOS_Report = {
+                    "SOS_Reports-id": m.id,
+                    "SOS_Reports_cord": (
+                        m.to_dict()["incidentPosition"].to_protobuf().latitude,
+                        m.to_dict()["incidentPosition"].to_protobuf().longitude,
+                    ),
+                }
+                SOS_Reports.append(SOS_Report)
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            logger.error("An error occurred: %s", str(e))
+            logger.debug(f"Traceback: {traceback_str}")
         logger.info("Successfully got all SOS_Reports into python dict")
         self.SOS_Reports = SOS_Reports
 
@@ -117,13 +121,17 @@ class statsNearYou:
             traceback_str = traceback.format_exc()
             logger.error("An error occurred: %s", str(e))
             logger.debug(f"Traceback: {traceback_str}")
-
-        for m in markers_get:  # type: ignore
-            marker = {
-                "marker-id": m.to_dict()["id"],
-                "marker_cord": (m.to_dict()["lat"], m.to_dict()["long"]),
-            }
-            markers.append(marker)
+        try:
+            for m in markers_get:  # type: ignore
+                marker = {
+                    "marker-id": m.id,
+                    "marker_cord": (m.to_dict()["lat"], m.to_dict()["long"]),
+                }
+                markers.append(marker)
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            logger.error("An error occurred: %s", str(e))
+            logger.debug(f"Traceback: {traceback_str}")
         logger.info("Successfully got all Markers into python dict")
         self.markers = markers
 
@@ -142,6 +150,7 @@ class statsNearYou:
         for i, marker in enumerate(self.SOS_Reports):
             marker["cluster_label"] = labels[i]
         logger.info("Updated Clusters with cluster ids.")
+        logger.info(pformat(self.SOS_Reports))
 
     def cluster_markers_fn(self) -> None:
         """
@@ -170,7 +179,7 @@ class statsNearYou:
         marker_ids = [marker["SOS_Reports-id"] for marker in self.SOS_Reports]
         try:
             for key in marker_ids:
-                ref = self.firebaseClient.collection("SOS_Reports").document(key)
+                ref = self.firebaseClient.collection("SOS_Reports").document(str(key))
                 ref.update(
                     {
                         "cluster": int(self.get_SOS_cluster_label(key)),
@@ -189,7 +198,7 @@ class statsNearYou:
         marker_ids = [marker["marker-id"] for marker in self.markers]
         try:
             for key in marker_ids:
-                ref = self.firebaseClient.collection("Markers").document(key)
+                ref = self.firebaseClient.collection("Markers").document(str(key))
                 ref.update(
                     {
                         "cluster": int(self.get_cluster_label(key)),
@@ -226,7 +235,10 @@ class statsNearYou:
                 min_distance = distance
                 nearest_marker = marker
         logger.info("Returned nearest SOS_Reports successfully.")
-        return nearest_marker
+        if nearest_marker is not None:
+            return nearest_marker
+        else:
+            return None
 
     def find_nearest_marker(
         self, target_lat: float, target_lon: float
@@ -253,7 +265,10 @@ class statsNearYou:
                 min_distance = distance
                 nearest_marker = marker
         logger.info("Returned nearest markers successfully.")
-        return nearest_marker
+        if nearest_marker is not None:
+            return nearest_marker
+        else:
+            return None
 
     def get_total_SOS_Reports_in_each_cluster(self):
         cluster_counts = Counter(marker["cluster_label"] for marker in self.SOS_Reports)
@@ -361,25 +376,83 @@ class statsNearYou:
         Returns:
         - Optional[Dict[str, Union[str, Tuple[float, float], int]]]: Statistics for the given coordinates or None if not found.
         """
-        marker = self.find_nearest_marker(target_lat=lat, target_lon=lon)
-        SOS = self.find_nearest_SOS_Reports(target_lat=lat, target_lon=lon)
         try:
-            data = (
-                self.firebaseClient.collection("Stats")
-                .document(f"{marker['cluster_label']}")  # type: ignore
-                .get()
-            )
-            data2 = (
-                self.firebaseClient.collection("Stats")
-                .document(f"SOS_{marker['cluster_label']}")  # type: ignore
-                .get()
-            )
-            logger.info("successfully got Statf for given coord")
-            res_dict = data.to_dict()
-            res_dict.update(data2.to_dict())
-            return res_dict
+            marker = self.find_nearest_marker(target_lat=lat, target_lon=lon)
         except Exception as e:
             traceback_str = traceback.format_exc()
             logger.error("An error occurred: %s", str(e))
             logger.debug(f"Traceback: {traceback_str}")
+            marker = None
+        try:
+            SOS = self.find_nearest_SOS_Reports(target_lat=lat, target_lon=lon)
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            logger.error("An error occurred: %s", str(e))
+            logger.debug(f"Traceback: {traceback_str}")
+            SOS = None
+        try:
+            if marker is not None and SOS is not None:
+                data = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"{marker['cluster_label']}")  # type: ignore
+                    .get()
+                )
+                data2 = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"SOS_{SOS['cluster_label']}")  # type: ignore
+                    .get()
+                )
+                logger.info("successfully got Stats for given coord")
+                res_dict = data.to_dict()
+                res_dict.update(data2.to_dict())
+                res_dict.update(
+                    {
+                        "Marker_cluster:": int(marker["cluster_label"]),  # type: ignore
+                        "SOS_cluster": int(SOS["cluster_label"]),  # type: ignore
+                    }
+                )
+            elif marker is None and SOS is not None:
+                data2 = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"SOS_{SOS['cluster_label']}")  # type: ignore
+                    .get()
+                )
+                logger.info("successfully got Stats for given coord")
+                res_dict = data2.to_dict()
+                res_dict.update(
+                    {
+                        "SOS_cluster": int(SOS["cluster_label"]), # type: ignore
+                        "Marker_cluster:": int(-2),
+                        "marker_star": int(5),
+                    }
+                )  # type: ignore
+            elif SOS is None and marker is not None:
+                data = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"{marker['cluster_label']}")  # type: ignore
+                    .get()
+                )
+                logger.info("successfully got Stats for given coord")
+                res_dict = data.to_dict()
+                res_dict.update(
+                    {
+                        "Marker_cluster": int(marker["cluster_label"]), # type: ignore
+                        "SOS_cluster": int(-2),
+                        "SOS_Reports_star": int(5),
+                    }
+                )  # type: ignore
+            else:
+                res_dict = {
+                    "Marker_cluster": int(-2),
+                    "SOS_cluster": int(-2),
+                    "SOS_Reports_star": int(5),
+                    "marker_star": int(5),
+                }
+            return res_dict # type: ignore
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            logger.error("An error occurred: %s", str(e))
+            logger.debug(f"Traceback: {traceback_str}")
+
+
 stats = statsNearYou(firebase_clent=firestoreDB, max_distance_km=5.0)
