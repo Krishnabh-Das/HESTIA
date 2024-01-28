@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "client/AdminClient"
+		},
+		{
+			"path": "client/NgoClient"
 		}
 	],
 	"settings": {
