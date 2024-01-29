@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/common/custom_toast_message.dart';
@@ -57,11 +56,11 @@ class AddMarkerDetailsScreen extends StatelessWidget {
                       border: Border.all(color: Colors.black, width: 0.9),
                       boxShadow: [
                         dark
-                            ? BoxShadow(
+                            ? const BoxShadow(
                                 color: MyAppColors.darkerGrey,
                                 blurRadius: 15,
                                 spreadRadius: 3)
-                            : BoxShadow(
+                            : const BoxShadow(
                                 color: Colors.black38,
                                 blurRadius: 15,
                                 spreadRadius: 3,
@@ -110,90 +109,83 @@ class AddMarkerDetailsScreen extends StatelessWidget {
               height: 20,
             ),
             Obx(
-              () => SizedBox(
-                child: ElevatedButton(
-                  child: MarkerMapController.instance.isloading.value
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 4,
-                        )
-                      : const Text("Post"),
-                  onPressed: () async {
-                    showCustomToast(context,
-                        color: Colors.yellow.shade600,
-                        text: "Please Wait.......",
-                        icon: Icons.hourglass_empty,
-                        duration: 2000);
+              () => ElevatedButton(
+                child: MarkerMapController.instance.isloading.value
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 4,
+                      )
+                    : const Text("Post"),
+                onPressed: () async {
+                  showCustomToast(context,
+                      color: Colors.yellow.shade600,
+                      text: "Please Wait.......",
+                      icon: Icons.hourglass_empty,
+                      duration: 2000);
+                  MarkerMapController.instance.toggleIsLoading();
+                  int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
+                  Timestamp time = Timestamp.now();
+                  Directory tempDir = await getTemporaryDirectory();
+
+                  // Create the necessary directories
+                  String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
+                  Directory(appDirPath).createSync(recursive: true);
+
+                  // Create a destination file in the desired directory
+                  File destinationFile =
+                      File('$appDirPath/image_file$randomMarkerID.png');
+
+                  // Copy the original image file to the destination file
+                  image.copySync(destinationFile.path);
+                  Marker marker = MarkerMapController.instance.MakeFixedMarker(
+                      randomMarkerID,
+                      position,
+                      customInfoWindowController,
+                      desc.text,
+                      time,
+                      "",
+                      true);
+
+                  var address = await getPlacemarks(
+                      position.latitude, position.longitude);
+
+                  // Adding Marker details in Firestore
+                  await FirebaseQueryForUsers()
+                      .addMarkerToUser(position.latitude, position.longitude,
+                          image, desc.text, randomMarkerID, time, address)
+                      .then((value) =>
+                          MarkerMapController.instance.toggleIsLoading())
+                      .onError((error, stackTrace) {
                     MarkerMapController.instance.toggleIsLoading();
-                    int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
-                    Timestamp time = Timestamp.now();
-                    Directory tempDir = await getTemporaryDirectory();
-
-                    // Create the necessary directories
-                    String appDirPath = '${tempDir.path}/HESTIA/MarkerImages/';
-                    Directory(appDirPath).createSync(recursive: true);
-
-                    // Create a destination file in the desired directory
-                    File destinationFile =
-                        File('$appDirPath/image_file$randomMarkerID.png');
-
-                    // Copy the original image file to the destination file
-                    image.copySync(destinationFile.path);
-                    Marker marker = MarkerMapController.instance
-                        .MakeFixedMarker(
-                            randomMarkerID,
-                            position,
-                            customInfoWindowController,
-                            desc.text,
-                            time,
-                            "",
-                            true);
-
-                    var address = await getPlacemarks(
-                        position.latitude, position.longitude);
-
-                    // Adding Marker details in Firestore
-                    await FirebaseQueryForUsers()
-                        .addMarkerToUser(position.latitude, position.longitude,
-                            image, desc.text, randomMarkerID, time, address)
-                        .then((value) =>
-                            MarkerMapController.instance.toggleIsLoading())
-                        .onError((error, stackTrace) {
-                      MarkerMapController.instance.toggleIsLoading();
-                      showCustomToast(context,
-                          color: Colors.red.shade400,
-                          text: "Error Uploaing Data in Database: $error",
-                          icon: Icons.warning,
-                          duration: 2000);
-                    });
-
-                    HalfMapController.instance.allHalfMapMarkers.add(Marker(
-                        markerId: MarkerId("$randomMarkerID"),
-                        position: position,
-                        infoWindow: const InfoWindow(title: "Your Marker"),
-                        icon: BitmapDescriptor.defaultMarker));
-
-                    // Updating the setttings Post
-                    settingsController.instance.settingsUserPostDetails.value
-                        .add({
-                      "image": image,
-                      "desc": desc.text,
-                      "address": address
-                    });
-
-                    settingsController.instance.totalPost.value =
-                        ++settingsController.instance.totalPost.value;
-
                     showCustomToast(context,
-                        color: Colors.green.shade400,
-                        text: "Post Uploaded Successfully",
-                        icon: Iconsax.tick_circle,
+                        color: Colors.red.shade400,
+                        text: "Error Uploaing Data in Database: $error",
+                        icon: Icons.warning,
                         duration: 2000);
+                  });
 
-                    // Returing the Marker
-                    Navigator.pop(context, marker);
-                  },
-                ),
+                  HalfMapController.instance.allHalfMapMarkers.add(Marker(
+                      markerId: MarkerId("$randomMarkerID"),
+                      position: position,
+                      infoWindow: const InfoWindow(title: "Your Marker"),
+                      icon: BitmapDescriptor.defaultMarker));
+
+                  // Updating the setttings Post
+                  settingsController.instance.settingsUserPostDetails.value.add(
+                      {"image": image, "desc": desc.text, "address": address});
+
+                  settingsController.instance.totalPost.value =
+                      ++settingsController.instance.totalPost.value;
+
+                  showCustomToast(context,
+                      color: Colors.green.shade400,
+                      text: "Post Uploaded Successfully",
+                      icon: Iconsax.tick_circle,
+                      duration: 2000);
+
+                  // Returing the Marker
+                  Navigator.pop(context, marker);
+                },
               ),
             )
           ],

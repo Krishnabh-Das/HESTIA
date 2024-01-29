@@ -54,19 +54,21 @@ class CustomUserMsgTextField extends StatelessWidget {
                   flex: 1,
                   child: IconButton(
                       onPressed: () async {
-                        chatController.isMsgTyped.value = true;
-                        chatController.msgList
-                            .add([userMessageController.text, "u", "No"]);
-                        var userTextCopy = userMessageController.text;
-                        userMessageController.clear();
-                        await chatController
-                            .uploadAndGetResponseFromChatbot(userTextCopy)
-                            .onError((error, stackTrace) => showCustomToast(
-                                context,
-                                color: Colors.red.shade400,
-                                text: "Response Error from Server: $error",
-                                icon: Icons.clear_sharp,
-                                duration: 2500));
+                        if (userMessageController.text != "") {
+                          chatController.isMsgTyped.value = true;
+                          chatController.msgList
+                              .add([userMessageController.text, "u", "No"]);
+                          var userTextCopy = userMessageController.text;
+                          userMessageController.clear();
+                          await chatController
+                              .uploadAndGetResponseFromChatbot(userTextCopy)
+                              .onError((error, stackTrace) => showCustomToast(
+                                  context,
+                                  color: Colors.red.shade400,
+                                  text: "Response Error from Server: $error",
+                                  icon: Icons.clear_sharp,
+                                  duration: 2500));
+                        }
                       },
                       icon: const Icon(
                         Icons.forward,

@@ -27,7 +27,7 @@ class StatsPostList extends StatelessWidget {
               )
             ],
             if (homeStatsRatingList.value.isEmpty) ...[
-              SizedBox(
+              const SizedBox(
                 height: 100,
               ),
               Center(

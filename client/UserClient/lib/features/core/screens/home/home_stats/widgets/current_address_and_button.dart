@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -21,17 +20,17 @@ class StatsHeaderCurrentAddressAndButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: Padding(
-        padding: EdgeInsets.only(right: 15),
+        padding: const EdgeInsets.only(right: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.location_on,
                   color: Colors.red,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Obx(
@@ -40,18 +39,18 @@ class StatsHeaderCurrentAddressAndButton extends StatelessWidget {
                       homeStatsRatingController.currentAddress.value,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 5,
-                      style: TextStyle(fontSize: 12),
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 7,
             ),
             Row(
               children: [
-                Spacer(),
+                const Spacer(),
                 ElevatedButtonWithIcon(
                   text: buttonText,
                   onPressed: onPressed,

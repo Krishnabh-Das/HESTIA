@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as path;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hestia/common/custom_toast_message.dart';
@@ -131,10 +129,15 @@ class MarkerMapController extends GetxController {
 
     await getUserLocation();
 
+    await getPlacemarks(MarkerMapController.instance.currPos.value!.latitude,
+            MarkerMapController.instance.currPos.value!.longitude)
+        .then((value) =>
+            HomeStatsRatingController.instance.currentAddress.value = value);
+
     searchController.addListener(() {
       onChange(uuid);
     });
-    await makeMarkersFromJson();
+
     await settingsController.instance
         .getProfileImageFromBackend()
         .then((value) {
@@ -144,15 +147,12 @@ class MarkerMapController extends GetxController {
     });
     await createAndAddCurrMarker();
 
-    // Sequential Trigger of Rate than Getting Markers
+    await makeMarkersFromJson();
+
+    // Sequential Trigger of Rate -- than -- Getting Markers
     await HomeStatsRatingController.instance.getHomelessSightingsRate(
         MarkerMapController.instance.currPos.value!.latitude,
         MarkerMapController.instance.currPos.value!.longitude);
-
-    await getPlacemarks(MarkerMapController.instance.currPos.value!.latitude,
-            MarkerMapController.instance.currPos.value!.longitude)
-        .then((value) =>
-            HomeStatsRatingController.instance.currentAddress.value = value);
   }
 
   // Add Markers when tapped

@@ -6,6 +6,7 @@ import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/ChatBot/chat_bot.dart';
+import 'package:hestia/features/core/screens/Community/community_screen.dart';
 import 'package:hestia/features/core/screens/Tokens/tokens.dart';
 import 'package:hestia/features/core/screens/home/home.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
@@ -54,9 +55,7 @@ class bottomNavBar extends StatelessWidget {
               navBarController.selectedIndex.value = value;
 
               // Jump directly to the selected page
-              pageController.animateToPage(value,
-                  curve: Curves.easeInOut,
-                  duration: Duration(milliseconds: 600));
+              pageController.jumpToPage(value);
             },
           ),
         ),
@@ -65,7 +64,7 @@ class bottomNavBar extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             HomeScreen(),
-            Tokens(),
+            CommunityScreen(),
             ChatScreen(),
             SettingsScreen(),
           ],

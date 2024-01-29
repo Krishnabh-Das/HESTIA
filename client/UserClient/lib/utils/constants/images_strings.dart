@@ -22,6 +22,7 @@ class MyAppImages {
   static const String appIcon = "assets/icons/appIcon.png";
   static const String appIcon1 = "assets/icons/appIcon1.png";
   static const String splashIcon = "assets/icons/HESTIA_splash.png";
+  static const String communityIcon = "assets/icons/community_logo.png";
 
   // On Boarding
   static const String onBoard1 = "assets/images/authentication/onBoard1.png";

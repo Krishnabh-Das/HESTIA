@@ -1,15 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:hestia/bottom_nav_bar.dart';
-import 'package:hestia/features/authentication/screens/login/login_screen.dart';
-import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
 import 'package:hestia/features/authentication/screens/splash_screen.dart';
 import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/community_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
@@ -67,12 +64,13 @@ class App extends StatelessWidget {
     Get.put(TokensController());
     Get.put(ChatBotController());
     Get.put(HomeStatsRatingController());
+    Get.put(CommunityController());
 
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.system,
         theme: MyAppTheme.lightTheme,
         darkTheme: MyAppTheme.darkTheme,
-        home: SplashScreen());
+        home: const SplashScreen());
   }
 }

@@ -11,9 +11,14 @@ class HomeStatsRatingController extends GetxController {
   static HomeStatsRatingController get instance => Get.find();
 
   Rx<String> currentAddress = "".obs;
+
   Rx<double> homelessSightingsRate = 0.0.obs;
   Rx<double> crimeRate = 0.0.obs;
   Rx<double> eventsOrganizedRate = 0.0.obs;
+
+  Rx<int> homelessSightingsNumber = 0.obs;
+  Rx<int> crimeNumber = 0.obs;
+
   int? crimeClusterId, homelessSightingsClusterId, eventOrganizedClusterId;
   RxList crimeMarkerMapList = [].obs;
   RxList homelessSightingsMarkerMapList = [].obs;
@@ -47,11 +52,10 @@ class HomeStatsRatingController extends GetxController {
 
         // Getting the Crime Cluster Markers
         if (crimeClusterId != -2) {
-          await HomeStatsRatingController.instance.crimeIncidentsMarker();
+          await crimeIncidentsMarker();
         }
         if (homelessSightingsClusterId != -2) {
-          await HomeStatsRatingController.instance
-              .homelessSightingsMarkerMapList();
+          await homelessSightingsMarker();
         }
       } else {
         print("Request failed with status: ${response.statusCode}");
@@ -106,6 +110,63 @@ class HomeStatsRatingController extends GetxController {
           "desc": data["description"],
           "image": imageFile
         });
+
+        crimeNumber.value++;
+
+        // Print or use the document data as needed
+        print('Document ID: ${document.id}, Data: $data');
+      }
+    } catch (e) {
+      print('Error querying Firestore: $e');
+    }
+  }
+
+  Future<void> homelessSightingsMarker() async {
+    try {
+      final Directory tempDir = await getTemporaryDirectory();
+      final String tempPath = tempDir.path;
+      final String imagePath = '$tempPath/HESTIAtempImages';
+      final Directory imageDir = Directory(imagePath);
+      if (!imageDir.existsSync()) {
+        imageDir.createSync();
+      }
+
+      // Reference to the 'Markers' collection
+      CollectionReference markersCollection =
+          FirebaseFirestore.instance.collection('Markers');
+
+      print("Homeless Sightings ID: $homelessSightingsClusterId");
+
+      // Query documents where the 'cluster_id' field is equal to 2
+      QuerySnapshot querySnapshot = await markersCollection
+          .where('cluster', isEqualTo: homelessSightingsClusterId)
+          .get();
+
+      // Loop through the documents
+      for (QueryDocumentSnapshot document in querySnapshot.docs) {
+        // Access the document data
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child("MarkerImages/${data["id"]}");
+
+        // Download the image data
+        final List<int> imageData =
+            (await storageReference.getData()) as List<int>;
+
+        final String fileName = '${data["id"]}.jpg'; // Specify a file name
+        File imageFile = File(path.join(imagePath, fileName));
+        await imageFile.writeAsBytes(imageData).then(
+            (value) => print("Image File Homeless Sightings: $imageFile"));
+
+        HomeStatsRatingController.instance.homelessSightingsMarkerMapList.add({
+          "time": data["formattedTime"],
+          "address": data["address"],
+          "desc": data["description"],
+          "image": imageFile
+        });
+
+        homelessSightingsNumber.value++;
 
         // Print or use the document data as needed
         print('Document ID: ${document.id}, Data: $data');

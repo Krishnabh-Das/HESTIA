@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 
 class StatsHeaderCircularScore extends StatelessWidget {
@@ -16,7 +15,7 @@ class StatsHeaderCircularScore extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MyAppHelperFunctions.screenWidth() / 2.5,
-      padding: EdgeInsets.all(22),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(boxShadow: const [
         BoxShadow(color: Colors.grey, spreadRadius: 5, blurRadius: 15)
       ], shape: BoxShape.circle, color: Colors.teal.shade300),

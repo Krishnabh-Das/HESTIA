@@ -23,7 +23,7 @@ class StatsPost extends StatelessWidget {
       children: [
         // -- Post
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(width: 0.5),
@@ -40,9 +40,9 @@ class StatsPost extends StatelessWidget {
               ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: image == null
-                      ? CircularProgressIndicator()
+                      ? const CircularProgressIndicator()
                       : Image.file(image!)),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Padding(
@@ -51,24 +51,24 @@ class StatsPost extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Spacer(),
+                        const Spacer(),
                         Text(
                           time,
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.location_on,
                           color: Colors.red,
                           size: 20,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 6,
                         ),
                         Flexible(
@@ -76,22 +76,22 @@ class StatsPost extends StatelessWidget {
                             address,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 5,
-                            style: TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         description,
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     )
                   ],
@@ -102,7 +102,7 @@ class StatsPost extends StatelessWidget {
         ),
 
         // -- Post Space at bottom
-        SizedBox(
+        const SizedBox(
           height: 15,
         )
       ],
