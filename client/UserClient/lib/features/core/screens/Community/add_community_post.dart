@@ -4,8 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:hestia/common/custom_toast_message.dart';
+import 'package:hestia/common/getPlacemart.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/features/core/controllers/community_controller.dart';
+import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
+import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
@@ -170,8 +173,11 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
 
                   // After getting uid do the Write Operation
                   try {
+                    var compressedImage =
+                        await communtiyController.compress(imageFile);
+
                     await communtiyController.uploadImageToCommunityImages(
-                        imageFile, randomMarkerID);
+                        imageFile, compressedImage, randomMarkerID);
 
                     DateTime now = DateTime.now();
 
@@ -183,6 +189,8 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                       'userName': settingsController.instance.name.value,
                       'time': time,
                       'desc': desc.text,
+                      "address": HomeStatsRatingController
+                          .instance.currentAddress.value,
                       'like': 0,
                       'isDonate': isDonate,
                       'total_comments': 0,

@@ -25,6 +25,7 @@ dependencies:
   path_provider: ^2.0.8
   fluttertoast: ^8.0.2
   shimmer: ^3.0.0
+  image: ^3.0.1
 
   # State Management 
   get: ^4.6.5
@@ -63,7 +64,6 @@ dependencies:
   geocoding: ^2.1.1
   google_geocoding_api: ^1.4.1
   widget_to_marker: ^1.0.4
-
   
 
 
