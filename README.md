@@ -148,6 +148,7 @@ Our range of features include -
 
 
 ## Team HESTIA
+
 <div>
   <table>
     <tr>
