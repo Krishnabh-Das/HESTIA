@@ -8,7 +8,7 @@ from google.cloud.firestore import GeoPoint
 
 load_dotenv()
 
-creds_path = "configs/serviceAccountKey.json"
+creds_path = "db/serviceAccountKey.json"
 cred = credentials.Certificate(creds_path)
 firebase_admin.initialize_app(cred)
 firestoreDB = firestore.client()

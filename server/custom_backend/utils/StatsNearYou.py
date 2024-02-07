@@ -9,8 +9,8 @@ from collections import Counter
 from sklearn.cluster import DBSCAN
 
 from main import logger
-from configs.db import firestoreDB, GeoPoint
-from custoimErrors.Markers import MarkerNotFoundError, SOSNotFoundError
+from db.fireStoreDB import firestoreDB, GeoPoint
+from core.errors.Markers import MarkerNotFoundError, SOSNotFoundError
 
 dbscan = DBSCAN(eps=1.0, min_samples=2)
 
@@ -272,10 +272,12 @@ class statsNearYou:
 
     def get_total_SOS_Reports_in_each_cluster(self):
         cluster_counts = Counter(marker["cluster_label"] for marker in self.SOS_Reports)
+        print(dict(cluster_counts))
         return dict(cluster_counts)
 
     def get_total_markers_in_each_cluster(self):
         cluster_counts = Counter(marker["cluster_label"] for marker in self.markers)
+        print(dict(cluster_counts))
         return dict(cluster_counts)
 
     def calculate_percentile(self, dictionary, key):
@@ -284,7 +286,6 @@ class statsNearYou:
         total_values = len(values)
 
         percentile = (values_below / total_values) * 100
-
         return percentile
 
     def rate_SOS_clusters(self):
@@ -299,16 +300,7 @@ class statsNearYou:
         # Assign star ratings based on percentiles
         cluster_ratings = {}
         for cluster_label, percentile in cluster_percentiles.items():
-            if percentile >= 80:
-                rating = 1
-            elif 60 <= percentile < 80:
-                rating = 2
-            elif 40 <= percentile < 60:
-                rating = 3
-            elif 20 <= percentile < 40:
-                rating = 4
-            elif 0 <= percentile < 20:
-                rating = 4
+            rating = 0.05*percentile
             cluster_ratings[cluster_label] = rating  # type:ignore
 
         self.SOS_cluster_ratings = cluster_ratings
@@ -319,6 +311,7 @@ class statsNearYou:
             doc_ref = self.firebaseClient.collection("Stats")
             for key, value in cluster_ratings.items():
                 doc_ref.document(f"SOS_{key}").set({"SOS_Reports_star": value})
+                doc_ref.document(f"SOS_{key}").update({"SOS_Reports_count": cluster_counts[key]})
             logger.info("Successfully Updated to FireStoere")
         except Exception as e:
             traceback_str = traceback.format_exc()
@@ -327,7 +320,6 @@ class statsNearYou:
 
     def rate_clusters(self):
         cluster_counts = self.get_total_markers_in_each_cluster()
-        total_markers = len(self.markers)
         # Calculate percentile for each cluster
         cluster_percentiles = {
             key: self.calculate_percentile(cluster_counts, key)
@@ -337,27 +329,19 @@ class statsNearYou:
         # Assign star ratings based on percentiles
         cluster_ratings = {}
         for cluster_label, percentile in cluster_percentiles.items():
-            if percentile >= 80:
-                rating = 1
-            elif 60 <= percentile < 80:
-                rating = 2
-            elif 40 <= percentile < 60:
-                rating = 3
-            elif 20 <= percentile < 40:
-                rating = 4
-            elif 0 <= percentile < 20:
-                rating = 4
+            rating = 0.05*percentile
             cluster_ratings[cluster_label] = rating  # type:ignore
 
         self.cluster_ratings = cluster_ratings
         logger.info("Successfully Assigned ratings")
-        # print(type(cluster_ratings))
 
         try:
             doc_ref = self.firebaseClient.collection("Stats")
             for key, value in cluster_ratings.items():
                 doc_ref.document(f"{key}").set({"marker_star": value})
+                doc_ref.document(f"{key}").update({"marker_count": cluster_counts[key]})
             logger.info("Successfully Updated to FireStoere")
+
         except Exception as e:
             traceback_str = traceback.format_exc()
             logger.error("An error occurred: %s", str(e))
@@ -424,6 +408,7 @@ class statsNearYou:
                         "SOS_cluster": int(SOS["cluster_label"]), # type: ignore
                         "Marker_cluster:": int(-2),
                         "marker_star": int(5),
+                        "marker_count": 0
                     }
                 )  # type: ignore
             elif SOS is None and marker is not None:
@@ -439,6 +424,7 @@ class statsNearYou:
                         "Marker_cluster": int(marker["cluster_label"]), # type: ignore
                         "SOS_cluster": int(-2),
                         "SOS_Reports_star": int(5),
+                        "SOS_Reports_count": 0
                     }
                 )  # type: ignore
             else:
@@ -447,6 +433,8 @@ class statsNearYou:
                     "SOS_cluster": int(-2),
                     "SOS_Reports_star": int(5),
                     "marker_star": int(5),
+                    "SOS_Reports_count": 0,
+                    "marker_count": 0
                 }
             return res_dict # type: ignore
         except Exception as e:
