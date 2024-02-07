@@ -10,6 +10,8 @@ from fastapi import FastAPI
 from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from api import auth
+from db.mongodb_connect import connectDB
 
 from schemas.userSchema import userId
 from schemas.adminSchmeas import Initator
@@ -17,11 +19,13 @@ from schemas.VizSchmeas import coordSchema
 from schemas.utilsSchema import getLocSchema
 from schemas.chatSchema import chatSchema, urlContextSchema
 
-from docs.metadata import tags_metadata
-from processor.StatsNearYou import stats
-from configs.db import firestoreDB, firestore
+from db.fireStoreDB import firestoreDB, firestore
 
+import core.config as core
+
+from utils.StatsNearYou import stats
 from utils.GeoLoc import geoLoc
+from utils.logingUtils import logger
 from utils.datetimeUtils import startEndTime, testStarttime
 from utils.ragPipeline import (
     addDocVectorStore,
@@ -50,45 +54,26 @@ from utils.regionMapHelper import (
     GeoPoint,
 )
 
+from docs.openApiTags import tags_metadata
+from docs.openApiStatusCodes import AddedOpenAPiStatusCodes
+
 # ------------------------ Init FastAPI -------------------------#
-app = FastAPI(
-    title="Hestia",
-    description="Routes for Hestia.",
-    version="0.0.3dev",
-    openapi_tags=tags_metadata,
-)
+app = FastAPI(title=core.settings.app_name,openapi_tags=tags_metadata, responses=AddedOpenAPiStatusCodes)  # type: ignore
 # --------------------------- Config ----------------------------#
 load_dotenv()
 
 origins = ["*"]
 
+connectDB()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=core.origins,  # type: ignore
+    allow_credentials=core.allow_credentials,  # type: ignore
+    allow_methods=["*"],  # type: ignore
+    allow_headers=core.allow_headers,  # type: ignore
 )
-
 start_date, end_date = startEndTime()
-
-handler = logging.StreamHandler()
-logging.getLogger().setLevel(logging.DEBUG)
-handler.setFormatter(
-    colorlog.ColoredFormatter(
-        "%(log_color)s%(levelname)-8s%(reset)s - %(asctime)s - %(message)s",
-        log_colors={
-            "DEBUG": "cyan",
-            "INFO": "green",
-            "WARNING": "yellow",
-            "ERROR": "red",
-            "CRITICAL": "red,bg_white",
-        },
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-)
-logger.addHandler(handler)
-
 
 # ---------------------------  Chat  ----------------------------#
 @app.post("/chat/send", tags=["Chatbot"])
@@ -432,3 +417,6 @@ def UpdateClusterStats(Initator: Initator):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
+# --------------------------  Admin  ----------------------------#
+app.include_router(auth.router, prefix="/api/v2", tags=["Auth"])

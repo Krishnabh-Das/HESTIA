@@ -9,8 +9,8 @@ from collections import Counter
 from sklearn.cluster import DBSCAN
 
 from main import logger
-from configs.db import firestoreDB, GeoPoint
-from custoimErrors.Markers import MarkerNotFoundError, SOSNotFoundError
+from db.fireStoreDB import firestoreDB, GeoPoint
+from core.errors.Markers import MarkerNotFoundError, SOSNotFoundError
 
 dbscan = DBSCAN(eps=1.0, min_samples=2)
 
