@@ -1,6 +1,6 @@
 from langchain_community.vectorstores import AstraDB
 from utils.llmHelper import embeddings
-from configs.db import (
+from db.fireStoreDB import (
     get_ASTRA_DB_COLLECTION_NAME,
     get_ASTRA_DB_API_ENDPOINT,
     get_ASTRA_DB_APPLICATION_TOKEN,
