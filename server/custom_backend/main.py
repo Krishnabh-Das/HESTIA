@@ -56,10 +56,6 @@ app = FastAPI(
     description="Routes for Hestia.",
     version="0.0.3dev",
     openapi_tags=tags_metadata,
-    license_info={
-        "name": "MIT License",
-        "url": "https://mit-license.org/",
-    },
 )
 # --------------------------- Config ----------------------------#
 load_dotenv()
