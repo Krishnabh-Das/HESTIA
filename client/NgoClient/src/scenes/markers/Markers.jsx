@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { db, auth, storage } from "../../config/firebase";
 import CircularProgress from '@mui/material/CircularProgress';
-import FlexBetween from "components/FlexBetween";
-import Header from "components/Header";
+import FlexBetween from "../../components/FlexBetween";
+import Header from "../../components/Header";
 import {
     DownloadOutlined,
   } from "@mui/icons-material";
