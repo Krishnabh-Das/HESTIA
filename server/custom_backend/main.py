@@ -7,7 +7,11 @@ from fastapi import FastAPI
 from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+<<<<<<< HEAD
 from api import auth, chat
+=======
+from api import auth
+>>>>>>> 3ed3deb1d46c00377a7eb602d59e7acc36fae6a0
 from db.mongodb_connect import connectDB
 
 from schemas.userSchema import userId
