@@ -3,11 +3,7 @@ fastapi==0.109.2
 fastapi_mail==1.4.1
 firebase_admin==6.4.0
 geopy==2.4.1
-<<<<<<< HEAD
 grpcio==1.60.0
-=======
-grpcio
->>>>>>> 3ed3deb1d46c00377a7eb602d59e7acc36fae6a0
 python-jose==3.3.0
 langchain==0.1.5
 langchain_community==0.0.18
@@ -21,13 +17,8 @@ python-dotenv==1.0.1
 pytz==2023.3.post1
 scikit_learn==1.4.0
 scipy==1.12.0
-<<<<<<< HEAD
 astrapy==0.7.0
 selenium==4.16.0
-=======
-astrapy
-selenium
->>>>>>> 3ed3deb1d46c00377a7eb602d59e7acc36fae6a0
 unstructured[all]
 uvicorn[standard]
 pydantic[email]
