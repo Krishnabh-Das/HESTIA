@@ -3,7 +3,7 @@ fastapi==0.109.2
 fastapi_mail==1.4.1
 firebase_admin==6.4.0
 geopy==2.4.1
-grpcio
+grpcio==1.60.0
 python-jose==3.3.0
 langchain==0.1.5
 langchain_community==0.0.18
@@ -17,8 +17,8 @@ python-dotenv==1.0.1
 pytz==2023.3.post1
 scikit_learn==1.4.0
 scipy==1.12.0
-astrapy
-selenium
+astrapy==0.7.0
+selenium==4.16.0
 unstructured[all]
 uvicorn[standard]
 pydantic[email]

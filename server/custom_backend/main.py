@@ -1,8 +1,5 @@
-import logging
-from pprint import pformat
-import pprint
-import colorlog
 import traceback
+from pprint import pformat
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -10,7 +7,9 @@ from fastapi import FastAPI
 from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from api import auth
+
+from api import auth, chat
+
 from db.mongodb_connect import connectDB
 
 from schemas.userSchema import userId
@@ -76,6 +75,8 @@ app.add_middleware(
 start_date, end_date = startEndTime()
 
 # ---------------------------  Chat  ----------------------------#
+app.include_router(chat.router, prefix="/api/v2", tags=["Chatbot"])
+
 @app.post("/chat/send", tags=["Chatbot"])
 async def chat_send(chat: chatSchema):
     """

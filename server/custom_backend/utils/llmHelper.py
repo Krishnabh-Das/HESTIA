@@ -65,6 +65,28 @@ def GetPromptTemplate():
     )
     return prompt
 
+def GetPromptTemplate():
+    """
+    Create and return a PromptTemplate for generating prompts.
+
+    Returns:
+        PromptTemplate: Prompt template
+    """
+    prompt = PromptTemplate(
+        input_variables=["history", "context", "question"],
+        template=(
+            """Act a a guide who answers queries regarding homelessness use the history and context to provide well informed answers, if dont know the
+            answer as well as te context and history dont know it reply "I am nor aware of it yet", if the data is not in context just tell"contact your 
+            support team for more answers" dont't mention any thing reading context or historoy in your reply saying that"result not context or history".
+
+
+        Context:{context}\n
+        Question:{question}\n
+        """
+        ),
+    )
+    return prompt
+
 
 def GetSummaryMemory(
     llm,
