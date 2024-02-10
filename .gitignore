@@ -112,3 +112,4 @@ app.*.map.json
 *.sw?
 
 **/AdminClient_
+notebooks/model.tflite
