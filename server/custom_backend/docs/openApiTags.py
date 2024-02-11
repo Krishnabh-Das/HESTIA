@@ -16,6 +16,10 @@ tags_metadata = [
         "description": "Routes to interact with Gemini Pro and langchain based chatbot.",
     },
     {
+        "name": "Community",
+        "description": "Community feature related routes.",
+    },
+    {
         "name": "Utils",
         "description": "Utility based routes.",
     },
