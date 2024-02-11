@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 
 from db.fireStoreDB import firestoreDB
 
-from schemas.communitySchemas import ReportPost, ReportUser
+from schemas.communitySchema import ReportPost, ReportUser
 
 from utils.logingUtils import logger
 

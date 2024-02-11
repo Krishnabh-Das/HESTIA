@@ -12,9 +12,9 @@ from api import auth, chat, community
 
 from db.mongodb_connect import connectDB
 
-from schemas.userschemas import userId
-from schemas.adminSchmeas import Initator
-from schemas.VizSchmeas import coordSchema
+from schemas.userSchema import userId
+from schemas.adminSchmea import Initator
+from schemas.vizSchmea import coordSchema
 from schemas.utilsSchema import getLocSchema
 from schemas.chatSchema import chatSchema, urlContextSchema
 
