@@ -13,7 +13,7 @@ from db.models.user import User
 from db.mongodb_connect import NotUniqueError
 
 from schemas.authUtilSchema import change_passed, rePass
-from schemas.userschemas import LoginRequestBody, newUser
+from schemas.userSchema import LoginRequestBody, newUser
 
 from utils.authUtils import authenticate_user, create_access_token, get_password_hash, verify_token
 from utils.emailUtils import send_email, send_password_reset_email
