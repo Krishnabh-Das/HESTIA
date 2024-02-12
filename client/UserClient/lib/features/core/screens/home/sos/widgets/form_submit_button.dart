@@ -17,6 +17,7 @@ class SubmitButton extends StatelessWidget {
     required this.incidentTime,
     required this.crimeCategoryPicked,
     required this.imageFile,
+    this.isResolved = false,
   }) : _formKey = formKey;
 
   final GlobalKey<FormState> _formKey;
@@ -26,6 +27,7 @@ class SubmitButton extends StatelessWidget {
   final DateTime? incidentTime;
   final crimeCategoryPicked;
   final imageFile;
+  final bool isResolved;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,8 @@ class SubmitButton extends StatelessWidget {
                       incidentTime: incidentTime!,
                       incidentCategory: crimeCategoryPicked,
                       incidentImage: imageFile,
-                      senderID: AuthRepository().getUserId())
+                      senderID: AuthRepository().getUserId(),
+                      isResolved: isResolved)
                   .then((value) => showCustomToast(context,
                       color: Colors.green.shade400,
                       text: "SOS Alert Generated",

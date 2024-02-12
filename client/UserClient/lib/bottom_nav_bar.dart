@@ -13,9 +13,7 @@ import 'package:hestia/features/personalization/screens/settings/settings_screen
 import 'package:iconsax/iconsax.dart';
 
 class BottomNavBar extends StatelessWidget {
-  BottomNavBar({super.key}) {
-    MarkerMapController.instance.initData();
-  }
+  BottomNavBar({super.key}) {}
 
   @override
   Widget build(BuildContext context) {

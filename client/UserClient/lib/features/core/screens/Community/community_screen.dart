@@ -138,6 +138,9 @@ class CommunityScreen extends StatelessWidget {
                               prof_image: individualPost["Generic_Post_Info"]
                                   ["prof_image"],
                               hasUserLiked: hasUserLiked,
+                              total_shares: individualPost["Generic_Post_Info"]
+                                      ["total_shares"] ??
+                                  0,
                             ),
                             index ==
                                     communityController
@@ -203,6 +206,10 @@ class CommunityScreen extends StatelessWidget {
                                     image: snapshot.data![0]!,
                                     prof_image: snapshot.data![1],
                                     hasUserLiked: hasUserLiked,
+                                    total_shares:
+                                        individualPost["Generic_Post_Info"]
+                                                ["total_shares"] ??
+                                            0,
                                   ),
                                   index ==
                                           communityController
@@ -272,6 +279,7 @@ class CommunityPostItem extends StatelessWidget {
     required this.postId,
     this.prof_image,
     this.hasUserLiked = false,
+    this.total_shares = 0,
   });
 
   final CommunityController communityController;
@@ -282,6 +290,7 @@ class CommunityPostItem extends StatelessWidget {
   final String postId;
   final File? prof_image;
   bool hasUserLiked;
+  final int? total_shares;
 
   @override
   Widget build(BuildContext context) {
@@ -438,7 +447,12 @@ class CommunityPostItem extends StatelessWidget {
                           width: 24,
                         ),
                         CommunityPostShareButton(
-                            image: image, desc: desc, name: name)
+                          image: image,
+                          desc: desc,
+                          name: name,
+                          post_id: postId,
+                          total_shares: total_shares ?? 0,
+                        )
                       ],
                     ),
 
@@ -459,18 +473,28 @@ class CommunityPostItem extends StatelessWidget {
   }
 }
 
-class CommunityPostShareButton extends StatelessWidget {
-  const CommunityPostShareButton({
+class CommunityPostShareButton extends StatefulWidget {
+  CommunityPostShareButton({
     super.key,
     required this.image,
     required this.desc,
     required this.name,
+    required this.post_id,
+    this.total_shares = 0,
   });
 
   final File image;
   final String desc;
   final String name;
+  final String post_id;
+  int total_shares;
 
+  @override
+  State<CommunityPostShareButton> createState() =>
+      _CommunityPostShareButtonState();
+}
+
+class _CommunityPostShareButtonState extends State<CommunityPostShareButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -484,7 +508,7 @@ class CommunityPostShareButton extends StatelessWidget {
           await Future.delayed(Durations.long1);
 
           // Read the image file
-          Uint8List bytes = await image.readAsBytes();
+          Uint8List bytes = await widget.image.readAsBytes();
 
           // Decode the image
           img.Image? decodedImage = img.decodeImage(bytes);
@@ -506,11 +530,15 @@ class CommunityPostShareButton extends StatelessWidget {
               final box = context.findRenderObject() as RenderBox?;
               final result = await Share.shareXFiles(
                 [xFile],
-                text: '$desc\n\nShared by $name',
+                text: '${widget.desc}\n\nShared by ${widget.name}',
                 subject: 'Hestia Community',
                 sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
               );
-              if (result.status == ShareResultStatus.success) {}
+              if (result.status == ShareResultStatus.success) {
+                await CommunityController.instance.addShare(widget.post_id);
+                widget.total_shares++;
+                setState(() {});
+              }
             } else {
               showCustomToast(context,
                   color: Colors.red,
@@ -520,7 +548,21 @@ class CommunityPostShareButton extends StatelessWidget {
             }
           }
         },
-        child: Icon(Icons.share));
+        child: Row(
+          children: [
+            Icon(Icons.share),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+              "${widget.total_shares}",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall!
+                  .copyWith(fontSize: 14, fontWeight: FontWeight.w400),
+            )
+          ],
+        ));
   }
 }
 

@@ -5,6 +5,9 @@ class EventsOrganized extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Coming Soon............");
+    return Scaffold(
+      body: Center(child: Text("Coming Soon")),
+    );
+    ;
   }
 }

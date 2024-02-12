@@ -193,6 +193,7 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                       "current_address": HomeStatsRatingController
                           .instance.currentAddress.value,
                       'likes': [],
+                      'total_shares': 0,
                       'isDonate': isDonate,
                       'total_comments': 0,
                       "last_interaction_time": time,

@@ -110,6 +110,7 @@ class CommunityController extends GetxController {
         String docId = doc.id;
         Map<String, dynamic> data = doc.data();
         data["Generic_Post_Info"]['post_id'] = docId;
+
         oldestDateTime = data["Generic_Post_Info"]["last_interaction_time"];
         return data;
       }).toList();
@@ -177,5 +178,36 @@ class CommunityController extends GetxController {
         return;
       });
     }
+  }
+
+  Future<void> addShare(String postid) async {
+    try {
+      final storageRef =
+          FirebaseFirestore.instance.collection("Community").doc(postid);
+      await storageRef.update({
+        'Generic_Post_Info.total_shares': FieldValue.increment(1),
+      });
+
+      listOfCommunityPost.value
+          .where((val) => val["Generic_Post_Info"]["post_id"] == postid)
+          .forEach((val) {
+        print(
+            "val[Generic_Post_Info][total_shares]: ${val["Generic_Post_Info"]["total_shares"]}");
+        if (val["Generic_Post_Info"]["total_shares"] != null) {
+          val["Generic_Post_Info"]["total_shares"]++;
+          print(
+              "val[Generic_Post_Info][total_shares]: ${val["Generic_Post_Info"]["total_shares"]}");
+        } else {
+          val["Generic_Post_Info"]["total_shares"] = 0;
+          print(
+              "val[Generic_Post_Info][total_shares]: ${val["Generic_Post_Info"]["total_shares"]}");
+        }
+      });
+    } catch (e) {
+      print("Error in add share: $e");
+    }
+
+    // Print the updated value after updating shares count
+    print("Total Shares Updated inside addShare method:");
   }
 }

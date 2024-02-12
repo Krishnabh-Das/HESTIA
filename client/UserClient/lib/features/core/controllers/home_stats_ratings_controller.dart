@@ -19,8 +19,12 @@ class HomeStatsRatingController extends GetxController {
 
   Rx<int> homelessSightingsNumber = 0.obs;
   Rx<int> crimeNumber = 0.obs;
+  Rx<int> eventsOrganizedNumber = 0.obs;
 
-  RxInt? crimeClusterId, homelessSightingsClusterId, eventOrganizedClusterId;
+  RxInt crimeClusterId = (-2).obs;
+  RxInt homelessSightingsClusterId = (-2).obs;
+  RxInt eventOrganizedClusterId = (-2).obs;
+
   RxList crimeMarkerMapList = [].obs;
   RxList homelessSightingsMarkerMapList = [].obs;
   RxList eventsOrganizedMarkerMapList = [].obs;
@@ -31,7 +35,7 @@ class HomeStatsRatingController extends GetxController {
           "hestiabackend-vu6qon67ia-el.a.run.app", "/viz/getStatsByCoord");
 
       print("Homeless Sightings lat: $lat, long: $long");
-      var payload = {"lat": lat ?? 0.0, "lon": long ?? 0.0};
+      var payload = {"lat": lat ?? 0, "lon": long ?? 0};
 
       var body = json.encode(payload);
       var response = await http.post(url,
@@ -39,26 +43,28 @@ class HomeStatsRatingController extends GetxController {
 
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        print("Response Body: $jsonResponse");
         print(
             "Updated the Homeless Sightings Rate ${jsonResponse["marker_star"]}");
 
         // Stats Rate
-        homelessSightingsRate.value = jsonResponse["marker_star"].toDouble();
-        crimeRate.value = jsonResponse["SOS_Reports_star"].toDouble();
+        homelessSightingsRate.value = jsonResponse["marker_star"];
+        crimeRate.value = jsonResponse["SOS_Reports_star"];
+
+        // Stats Number
+        homelessSightingsNumber.value = jsonResponse["marker_count"];
+        crimeNumber.value = jsonResponse["SOS_Reports_count"];
+        debugPrint("Stats Number: ${homelessSightingsNumber.value}");
+
+        debugPrint(
+            "jsonResponse[Marker_cluster]: ${jsonResponse["Marker_cluster"]}");
+        debugPrint("jsonResponse[SOS_cluster]: ${jsonResponse["SOS_cluster"]}");
 
         // Cluster ID
-        homelessSightingsClusterId = RxInt(jsonResponse["Marker_cluster"]);
-        crimeClusterId = RxInt(jsonResponse["SOS_cluster"]);
+        crimeClusterId.value = jsonResponse["SOS_cluster"];
+        homelessSightingsClusterId.value = jsonResponse["Marker_cluster"];
 
-        print("CLuster Id: $crimeClusterId");
-
-        // Getting the Crime Cluster Markers
-        if (crimeClusterId != -2) {
-          // await crimeIncidentsMarker();
-        }
-        if (homelessSightingsClusterId != -2) {
-          // await homelessSightingsMarker();
-        }
+        debugPrint("CLuster Id: $homelessSightingsClusterId");
       } else {
         debugPrint("Request failed with status: ${response.statusCode}");
       }
@@ -78,14 +84,14 @@ class HomeStatsRatingController extends GetxController {
       }
 
       // Reference to the 'Markers' collection
-      CollectionReference markersCollection =
-          FirebaseFirestore.instance.collection('Markers');
+      CollectionReference sosCollection =
+          FirebaseFirestore.instance.collection('SOS_Reports');
 
-      debugPrint("Cluster ID: ${crimeClusterId?.value}");
+      debugPrint("Cluster ID: ${crimeClusterId.value}");
 
       // Query documents where the 'cluster_id' field is equal to 2
-      QuerySnapshot querySnapshot = await markersCollection
-          .where('cluster', isEqualTo: crimeClusterId?.value)
+      QuerySnapshot querySnapshot = await sosCollection
+          .where('cluster', isEqualTo: crimeClusterId.value)
           .get();
 
       // Loop through the documents
@@ -113,8 +119,6 @@ class HomeStatsRatingController extends GetxController {
           "image": imageFile
         });
 
-        crimeNumber.value++;
-
         // Print or use the document data as needed
         debugPrint('Document ID: ${document.id}, Data: $data');
       }
@@ -137,7 +141,7 @@ class HomeStatsRatingController extends GetxController {
       CollectionReference markersCollection =
           FirebaseFirestore.instance.collection('Markers');
 
-      debugPrint("Homeless Sightings ID: ${homelessSightingsClusterId?.value}");
+      debugPrint("Homeless Sightings ID: ${homelessSightingsClusterId.value}");
 
       // Query documents where the 'cluster_id' field is equal to 2
       QuerySnapshot querySnapshot = await markersCollection
@@ -167,8 +171,6 @@ class HomeStatsRatingController extends GetxController {
           "desc": data["description"],
           "image": imageFile
         });
-
-        homelessSightingsNumber.value++;
 
         // Print or use the document data as needed
         debugPrint('Document ID: ${document.id}, Data: $data');

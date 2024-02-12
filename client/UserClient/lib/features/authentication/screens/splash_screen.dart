@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 3000),
     );
 
     _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(

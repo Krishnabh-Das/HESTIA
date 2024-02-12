@@ -14,8 +14,9 @@ class CrimeIncidents extends StatelessWidget {
   }
 
   Future<void> crimeIncidentsInit() async {
-    if (homeStatsRatingController.crimeClusterId?.value != null &&
-        homeStatsRatingController.crimeClusterId?.value != -2) {
+    debugPrint(
+        "homeStatsRatingController.crimeClusterId.value: ${homeStatsRatingController.crimeClusterId.value}");
+    if (homeStatsRatingController.crimeClusterId.value != -2) {
       await homeStatsRatingController.crimeIncidentsMarker();
     }
   }
@@ -23,6 +24,12 @@ class CrimeIncidents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Center(child: Text("Coming Soon")),
+    );
+  }
+}
+/*
+Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 15, 69, 79),
         automaticallyImplyLeading: false,
@@ -71,12 +78,14 @@ class CrimeIncidents extends StatelessWidget {
             ),
 
             // --Marker Post List
-            StatsPostList(
-                homeStatsRatingList:
-                    homeStatsRatingController.crimeMarkerMapList)
+            Obx(
+              () => StatsPostList(
+                  homeStatsRatingList:
+                      homeStatsRatingController.crimeMarkerMapList),
+            )
           ],
         ),
       ),
     );
-  }
-}
+  
+*/ 

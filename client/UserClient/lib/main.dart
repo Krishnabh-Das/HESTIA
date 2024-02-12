@@ -66,6 +66,8 @@ class App extends StatelessWidget {
     Get.put(HomeStatsRatingController());
     Get.put(CommunityController());
 
+    MarkerMapController.instance.initData();
+
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.system,

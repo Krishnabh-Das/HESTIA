@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/screens/home/home_stats/crime_incidents.dart';
+import 'package:hestia/features/core/screens/home/home_stats/events_organized.dart';
 import 'package:hestia/features/core/screens/home/home_stats/homeless_sightings.dart';
 import 'package:hestia/features/core/screens/home/widgets/cart.dart';
 import 'package:hestia/features/core/screens/home/widgets/home_header_map_with_buttons.dart';
@@ -107,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                   number: 6,
                   rating: 4.8,
                   color: Colors.yellow,
-                  onPressed: () {},
+                  onPressed: () => Get.to(() => EventsOrganized()),
                 ),
 
                 Obx(

@@ -10,12 +10,14 @@ class HomelessSightings extends StatelessWidget {
   final HomeStatsRatingController homeStatsRatingController = Get.find();
 
   HomelessSightings({super.key}) {
-    HomelessSightingsInit();
+    if (homeStatsRatingController.homelessSightingsMarkerMapList.value != [])
+      homelessSightingsInit();
   }
 
-  Future<void> HomelessSightingsInit() async {
-    if (homeStatsRatingController.homelessSightingsClusterId?.value != null &&
-        homeStatsRatingController.homelessSightingsClusterId?.value != -2) {
+  Future<void> homelessSightingsInit() async {
+    print(
+        "homeStatsRatingController.homelessSightingsClusterId.value  ${homeStatsRatingController.homelessSightingsClusterId.value}");
+    if (homeStatsRatingController.homelessSightingsClusterId.value != -2) {
       await homeStatsRatingController.homelessSightingsMarker();
     }
   }
