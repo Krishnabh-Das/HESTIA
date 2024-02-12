@@ -8,6 +8,5 @@ class EventsOrganized extends StatelessWidget {
     return Scaffold(
       body: Center(child: Text("Coming Soon")),
     );
-    ;
   }
 }
