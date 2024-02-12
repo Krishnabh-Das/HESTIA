@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/common/getPlacemart.dart';
+import 'package:hestia/common/time_format.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
@@ -22,7 +23,6 @@ import 'package:hestia/data/repositories/firebase_query_repository/firebase_quer
 import 'package:hestia/features/core/screens/MarkerMap/AddMarkerDetailsScreen.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -127,7 +127,26 @@ class MarkerMapController extends GetxController {
   Future<void> initData() async {
     print("Init is called");
 
+    // Getting Profile Image
     await getUserLocation();
+
+    await settingsController.instance
+        .getProfileImageFromBackend()
+        .then((value) {
+      isProfileImageLoaded.value = true;
+
+      settingsController.instance.profileImage.value = value;
+    });
+
+    await createAndAddCurrMarker();
+
+    // Getting Markers
+    await makeMarkersFromJson();
+
+    // Sequential Trigger of Rate -- than -- Getting Markers
+    await HomeStatsRatingController.instance.getHomelessSightingsRate(
+        MarkerMapController.instance.currPos.value!.latitude,
+        MarkerMapController.instance.currPos.value!.longitude);
 
     await getPlacemarks(MarkerMapController.instance.currPos.value!.latitude,
             MarkerMapController.instance.currPos.value!.longitude)
@@ -137,22 +156,6 @@ class MarkerMapController extends GetxController {
     searchController.addListener(() {
       onChange(uuid);
     });
-
-    await settingsController.instance
-        .getProfileImageFromBackend()
-        .then((value) {
-      isProfileImageLoaded.value = true;
-
-      settingsController.instance.profileImage.value = value;
-    });
-    await createAndAddCurrMarker();
-
-    await makeMarkersFromJson();
-
-    // Sequential Trigger of Rate -- than -- Getting Markers
-    await HomeStatsRatingController.instance.getHomelessSightingsRate(
-        MarkerMapController.instance.currPos.value!.latitude,
-        MarkerMapController.instance.currPos.value!.longitude);
   }
 
   // Add Markers when tapped
@@ -515,6 +518,7 @@ class MarkerMapController extends GetxController {
                               text: "Error Uploding Data in Database: $error",
                               icon: Icons.clear_sharp,
                               duration: 2000));
+
                       await FirebaseQueryForUsers()
                           .deleteMarkerFromFirestoreUsers(markerid)
                           .onError((error, stackTrace) => showCustomToast(
@@ -542,6 +546,7 @@ class MarkerMapController extends GetxController {
                       settingsController.instance.totalPost.value =
                           --settingsController.instance.totalPost.value;
 
+                      // ignore: use_build_context_synchronously
                       showCustomToast(context,
                           color: Colors.green.shade400,
                           text: "Deletion Successful",
@@ -559,17 +564,6 @@ class MarkerMapController extends GetxController {
         ),
       ),
     );
-  }
-
-  // Time Stamp Format 11:15 AM, 12 Sept, 2023
-  String formatTimestamp(Timestamp timestamp) {
-    DateTime dateTime = timestamp.toDate();
-
-    String formattedTime = DateFormat.jm().format(dateTime); // Format: 11:15 AM
-    String formattedDate =
-        DateFormat('d MMM, y').format(dateTime); // Format: 12 Sept, 2023
-
-    return '$formattedTime, $formattedDate';
   }
 
   // -- Bottom Sheet for getting Marker Details

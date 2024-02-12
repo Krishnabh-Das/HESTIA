@@ -5,8 +5,6 @@ class EventsOrganized extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: const Text("Coming Soon............"),
-    );
+    return const Text("Coming Soon............");
   }
 }

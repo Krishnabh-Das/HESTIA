@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_query_for_profile/firebase_query_for_profile.dart';
 import 'package:hestia/data/repositories/firebase_query_repository/firebase_query_for_users.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/personalization/screens/settings/widgets/indivitual_user_post.dart';
 import 'package:path_provider/path_provider.dart';
 
 class settingsController extends GetxController {
@@ -14,6 +16,7 @@ class settingsController extends GetxController {
   Rx<bool> isPostSelected = true.obs;
 
   RxList<dynamic> settingsUserPostDetails = <dynamic>[].obs;
+  RxList<dynamic> settingsUserPostDetailsWithWidget = <dynamic>[].obs;
 
   Rx<int> totalPost = 0.obs;
 
@@ -24,7 +27,6 @@ class settingsController extends GetxController {
 
   // -----------------------   FUNCTIONS   --------------------------
   Future<void> getSettingsUserPostData() async {
-    List<dynamic> returnList = <dynamic>[];
     final markers = await FirebaseQueryForUsers().getMarkersFromUsers();
     for (var marker in markers) {
       var imageUrl = marker["imageUrl"];
@@ -45,10 +47,24 @@ class settingsController extends GetxController {
         "desc": description,
         "address": marker["address"]
       };
-      returnList.add(userPostData);
-    }
 
-    settingsUserPostDetails.value = returnList;
+      settingsUserPostDetails.value.add(userPostData);
+
+      settingsUserPostDetailsWithWidget.value.add(
+        Column(
+          children: [
+            IndivitualUserPost(
+              image: image,
+              description: description,
+              address: marker["address"],
+            ),
+            const SizedBox(
+              height: 15,
+            )
+          ],
+        ),
+      );
+    }
   }
 
   Future<void> getSettingsUserProfileDetails() async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:share_plus/share_plus.dart';
 
 class halfMapSearchButton extends StatelessWidget {
   const halfMapSearchButton({
@@ -17,7 +18,7 @@ class halfMapSearchButton extends StatelessWidget {
           decoration:
               const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
           child: IconButton(
-              onPressed: () {},
+              onPressed: () async {},
               icon: const Icon(
                 Iconsax.search_normal,
                 color: MyAppColors.darkBlack,

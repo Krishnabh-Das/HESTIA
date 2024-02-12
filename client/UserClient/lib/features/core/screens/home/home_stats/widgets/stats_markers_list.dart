@@ -26,6 +26,7 @@ class StatsPostList extends StatelessWidget {
                 image: map["image"],
               )
             ],
+            // ignore: invalid_use_of_protected_member
             if (homeStatsRatingList.value.isEmpty) ...[
               const SizedBox(
                 height: 100,

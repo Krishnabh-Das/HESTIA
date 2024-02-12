@@ -171,6 +171,7 @@ class AddMarkerDetailsScreen extends StatelessWidget {
                       icon: BitmapDescriptor.defaultMarker));
 
                   // Updating the setttings Post
+                  // ignore: invalid_use_of_protected_member
                   settingsController.instance.settingsUserPostDetails.value.add(
                       {"image": image, "desc": desc.text, "address": address});
 

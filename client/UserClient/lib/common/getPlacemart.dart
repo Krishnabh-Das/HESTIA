@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 
 Future<String> getPlacemarks(double lat, double long) async {
@@ -31,11 +32,11 @@ Future<String> getPlacemarks(double lat, double long) async {
       address += ', ${placemarks.reversed.last.country ?? ''}';
     }
 
-    print("Current address: $address");
+    debugPrint("Current address: $address");
 
     return address;
   } catch (e) {
-    print("Error getting placemarks: $e");
+    debugPrint("Error getting placemarks: $e");
     return "No Address";
   }
 }

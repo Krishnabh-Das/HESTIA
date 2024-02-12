@@ -9,7 +9,16 @@ import 'package:hestia/features/core/controllers/home_stats_ratings_controller.d
 class HomelessSightings extends StatelessWidget {
   final HomeStatsRatingController homeStatsRatingController = Get.find();
 
-  HomelessSightings({super.key});
+  HomelessSightings({super.key}) {
+    HomelessSightingsInit();
+  }
+
+  Future<void> HomelessSightingsInit() async {
+    if (homeStatsRatingController.homelessSightingsClusterId?.value != null &&
+        homeStatsRatingController.homelessSightingsClusterId?.value != -2) {
+      await homeStatsRatingController.homelessSightingsMarker();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +59,7 @@ class HomelessSightings extends StatelessWidget {
                 /// Current Address and Button
                 StatsHeaderCurrentAddressAndButton(
                   homeStatsRatingController: homeStatsRatingController,
-                  buttonText: "Add Hopeless Marker",
+                  buttonText: "Add Homeless Marker",
                   onPressed: () => Get.off(() => MarkerMapScreen(),
                       duration: Durations.extralong1, curve: Curves.easeInOut),
                 )

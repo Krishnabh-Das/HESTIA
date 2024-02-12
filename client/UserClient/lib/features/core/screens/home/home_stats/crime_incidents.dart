@@ -9,7 +9,16 @@ import 'package:hestia/features/core/screens/home/sos/sos_screen.dart';
 class CrimeIncidents extends StatelessWidget {
   final HomeStatsRatingController homeStatsRatingController = Get.find();
 
-  CrimeIncidents({super.key});
+  CrimeIncidents({super.key}) {
+    crimeIncidentsInit();
+  }
+
+  Future<void> crimeIncidentsInit() async {
+    if (homeStatsRatingController.crimeClusterId?.value != null &&
+        homeStatsRatingController.crimeClusterId?.value != -2) {
+      await homeStatsRatingController.crimeIncidentsMarker();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

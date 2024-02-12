@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
-import 'package:hestia/features/personalization/screens/settings/widgets/indivitual_user_post.dart';
-
 
 class UserPostsListView extends StatelessWidget {
   const UserPostsListView({
@@ -17,24 +14,12 @@ class UserPostsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => ListView.builder(
+        key: const PageStorageKey<String>('UserPostsListView'),
         itemBuilder: (_, index) {
-          return Obx(
-            () => Column(
-              children: [
-                IndivitualUserPost(
-                  image: settingsController1.settingsUserPostDetails[index]
-                      ["image"],
-                  description: settingsController1
-                      .settingsUserPostDetails[index]["desc"],
-                  address: settingsController1.settingsUserPostDetails[index]
-                      ["address"],
-                ),
-                const SizedBox(
-                  height: 15,
-                )
-              ],
-            ),
-          );
+          return Obx(() => settingsController1
+              // ignore: invalid_use_of_protected_member
+              .settingsUserPostDetailsWithWidget
+              .value[index]);
         },
         itemCount: settingsController1.settingsUserPostDetails.length,
         shrinkWrap: true,

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:intl/intl.dart';
@@ -16,14 +17,15 @@ class FirebaseQueryForUsers {
 
       final UploadTask uploadTask = userFireStoreReference.putFile(image);
 
-      await uploadTask.whenComplete(() => print('Image uploaded successfully'));
+      await uploadTask
+          .whenComplete(() => debugPrint('Image uploaded successfully'));
 
       // URL of the image
       String imageUrl = await userFireStoreReference.getDownloadURL();
 
       return imageUrl;
     } catch (error) {
-      print("Image Upload Error: $error");
+      debugPrint("Image Upload Error: $error");
       rethrow;
     }
   }
@@ -34,9 +36,9 @@ class FirebaseQueryForUsers {
       // Delete the file from Firebase Storage
       await FirebaseStorage.instance.ref().child(filePath).delete();
 
-      print('Image deleted successfully');
+      debugPrint('Image deleted successfully');
     } catch (e) {
-      print('Error deleting image: $e');
+      debugPrint('Error deleting image: $e');
     }
   }
 
@@ -58,7 +60,7 @@ class FirebaseQueryForUsers {
       DateTime now = DateTime.now();
       String formattedTime = DateFormat('hh:mm a, EEE, MM/yyyy').format(now);
 
-      print("Address of LATLNG: $address");
+      debugPrint("Address of LATLNG: $address");
 
       Map<String, dynamic> json = {
         'id': randomMarkerID,
@@ -80,14 +82,14 @@ class FirebaseQueryForUsers {
           .doc("$randomMarkerID")
           .set(json);
 
-      print("Added $json in User collection");
+      debugPrint("Added $json in User collection");
 
       // Sequencial Trigger of Functions (After User Adding the details in Markers)
       await FirebaseQueryForMarkers()
           .addMarkerToMarkers(json, userId, randomMarkerID);
-      print('Marker added successfully in Users!');
+      debugPrint('Marker added successfully in Users!');
     } catch (error) {
-      print('Error adding marker in Users: $error');
+      debugPrint('Error adding marker in Users: $error');
     }
   }
 
@@ -98,7 +100,7 @@ class FirebaseQueryForUsers {
 
       // Checking if user is signed in
       if (userId == null) {
-        print('User is not signed in.');
+        debugPrint('User is not signed in.');
         return;
       }
 
@@ -118,19 +120,19 @@ class FirebaseQueryForUsers {
         await markers.doc(snapshot.docs.first.id).delete();
         await FirebaseQueryForMarkers()
             .deleteMarkerFromFirestoreMarkers(markerId);
-        print('Marker document deleted successfully');
+        debugPrint('Marker document deleted successfully');
       } else {
-        print('Marker document not found in Firestore');
+        debugPrint('Marker document not found in Firestore');
       }
     } catch (e) {
-      print('Error deleting marker document: $e');
+      debugPrint('Error deleting marker document: $e');
     }
   }
 
   // Retrieve Marker details from Firestore (as List of Map)
   Future<List<Map<String, dynamic>>> getMarkersFromUsers() async {
     String? userId = AuthRepository().getUserId();
-    print("userId for settings: $userId");
+    debugPrint("userId for settings: $userId");
 
     try {
       final snapshot = await FirebaseFirestore.instance
@@ -144,17 +146,17 @@ class FirebaseQueryForUsers {
         markers.add(doc.data());
       }
 
-      print("heastia Markers: $markers");
+      debugPrint("heastia Markers: $markers");
       return markers;
     } catch (error) {
-      print('Error getting markers: $error');
+      debugPrint('Error getting markers: $error');
       return [];
     }
   }
 
   Future<Map<String, dynamic>> getProfileFromUsers() async {
     String? userId = AuthRepository().getUserId();
-    print("print user ID $userId");
+    debugPrint("print user ID $userId");
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection('Users')
@@ -164,7 +166,7 @@ class FirebaseQueryForUsers {
 
       return snapshot.docs[0].data();
     } catch (error) {
-      print('Error getting markers: $error');
+      debugPrint('Error getting markers: $error');
       return {};
     }
   }

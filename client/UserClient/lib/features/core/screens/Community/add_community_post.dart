@@ -1,23 +1,22 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:hestia/common/convert_assets_image_to_file.dart';
 import 'package:hestia/common/custom_toast_message.dart';
-import 'package:hestia/common/getPlacemart.dart';
+import 'package:hestia/common/image_compress.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/features/core/controllers/community_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
-import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/colors.dart';
+import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 class AddCommunityPost extends StatefulWidget {
-  AddCommunityPost({super.key});
+  const AddCommunityPost({super.key});
 
   @override
   State<AddCommunityPost> createState() => _AddCommunityPostState();
@@ -25,7 +24,8 @@ class AddCommunityPost extends StatefulWidget {
 
 class _AddCommunityPostState extends State<AddCommunityPost> {
   TextEditingController desc = TextEditingController();
-  var imageFile;
+  var imageFile = null;
+  var compressedImage = null;
   bool isImagePicked = false;
   bool isDonate = false;
   var communtiyController = CommunityController.instance;
@@ -59,8 +59,9 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
 
                   if (pickedFile != null) {
                     File image = File(pickedFile.path);
-                    setState(() {
+                    setState(() async {
                       imageFile = image;
+                      compressedImage = await compress(image, 22);
                       isImagePicked = true;
                     });
                   }
@@ -91,11 +92,11 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                       ),
                     ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 17,
             ),
 
-            // --Toggle Button ISDONATE
+            // --Toggle Button IS DONATE
             Padding(
               padding: const EdgeInsets.only(right: 8),
               child: Row(
@@ -118,7 +119,7 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 17,
             ),
             TextField(
@@ -158,14 +159,6 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                       )
                     : const Text("Post"),
                 onPressed: () async {
-                  communtiyController.communityIsLoading.value = true;
-
-                  showCustomToast(context,
-                      color: Colors.yellow.shade600,
-                      text: "Please Wait.......",
-                      icon: Icons.hourglass_empty,
-                      duration: 2000);
-
                   int randomMarkerID = DateTime.now().millisecondsSinceEpoch;
                   Timestamp time = Timestamp.now();
 
@@ -173,38 +166,59 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
 
                   // After getting uid do the Write Operation
                   try {
-                    var compressedImage =
-                        await communtiyController.compress(imageFile);
-
-                    await communtiyController.uploadImageToCommunityImages(
-                        imageFile, compressedImage, randomMarkerID);
+                    communtiyController.communityIsLoading.value = true;
 
                     DateTime now = DateTime.now();
 
                     // String formattedTime =
                     //     DateFormat('hh:mm a, EEE, MM/yyyy').format(now);
 
-                    Map<String, dynamic> json = {
-                      'postID': "U$randomMarkerID",
+                    dynamic nonFileProfileImage =
+                        settingsController.instance.profileImage.value ??
+                            await getImageFile(
+                                MyAppImages.profile2, "P$randomMarkerID");
+
+                    File profImage = await compress(nonFileProfileImage, 5);
+
+                    print("Profile Image compr: $profImage");
+
+                    await communtiyController.uploadImageToCommunityImages(
+                        imageFile, compressedImage, profImage, randomMarkerID);
+
+                    Map<String, dynamic> genericPostInfoJson = {
+                      'userID': AuthRepository().getUserId(),
                       'userName': settingsController.instance.name.value,
                       'time': time,
                       'desc': desc.text,
-                      "address": HomeStatsRatingController
+                      "current_address": HomeStatsRatingController
                           .instance.currentAddress.value,
-                      'like': 0,
+                      'likes': [],
                       'isDonate': isDonate,
                       'total_comments': 0,
                       "last_interaction_time": time,
-                      "NGO_post": false
+                      "isNGOPost": false,
+                    };
+
+                    Map<String, dynamic> communityPostJson = {
+                      "Generic_Post_Info": genericPostInfoJson,
+                      "Comments": {}
                     };
 
                     await FirebaseFirestore.instance
                         .collection('Community')
                         .doc("U$randomMarkerID")
-                        .collection('Generic_Post_Info')
-                        .add(json);
+                        .set(communityPostJson, SetOptions(merge: true));
 
                     communtiyController.communityIsLoading.value = false;
+
+                    communityPostJson["Generic_Post_Info"]["post_id"] =
+                        "U$randomMarkerID";
+                    communityPostJson["Generic_Post_Info"]["image"] = imageFile;
+                    communityPostJson["Generic_Post_Info"]["prof_image"] =
+                        profImage;
+
+                    communtiyController.listOfCommunityPost
+                        .insert(0, communityPostJson);
 
                     showCustomToast(context,
                         color: Colors.green.shade400,
@@ -214,7 +228,7 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
 
                     Navigator.pop(context);
 
-                    print("Added $json in Community collection");
+                    print("Added $genericPostInfoJson in Community collection");
 
                     print('Marker added successfully in Community!');
                   } catch (error) {

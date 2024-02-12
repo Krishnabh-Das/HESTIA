@@ -10,12 +10,17 @@ class ElevatedButtonWithIcon extends StatelessWidget {
     required this.onPressed,
     this.image = MyAppImages.markerImage,
     required this.text,
+    this.isImage = false,
+    this.textColor = Colors.white,
+    this.borderColor,
   });
 
   final double padding;
   final Color backgroundColor;
   final VoidCallback onPressed;
   final String image, text;
+  final bool isImage;
+  final Color? textColor, borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +29,26 @@ class ElevatedButtonWithIcon extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(padding),
           backgroundColor: backgroundColor,
+          side: borderColor != null
+              ? BorderSide(color: borderColor!)
+              : const BorderSide(color: MyAppColors.primary),
         ),
         onPressed: onPressed,
         child: Row(
           children: [
-            Image(
-              image: AssetImage(image),
-              fit: BoxFit.fitHeight,
-              height: 18,
-            ),
+            isImage
+                ? Image(
+                    image: AssetImage(image),
+                    fit: BoxFit.fitHeight,
+                    height: 18,
+                  )
+                : const SizedBox(),
             const SizedBox(
               width: 10,
             ),
             Text(
               text,
-              style: const TextStyle(fontSize: 13),
+              style: TextStyle(fontSize: 13, color: textColor),
             ),
           ],
         ),

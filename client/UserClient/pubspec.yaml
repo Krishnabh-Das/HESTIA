@@ -34,14 +34,17 @@ dependencies:
   # Page Indicator
   smooth_page_indicator: ^1.1.0
 
-  # Navigation Bar
-  curved_navigation_bar: ^1.0.3
+  # Share
+  share_plus: ^4.0.3
 
   # Read More
   readmore: ^2.2.0
 
   # Expandable Floating Button
   flutter_speed_dial: ^7.0.0
+
+  # Swipeable Button animation
+  page_transition: ^2.1.0
 
   # Text
   google_fonts: ^6.1.0

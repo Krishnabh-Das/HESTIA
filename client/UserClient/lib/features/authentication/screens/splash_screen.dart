@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
                   duration: const Duration(milliseconds: 1000),
                 )
               : Get.to(
-                  () => bottomNavBar(),
+                  () => BottomNavBar(),
                   transition: Transition.topLevel,
                   duration: const Duration(milliseconds: 1000),
                 );

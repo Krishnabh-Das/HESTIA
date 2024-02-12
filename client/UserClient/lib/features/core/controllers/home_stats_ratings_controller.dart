@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:get/get.dart';
@@ -19,7 +20,7 @@ class HomeStatsRatingController extends GetxController {
   Rx<int> homelessSightingsNumber = 0.obs;
   Rx<int> crimeNumber = 0.obs;
 
-  int? crimeClusterId, homelessSightingsClusterId, eventOrganizedClusterId;
+  RxInt? crimeClusterId, homelessSightingsClusterId, eventOrganizedClusterId;
   RxList crimeMarkerMapList = [].obs;
   RxList homelessSightingsMarkerMapList = [].obs;
   RxList eventsOrganizedMarkerMapList = [].obs;
@@ -40,28 +41,29 @@ class HomeStatsRatingController extends GetxController {
         var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         print(
             "Updated the Homeless Sightings Rate ${jsonResponse["marker_star"]}");
-        homelessSightingsRate.value = jsonResponse["marker_star"]
-            .toDouble(); // Updated the Homeless Sightings Rate
+
+        // Stats Rate
+        homelessSightingsRate.value = jsonResponse["marker_star"].toDouble();
         crimeRate.value = jsonResponse["SOS_Reports_star"].toDouble();
 
         // Cluster ID
-        homelessSightingsClusterId = jsonResponse["Marker_cluster"];
-        crimeClusterId = jsonResponse["SOS_cluster"];
+        homelessSightingsClusterId = RxInt(jsonResponse["Marker_cluster"]);
+        crimeClusterId = RxInt(jsonResponse["SOS_cluster"]);
 
         print("CLuster Id: $crimeClusterId");
 
         // Getting the Crime Cluster Markers
         if (crimeClusterId != -2) {
-          await crimeIncidentsMarker();
+          // await crimeIncidentsMarker();
         }
         if (homelessSightingsClusterId != -2) {
-          await homelessSightingsMarker();
+          // await homelessSightingsMarker();
         }
       } else {
-        print("Request failed with status: ${response.statusCode}");
+        debugPrint("Request failed with status: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error in getting Rates for Homeless Sightings $e");
+      debugPrint("Error in getting Rates for Homeless Sightings $e");
     }
   }
 
@@ -79,11 +81,11 @@ class HomeStatsRatingController extends GetxController {
       CollectionReference markersCollection =
           FirebaseFirestore.instance.collection('Markers');
 
-      print("Cluster ID: $crimeClusterId");
+      debugPrint("Cluster ID: ${crimeClusterId?.value}");
 
       // Query documents where the 'cluster_id' field is equal to 2
       QuerySnapshot querySnapshot = await markersCollection
-          .where('cluster', isEqualTo: crimeClusterId)
+          .where('cluster', isEqualTo: crimeClusterId?.value)
           .get();
 
       // Loop through the documents
@@ -102,7 +104,7 @@ class HomeStatsRatingController extends GetxController {
         File imageFile = File(path.join(imagePath, fileName));
         await imageFile
             .writeAsBytes(imageData)
-            .then((value) => print("Image File crime: $imageFile"));
+            .then((value) => debugPrint("Image File crime: $imageFile"));
 
         HomeStatsRatingController.instance.crimeMarkerMapList.add({
           "time": data["formattedTime"],
@@ -114,10 +116,10 @@ class HomeStatsRatingController extends GetxController {
         crimeNumber.value++;
 
         // Print or use the document data as needed
-        print('Document ID: ${document.id}, Data: $data');
+        debugPrint('Document ID: ${document.id}, Data: $data');
       }
     } catch (e) {
-      print('Error querying Firestore: $e');
+      debugPrint('Error querying Firestore: $e');
     }
   }
 
@@ -135,11 +137,11 @@ class HomeStatsRatingController extends GetxController {
       CollectionReference markersCollection =
           FirebaseFirestore.instance.collection('Markers');
 
-      print("Homeless Sightings ID: $homelessSightingsClusterId");
+      debugPrint("Homeless Sightings ID: ${homelessSightingsClusterId?.value}");
 
       // Query documents where the 'cluster_id' field is equal to 2
       QuerySnapshot querySnapshot = await markersCollection
-          .where('cluster', isEqualTo: homelessSightingsClusterId)
+          .where('cluster', isEqualTo: homelessSightingsClusterId?.value)
           .get();
 
       // Loop through the documents
@@ -157,7 +159,7 @@ class HomeStatsRatingController extends GetxController {
         final String fileName = '${data["id"]}.jpg'; // Specify a file name
         File imageFile = File(path.join(imagePath, fileName));
         await imageFile.writeAsBytes(imageData).then(
-            (value) => print("Image File Homeless Sightings: $imageFile"));
+            (value) => debugPrint("Image File Homeless Sightings: $imageFile"));
 
         HomeStatsRatingController.instance.homelessSightingsMarkerMapList.add({
           "time": data["formattedTime"],
@@ -169,10 +171,10 @@ class HomeStatsRatingController extends GetxController {
         homelessSightingsNumber.value++;
 
         // Print or use the document data as needed
-        print('Document ID: ${document.id}, Data: $data');
+        debugPrint('Document ID: ${document.id}, Data: $data');
       }
     } catch (e) {
-      print('Error querying Firestore: $e');
+      debugPrint('Error querying Firestore: $e');
     }
   }
 }

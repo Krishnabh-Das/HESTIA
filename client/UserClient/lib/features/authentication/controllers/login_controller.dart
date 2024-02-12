@@ -22,7 +22,7 @@ class LoginController extends GetxController {
   }
 
   void signin(BuildContext context) async {
-    print("Signing In...");
+    debugPrint("Signing In...");
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailString,
@@ -34,14 +34,13 @@ class LoginController extends GetxController {
             color: Colors.green.shade400,
             text: "Login Successful",
             icon: Iconsax.tick_circle);
-        Get.offAll(() => bottomNavBar());
+        Get.offAll(() => BottomNavBar());
       }
     } on FirebaseAuthException catch (e) {
-      print("Error signing in: $e");
+      debugPrint("Error signing in: $e");
+      // ignore: use_build_context_synchronously
       showCustomToast(context,
-          color: Colors.red.shade400,
-          text: e.code,
-          icon: Iconsax.close_square);
+          color: Colors.red.shade400, text: e.code, icon: Iconsax.close_square);
     }
   }
 }

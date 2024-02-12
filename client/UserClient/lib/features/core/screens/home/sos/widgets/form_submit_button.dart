@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/common/custom_toast_message.dart';
@@ -37,12 +36,12 @@ class SubmitButton extends StatelessWidget {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               MarkerMapController.instance.toggleIsLoading();
-              print("JSON Data:");
-              print("incidentDescription: ${descController.text}");
-              print("incidentAddress: ${addressController.text}");
-              print("position: ${sosMiniMapController.tappedPosition}");
-              print("incidentTime: $incidentTime");
-              print("incidentCategory: $crimeCategoryPicked");
+              debugPrint("JSON Data:");
+              debugPrint("incidentDescription: ${descController.text}");
+              debugPrint("incidentAddress: ${addressController.text}");
+              debugPrint("position: ${sosMiniMapController.tappedPosition}");
+              debugPrint("incidentTime: $incidentTime");
+              debugPrint("incidentCategory: $crimeCategoryPicked");
               await FirebaseQueryForSOS()
                   .saveData(
                       incidentDescription: descController.text,

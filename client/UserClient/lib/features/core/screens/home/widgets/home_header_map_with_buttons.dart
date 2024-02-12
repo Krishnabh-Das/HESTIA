@@ -55,6 +55,7 @@ class HomeHeaderMapWithButtons extends StatelessWidget {
                         halfMapController.halfMapGoogleMapController =
                             controller;
                       },
+                      // ignore: invalid_use_of_protected_member
                       markers: halfMapController.allHalfMapMarkers.value),
             ),
           ),
