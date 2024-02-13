@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +30,13 @@ Future<void> main() async {
         ),
       );
     } catch (e) {
-      print("Firebase Initialize App $e");
+      debugPrint("Firebase Initialize App $e");
     }
   } else {
     try {
       await Firebase.initializeApp();
     } catch (e) {
-      print("Firebase Initialize App $e");
+      debugPrint("Firebase Initialize App $e");
     }
   }
 
@@ -66,7 +67,10 @@ class App extends StatelessWidget {
     Get.put(HomeStatsRatingController());
     Get.put(CommunityController());
 
-    MarkerMapController.instance.initData();
+    if (FirebaseAuth.instance.currentUser != null &&
+        FirebaseAuth.instance.currentUser!.emailVerified) {
+      MarkerMapController.instance.initData();
+    }
 
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,

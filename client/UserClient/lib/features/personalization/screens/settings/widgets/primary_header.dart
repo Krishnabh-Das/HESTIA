@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/common/custom_toast_message.dart';
@@ -15,6 +17,7 @@ import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/device/device_utility.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 
 class PrimaryHeader extends StatelessWidget {
@@ -200,6 +203,25 @@ class PrimaryHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<File> assetToFile(String assetPath) async {
+    // Load the asset as a byte data
+    ByteData data = await rootBundle.load(assetPath);
+
+    // Get a list of bytes from the byte data
+    List<int> bytes = data.buffer.asUint8List();
+
+    // Create a file in a temporary directory
+    Directory tempDir = await getTemporaryDirectory();
+    String tempFilePath =
+        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}';
+    File tempFile = File(tempFilePath);
+
+    // Write the bytes to the file
+    await tempFile.writeAsBytes(bytes);
+
+    return tempFile;
   }
 
   Future<void> addNewCustomMarkerInMapScreens(File image) async {

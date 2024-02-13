@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
+import 'package:hestia/utils/formatters/formatter.dart';
+import 'package:http/http.dart';
 import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
@@ -209,5 +213,54 @@ class CommunityController extends GetxController {
 
     // Print the updated value after updating shares count
     print("Total Shares Updated inside addShare method:");
+  }
+
+  Future<String> reportPost(
+      String postId,
+      String reportType,
+      String description,
+      String reportedBy,
+      String postBy,
+      String timestamp) async {
+    try {
+      var url = Uri.https('hestiabackend-vu6qon67ia-el.a.run.app',
+          '/api/v2/community/report_post');
+
+      var payload = {
+        "postId": postId,
+        "report_type": reportType,
+        "description": description,
+        "reported_by": reportedBy,
+        "post_by": postBy,
+        "reported_at": timestamp
+      };
+
+      debugPrint("Report Payload: $payload");
+
+      var body = json.encode(payload);
+
+      var response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json; charset=utf-8'},
+        body: body,
+      );
+
+      String? result;
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+
+        result = MyAppFormatter.formatStringSpaces(jsonResponse['Status']);
+
+        debugPrint("Reply: ${jsonResponse['Status']}");
+      } else {
+        debugPrint("Request failed with status: ${response.statusCode}");
+      }
+
+      return result ?? "error";
+    } catch (e) {
+      debugPrint("Report Post Error: $e");
+      return "$e";
+    }
   }
 }

@@ -63,10 +63,11 @@ dependencies:
   location: ^5.0.3
   image_picker: ^1.0.5
   custom_info_window: ^1.0.1
-  uuid: ^4.3.1  # used to get the id of the device
+  uuid: ^4.2.2  # used to get the id of the device
   geocoding: ^2.1.1
   google_geocoding_api: ^1.4.1
   widget_to_marker: ^1.0.4
+  comment_box: ^0.0.18
   
 
 

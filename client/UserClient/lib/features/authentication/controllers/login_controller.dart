@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
+import 'package:hestia/features/authentication/screens/splash_screen.dart';
+import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:iconsax/iconsax.dart';
 
 class LoginController extends GetxController {
@@ -30,6 +32,10 @@ class LoginController extends GetxController {
       );
 
       if (_auth.auth.currentUser!.emailVerified) {
+        if (FirebaseAuth.instance.currentUser != null &&
+            FirebaseAuth.instance.currentUser!.emailVerified) {
+          MarkerMapController.instance.initData();
+        }
         showCustomToast(context,
             color: Colors.green.shade400,
             text: "Login Successful",

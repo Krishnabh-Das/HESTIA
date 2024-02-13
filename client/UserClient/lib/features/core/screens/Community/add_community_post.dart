@@ -59,11 +59,12 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
 
                   if (pickedFile != null) {
                     File image = File(pickedFile.path);
-                    setState(() async {
-                      imageFile = image;
-                      compressedImage = await compress(image, 22);
-                      isImagePicked = true;
-                    });
+
+                    imageFile = image;
+                    debugPrint("Picked Image Community: $imageFile");
+                    compressedImage = await compress(image, 22);
+                    isImagePicked = true;
+                    setState(() {});
                   }
                 } catch (e) {}
               },
@@ -168,25 +169,25 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                   try {
                     communtiyController.communityIsLoading.value = true;
 
-                    DateTime now = DateTime.now();
-
                     // String formattedTime =
                     //     DateFormat('hh:mm a, EEE, MM/yyyy').format(now);
 
-                    dynamic nonFileProfileImage =
+                    File nonFileProfileImage =
                         settingsController.instance.profileImage.value ??
                             await getImageFile(
                                 MyAppImages.profile2, "P$randomMarkerID");
 
+                    debugPrint("Asset to File: $nonFileProfileImage");
+
                     File profImage = await compress(nonFileProfileImage, 5);
 
-                    print("Profile Image compr: $profImage");
+                    debugPrint("Profile Image compr: $profImage");
 
                     await communtiyController.uploadImageToCommunityImages(
                         imageFile, compressedImage, profImage, randomMarkerID);
 
                     Map<String, dynamic> genericPostInfoJson = {
-                      'userID': AuthRepository().getUserId(),
+                      'userID': userId,
                       'userName': settingsController.instance.name.value,
                       'time': time,
                       'desc': desc.text,
@@ -234,6 +235,7 @@ class _AddCommunityPostState extends State<AddCommunityPost> {
                     print('Marker added successfully in Community!');
                   } catch (error) {
                     print('Error adding marker in Community: $error');
+                    communtiyController.communityIsLoading.value = false;
                   }
                 },
               ),
