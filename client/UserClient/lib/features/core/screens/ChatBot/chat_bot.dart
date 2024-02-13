@@ -41,9 +41,14 @@ class ChatScreen extends StatelessWidget {
             AllChats(chatController: chatController),
 
             // --User Message Text Field
-            CustomUserMsgTextField(
-                userMessageController: userMessageController,
-                chatController: chatController),
+            Positioned(
+              bottom: 5,
+              left: 0,
+              right: 0,
+              child: CustomUserMsgTextField(
+                  userMessageController: userMessageController,
+                  chatController: chatController),
+            ),
           ],
         ),
       ),

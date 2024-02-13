@@ -263,4 +263,27 @@ class CommunityController extends GetxController {
       return "$e";
     }
   }
+
+  Future<void> uploadUserComment(
+      String name, String comment, String userId, String postId) async {
+    try {
+      // Create the new comment map
+      Map<String, dynamic> commentJson = {
+        "name": name,
+        "userID": userId,
+        "description": comment,
+        "likes": [], // Assuming you still want to include likes in each comment
+      };
+
+      // Update the document by adding the new comment to the existing Comments array
+      await FirebaseFirestore.instance
+          .collection('Community')
+          .doc(postId)
+          .update({
+        'Comments': FieldValue.arrayUnion([commentJson])
+      });
+    } catch (e) {
+      debugPrint("User Comment Upload Error: $e");
+    }
+  }
 }

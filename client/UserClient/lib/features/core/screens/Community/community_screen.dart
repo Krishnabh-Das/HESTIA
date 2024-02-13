@@ -15,6 +15,7 @@ import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/features/core/controllers/community_controller.dart';
 import 'package:hestia/features/core/screens/Community/add_community_post.dart';
 import 'package:hestia/features/core/screens/MarkerMap/MapScreen.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/formatters/formatter.dart';
@@ -302,6 +303,8 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
   String? reportType;
   TextEditingController descController = TextEditingController();
   final _formKeyCommunity = GlobalKey<FormState>();
+  TextEditingController userMessageControllerCommunity =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -406,7 +409,7 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                               ),
                             ],
                             onSelected: (value) {
-                              ReportPostDialog(context);
+                              reportPostDialog(context);
                               debugPrint("Selected: $value");
                             },
                           )
@@ -469,7 +472,39 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                           const SizedBox(
                             width: 24,
                           ),
-                          Icon(Icons.comment),
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: Colors.teal.shade100,
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(30))),
+                                  builder: (context) => Container(
+                                        constraints: const BoxConstraints(
+                                            minHeight: 340),
+                                        child: Wrap(
+                                          children: [
+                                            CustomUserCommentTextField(
+                                              postId: widget.postId,
+                                              userMessageControllerCommunity:
+                                                  userMessageControllerCommunity,
+                                            ),
+                                            CommentMsgCommunity(
+                                                name: "Hello Mishra",
+                                                desc:
+                                                    "The human beings are always like this i know for sure mf"),
+                                            CommentMsgCommunity(
+                                                name: "Hello Mishra",
+                                                desc:
+                                                    "The human beings are always like i know for sure mf"),
+                                          ],
+                                        ),
+                                      ));
+                            },
+                            child: const Icon(Icons.comment),
+                          ),
                           const SizedBox(
                             width: 24,
                           ),
@@ -500,7 +535,7 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
     );
   }
 
-  Future<dynamic> ReportPostDialog(BuildContext context) {
+  Future<dynamic> reportPostDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) => Dialog(
@@ -635,6 +670,121 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                 ),
               ),
             ));
+  }
+}
+
+class CommentMsgCommunity extends StatelessWidget {
+  const CommentMsgCommunity({
+    super.key,
+    required this.name,
+    required this.desc,
+  });
+
+  final String name, desc;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6), color: Colors.white),
+      child: ListTile(
+        title: Text(
+          name,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        subtitle: Text(
+          desc,
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+        trailing: GestureDetector(
+            onTap: () {},
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                ),
+                SizedBox(
+                  width: 1,
+                ),
+                Text(
+                  "2",
+                  style: Theme.of(context).textTheme.labelSmall,
+                )
+              ],
+            )),
+      ),
+    );
+  }
+}
+
+class CustomUserCommentTextField extends StatelessWidget {
+  CustomUserCommentTextField({
+    super.key,
+    required this.postId,
+    required this.userMessageControllerCommunity,
+  });
+
+  final String postId;
+  final TextEditingController userMessageControllerCommunity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 60,
+      margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.white,
+          border: Border.all(width: 2, color: Colors.black45)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          children: [
+            // --User Text Form Field
+            Expanded(
+                flex: 9,
+                child: TextFormField(
+                  controller: userMessageControllerCommunity,
+                  style: const TextStyle(color: Colors.black87),
+                  decoration: const InputDecoration(
+                    hintText: "Type Your Message....",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                )),
+
+            // --User Text Upload IconButton
+            Expanded(
+                flex: 1,
+                child: IconButton(
+                    onPressed: () async {
+                      String name = settingsController.instance.name.value;
+                      String comment =
+                          userMessageControllerCommunity.text.toString();
+                      String userId = AuthRepository().getUserId()!;
+
+                      await CommunityController.instance
+                          .uploadUserComment(name, comment, userId, postId);
+                      userMessageControllerCommunity.text = "";
+                    },
+                    icon: const Icon(
+                      Icons.forward,
+                      color: MyAppColors.darkBlack,
+                    )))
+          ],
+        ),
+      ),
+    );
   }
 }
 

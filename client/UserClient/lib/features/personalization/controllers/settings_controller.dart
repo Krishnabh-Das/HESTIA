@@ -71,7 +71,8 @@ class settingsController extends GetxController {
     Map<String, dynamic> profileDetails =
         await FirebaseQueryForUsers().getProfileFromUsers();
 
-    print("Name & DOB: ${profileDetails["name"]}, ${profileDetails["dob"]}");
+    debugPrint(
+        "Name & DOB: ${profileDetails["name"]}, ${profileDetails["dob"]}");
 
     name.value = profileDetails["name"];
     dob.value = profileDetails["dob"];
@@ -119,7 +120,7 @@ class settingsController extends GetxController {
           ? imageFile
           : await getImageFromProfile(auth.currentUser!.uid, email);
 
-      print('Image added to cache: ${imageFile.path}');
+      debugPrint('Image added to cache:');
 
       return image;
     } catch (e) {
@@ -130,23 +131,29 @@ class settingsController extends GetxController {
   }
 
   Future<File?> getImageFromProfile(String userId, String email) async {
-    String imageUrl = "";
-    final userRef = FirebaseFirestore.instance
-        .collection('Users')
-        .doc(userId)
-        .collection('Profile');
+    try {
+      String imageUrl = "";
+      final userRef = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Profile');
 
-    final snapshot = await userRef.get();
+      final snapshot = await userRef.get();
 
-    if (snapshot.docs.isNotEmpty) {
-      for (QueryDocumentSnapshot doc in snapshot.docs) {
-        Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
+      if (snapshot.docs.isNotEmpty) {
+        for (QueryDocumentSnapshot doc in snapshot.docs) {
+          Map<String, dynamic> existingData =
+              doc.data() as Map<String, dynamic>;
 
-        imageUrl = existingData['imageURL'];
+          imageUrl = existingData['imageURL'];
+        }
+
+        return await MarkerMapController.instance.getImageFile(imageUrl, email);
+      } else {
+        return null;
       }
-
-      return await MarkerMapController.instance.getImageFile(imageUrl, email);
-    } else {
+    } catch (e) {
+      debugPrint("Profile Image Get Error: $e");
       return null;
     }
   }
