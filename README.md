@@ -2,6 +2,15 @@
 
 ![HESTIA COVER IMAGE](./assets/cover_image.jpg)
 
+<p align="center">
+  <img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="25" height="25"/>
+  <a href="https://drive.google.com/drive/folders/1W5xxgia2wo2nWwau3822tc9HDlfLKTMT?usp=sharing"><strong>Try out the Flutter App »</strong></a>
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
+  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+</p>
+
 ## Table of Contents
 1. [About HESTIA](#about-hestia)
 2. [Features](#features)
@@ -15,10 +24,10 @@
 ## About HESTIA
 
 ### Problem Statement
-Approximately 150 million people, or 2% of the world's population, are affected by homelessness, which is a global issue today. The fact that many are avoiding official registration out of fear of the law and social stigma make it difficult to accurately measure this situation. Poverty exacerbates the issue of homelessness in India, where over four million individuals are thought to be homeless; however, difficulties in gathering data may understate the issue. The situation is made worse by regional issues, such as the yearly floods in Assam, which force about 300,000 people into relief camps. In spite of the wonderful efforts made by many organizations, community involvement is essential. By encouraging community involvement and improving coordination across support systems, our prototype app aims to close this gap and address homelessness from a more inclusive perspective.
+Approximately 150 million people, or 2% of the world's population, are affected by homelessness, which is a global issue today. The fact that many are avoiding official registration out of fear of the law and social stigma makes it difficult to accurately measure this situation. Poverty exacerbates the issue of homelessness in India, where over four million individuals are thought to be homeless; however, difficulties in gathering data may understate the issue. The situation is made worse by regional issues, such as the yearly floods in Assam, which force about 300,000 people into relief camps. In spite of the wonderful efforts made by many organizations, community involvement is essential. By encouraging community involvement and improving coordination across support systems, our prototype app aims to close this gap and address homelessness from a more inclusive perspective.
 ### Solution
 
-We introduce **HESTIA**, a community based application that helps the community help homeless people by integrating various features that can help them.
+We introduce **HESTIA**, a community-based application that helps the community help homeless people by integrating various features that can help them.
 Through HESTIA, we promote the United Nations's sustainable goals - _1. No Poverty, 10. Reduced Inequalities, 11. Sustainable Cities and Communities, and 16. Peace, Justice and Strong Institutions_.
 ![UN SDGs](./assets/UN_SDG_Banner.png)
 
@@ -29,14 +38,14 @@ Our range of features include -
 
 * **Crowdsourced Geotag Time Series Database Creation** - Collaborative data collection for mapping homeless populations over time.
 * **Visualization through Region Maps and Markers** - Intuitive visual representation of homelessness trends using interactive maps and markers. These cover the regional stats in the form of -  total homeless sightings, crime incidents upon homeless people, upcoming events and functions organised by NGOs or Government Agencies, and finally a rating of the region determined by comprehensing the other fields.
-* **Awareness Chatbot** - A conversational interface providing general information, assistance, and awareness about homelessness. Also provides additional information regarding any schemes or subisidies announced for the benefit of the homeless.
-* **SOS System** - A reporting system that can sends alerts to dedicated portals for prompt assistance.
+* **Awareness Chatbot** - A conversational interface providing general information, assistance, and awareness about homelessness. Also provides additional information regarding any schemes or subsidies announced for the benefit of the homeless.
+* **SOS System** - A reporting system that can send alerts to dedicated portals for prompt assistance.
 * **Web Portals for Management** - Dedicated web portals for Admins and NGOs to interact with the database.
-  * **Admin Portals** - Admins can initiate database operations and manages region map generation, verification of markers, handling of SOS alerts, and provide data visualizations.
-  * **NGO Portals** - NGOs can create announcements or post events, query database for relevant information, and faciliate community interaction.
-* **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identifying potential criminals, identification of specific people who are need of required resources by NGOs or Government Agencies, or monitor suspicious individuals.
+  * **Admin Portals** - Admins can initiate database operations and manage region map generation, verification of markers, handling of SOS alerts, and providing data visualizations.
+  * **NGO Portals** - NGOs can create announcements or post events, query databases for relevant information, and facilitate community interaction.
+* **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identify potential criminals, identification of specific people who need required resources by NGOs or Government Agencies, or monitor suspicious individuals.
 * **Community Page** - Display events with address and time, post announcements, request donations, donate to causes, help find missing individuals, and general community engagement.
-* **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on a regional and global leaderboards.
+* **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on regional and global leaderboards.
 
 ![Application Screens](./assets/FINAL%20FEATURE%20LIST.png)
 
@@ -128,10 +137,10 @@ Our range of features include -
 
 ## Future Plans
 * Establish alliances with global organizations for increased use and promotion.
-* Adapt the platform to make it relevant worldwide and accessible to people of different clutlure and background.
+* Adapt the platform to make it relevant worldwide and accessible to people of different cultures and backgrounds.
 * Form business alliances to promote sponsorship and workforce collaboration.
 * Integrate social media for optimal reach and simple sharing.
-* Use innovative and advanced analytics tools to gain insights in realtime.
+* Use innovative and advanced analytics tools to gain insights in real-time.
 * Improve AI capabilities to provide more precise support.
 * Create agreements for data exchange with organizations.
 * Improve leaderboard functionality to maintain long-term user interest.
@@ -140,30 +149,15 @@ Our range of features include -
 
 
 ## Team HESTIA
-<div style="max-width: 800px;">
-<div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
 
-
-  <p align="center">
-  <a href="https://github.com/Tirthankar03">
-  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Tirthankar03.png" width="220" alt="Image 1">
-  </a>
-  <a href="https://github.com/Spritan">
-  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Spritan.png" width="220" alt="Image 2">
-  </a>
-  <a href="https://github.com/pparthiv">
-  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Pparthiv.png" width="220" alt="Image 3">
-  </a>
-  <a href="https://github.com/Krishnabh-Das">
-  <img src="https://github.com/Krishnabh-Das/HESTIA/blob/931070a97bcf0d027b07482cb63504bc959f8e03/assets/Krishnab.png" width="220" alt="Image 3">
-  </a>
-</p>
-    
-
-
+<div>
+  <table>
+    <tr>
+      <td><a href="https://github.com/Spritan"><img src="./assets/Spritan.png"></a></td>
+      <td><a href="https://github.com/Krishnabh-Das"><img src="./assets/Krishnab.png"></a></td>
+      <td><a href="https://github.com/pparthiv"><img src="./assets/Pparthiv.png"></a></td>
+      <td><a href="https://github.com/Tirthankar03"><img src="./assets/Tirthankar03.png"></a></td>
+    </tr>
+  </table>
 </div>
 
-
-
-
-</div>

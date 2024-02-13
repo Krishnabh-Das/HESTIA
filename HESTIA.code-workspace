@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "server/custom_backend"
+		},
+		{
+			"path": "client/AdminClient"
 		}
 	],
 	"settings": {
