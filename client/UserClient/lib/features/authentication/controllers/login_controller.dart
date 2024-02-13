@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
+import 'package:hestia/features/authentication/screens/splash_screen.dart';
+import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:iconsax/iconsax.dart';
 
 class LoginController extends GetxController {
@@ -22,7 +24,7 @@ class LoginController extends GetxController {
   }
 
   void signin(BuildContext context) async {
-    print("Signing In...");
+    debugPrint("Signing In...");
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailString,
@@ -30,18 +32,21 @@ class LoginController extends GetxController {
       );
 
       if (_auth.auth.currentUser!.emailVerified) {
+        if (FirebaseAuth.instance.currentUser != null &&
+            FirebaseAuth.instance.currentUser!.emailVerified) {
+          MarkerMapController.instance.initData();
+        }
         showCustomToast(context,
             color: Colors.green.shade400,
             text: "Login Successful",
             icon: Iconsax.tick_circle);
-        Get.offAll(() => bottomNavBar());
+        Get.offAll(() => BottomNavBar());
       }
     } on FirebaseAuthException catch (e) {
-      print("Error signing in: $e");
+      debugPrint("Error signing in: $e");
+      // ignore: use_build_context_synchronously
       showCustomToast(context,
-          color: Colors.red.shade400,
-          text: e.code,
-          icon: Iconsax.close_square);
+          color: Colors.red.shade400, text: e.code, icon: Iconsax.close_square);
     }
   }
 }

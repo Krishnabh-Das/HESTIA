@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/common/custom_toast_message.dart';
@@ -18,6 +17,7 @@ class SubmitButton extends StatelessWidget {
     required this.incidentTime,
     required this.crimeCategoryPicked,
     required this.imageFile,
+    this.isResolved = false,
   }) : _formKey = formKey;
 
   final GlobalKey<FormState> _formKey;
@@ -27,6 +27,7 @@ class SubmitButton extends StatelessWidget {
   final DateTime? incidentTime;
   final crimeCategoryPicked;
   final imageFile;
+  final bool isResolved;
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +38,12 @@ class SubmitButton extends StatelessWidget {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               MarkerMapController.instance.toggleIsLoading();
-              print("JSON Data:");
-              print("incidentDescription: ${descController.text}");
-              print("incidentAddress: ${addressController.text}");
-              print("position: ${sosMiniMapController.tappedPosition}");
-              print("incidentTime: $incidentTime");
-              print("incidentCategory: $crimeCategoryPicked");
+              debugPrint("JSON Data:");
+              debugPrint("incidentDescription: ${descController.text}");
+              debugPrint("incidentAddress: ${addressController.text}");
+              debugPrint("position: ${sosMiniMapController.tappedPosition}");
+              debugPrint("incidentTime: $incidentTime");
+              debugPrint("incidentCategory: $crimeCategoryPicked");
               await FirebaseQueryForSOS()
                   .saveData(
                       incidentDescription: descController.text,
@@ -51,7 +52,8 @@ class SubmitButton extends StatelessWidget {
                       incidentTime: incidentTime!,
                       incidentCategory: crimeCategoryPicked,
                       incidentImage: imageFile,
-                      senderID: AuthRepository().getUserId())
+                      senderID: AuthRepository().getUserId(),
+                      isResolved: isResolved)
                   .then((value) => showCustomToast(context,
                       color: Colors.green.shade400,
                       text: "SOS Alert Generated",

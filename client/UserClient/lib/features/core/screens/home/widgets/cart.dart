@@ -8,12 +8,14 @@ class Cart extends StatelessWidget {
     required this.number,
     required this.rating,
     required this.color,
+    this.onPressed,
   });
 
   final String title;
   final int number;
   final double rating;
   final Color color;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +80,7 @@ class Cart extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: onPressed,
                       icon: const Icon(
                         Icons.arrow_forward_ios_rounded,
                         color: Colors.black,

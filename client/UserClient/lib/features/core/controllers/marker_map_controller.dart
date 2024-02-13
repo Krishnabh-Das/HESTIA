@@ -3,13 +3,14 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hestia/common/custom_toast_message.dart';
+import 'package:hestia/common/getPlacemart.dart';
+import 'package:hestia/common/time_format.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_markers/firebase_queries_for_markers.dart';
 import 'package:hestia/data/repositories/firebase_queries_for_regionMap/firebase_queries_for_regionMap.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/custom_marker.dart';
-import 'package:hestia/features/core/screens/home/homeless_sightings/homeless_sightings.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/api_constant.dart';
 import 'package:hestia/utils/constants/sizes.dart';
@@ -22,7 +23,6 @@ import 'package:hestia/data/repositories/firebase_query_repository/firebase_quer
 import 'package:hestia/features/core/screens/MarkerMap/AddMarkerDetailsScreen.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -127,12 +127,9 @@ class MarkerMapController extends GetxController {
   Future<void> initData() async {
     print("Init is called");
 
+    // Getting Profile Image
     await getUserLocation();
 
-    searchController.addListener(() {
-      onChange(uuid);
-    });
-    await makeMarkersFromJson();
     await settingsController.instance
         .getProfileImageFromBackend()
         .then((value) {
@@ -140,9 +137,25 @@ class MarkerMapController extends GetxController {
 
       settingsController.instance.profileImage.value = value;
     });
+
     await createAndAddCurrMarker();
+
+    // Getting Markers
+    await makeMarkersFromJson();
+
+    // Sequential Trigger of Rate -- than -- Getting Markers
     await HomeStatsRatingController.instance.getHomelessSightingsRate(
-        currPos.value!.latitude, currPos.value!.longitude);
+        MarkerMapController.instance.currPos.value!.latitude,
+        MarkerMapController.instance.currPos.value!.longitude);
+
+    await getPlacemarks(MarkerMapController.instance.currPos.value!.latitude,
+            MarkerMapController.instance.currPos.value!.longitude)
+        .then((value) =>
+            HomeStatsRatingController.instance.currentAddress.value = value);
+
+    searchController.addListener(() {
+      onChange(uuid);
+    });
   }
 
   // Add Markers when tapped
@@ -505,6 +518,7 @@ class MarkerMapController extends GetxController {
                               text: "Error Uploding Data in Database: $error",
                               icon: Icons.clear_sharp,
                               duration: 2000));
+
                       await FirebaseQueryForUsers()
                           .deleteMarkerFromFirestoreUsers(markerid)
                           .onError((error, stackTrace) => showCustomToast(
@@ -532,6 +546,7 @@ class MarkerMapController extends GetxController {
                       settingsController.instance.totalPost.value =
                           --settingsController.instance.totalPost.value;
 
+                      // ignore: use_build_context_synchronously
                       showCustomToast(context,
                           color: Colors.green.shade400,
                           text: "Deletion Successful",
@@ -549,17 +564,6 @@ class MarkerMapController extends GetxController {
         ),
       ),
     );
-  }
-
-  // Time Stamp Format 11:15 AM, 12 Sept, 2023
-  String formatTimestamp(Timestamp timestamp) {
-    DateTime dateTime = timestamp.toDate();
-
-    String formattedTime = DateFormat.jm().format(dateTime); // Format: 11:15 AM
-    String formattedDate =
-        DateFormat('d MMM, y').format(dateTime); // Format: 12 Sept, 2023
-
-    return '$formattedTime, $formattedDate';
   }
 
   // -- Bottom Sheet for getting Marker Details

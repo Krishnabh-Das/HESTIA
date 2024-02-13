@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,6 @@ import 'package:hestia/features/personalization/screens/settings/widgets/post_ta
 import 'package:hestia/features/personalization/screens/settings/widgets/primary_header.dart';
 import 'package:hestia/features/personalization/screens/settings/widgets/profile_tab_button.dart';
 import 'package:hestia/features/personalization/screens/settings/widgets/user_post_list_view.dart';
-
 
 class SettingsScreen extends StatelessWidget {
   final settingsController settingsController1 = Get.find();
@@ -23,9 +21,9 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _initData() async {
     try {
       await settingsController1.getSettingsUserPostData();
-      print("User Post dat has been called");
+      debugPrint("User Post dat has been called");
     } catch (e) {
-      print("Settings Screen Error: $e");
+      debugPrint("Settings Screen Error: $e");
     }
     try {
       await settingsController1.getTotalPost();
@@ -35,7 +33,7 @@ class SettingsScreen extends StatelessWidget {
     try {
       await settingsController1.getSettingsUserProfileDetails();
     } catch (e) {
-      print("Settings Screen Error: $e");
+      debugPrint("Settings Screen Error: $e");
     }
   }
 
