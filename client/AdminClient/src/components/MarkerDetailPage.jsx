@@ -34,7 +34,7 @@ const MarkerDetailPage = () => {
     fetchData();
   }, [id]);
   
-  console.log("detailData>>>>>>>>>>>>>>>>>>>>", detailData);
+  // console.log("detailData>>>>>>>>>>>>>>>>>>>>", detailData);
   return (
     <Container maxWidth="md" 
     // sx={{backgroundColor: theme.palette.background.alt,}}

@@ -25,7 +25,7 @@ import {
 import mapImage from '../../assets/map_image.jpg'
 import CircularProgress from '@mui/material/CircularProgress';
 import { db} from "../../config/firebase";
-import Header from "components/Header";
+import Header from "../../components/Header";
 import axios from 'axios';
 
 
