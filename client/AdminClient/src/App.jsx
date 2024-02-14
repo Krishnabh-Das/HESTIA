@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { themeSettings } from "./config/theme";
 import Layout from "./scenes/layout";
@@ -19,7 +19,7 @@ import Signin from "./components/Signin";
 
 import './App.css'
 
-import {auth} from "./config/firebase";
+import {auth, generateToken, messaging} from "./config/firebase";
 
 import {
   onAuthStateChanged,
@@ -28,8 +28,49 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "./state/userSlice";
+import { onMessage } from "firebase/messaging";
+
+
+import {
+  Snackbar,
+} from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+
+
+import { Toaster, toast } from 'sonner'
+
+
+// import toast, { Toaster } from 'react-hot-toast';
+
 
 function App() {
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const [notification, setNotification] = useState({title: '', body: ''});
+  
+
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
+
+  useEffect(() => {
+    generateToken();
+    onMessage(messaging, (payload) => {
+      console.log("payload>>>>", payload);
+      // toast('Here is your toast.')
+      setSnackbarOpen(true);
+
+      setNotification({title: payload?.notification?.title, body: payload?.notification?.body});     
+
+    })
+  }, [])
+  
 
   const user = useSelector(selectUser);
 
@@ -41,9 +82,29 @@ function App() {
   // console.log("</> user  in App js>>>>>>>>>>>>>>>>>>>>>>>>>",user);
   // console.log("</> user email in App js>>>>>>>>>>>>>>>>>>>>>>>>>",user?.email);
 
-  console.log(auth?.currentUser?.uid);
+  // console.log(auth?.currentUser?.uid);
   return (
     <div className="app">
+                  <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <MuiAlert
+          elevation={6}
+          // variant="outlined"
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{ width: "500px" }} // Adjust the width as needed
+        >
+          <b><strong>{notification?.title}</strong></b>
+          <p>{notification?.body}</p>
+        </MuiAlert>
+      </Snackbar>
+
+      <Toaster richColors  position="bottom-center"/>
+
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -51,6 +112,13 @@ function App() {
           <Route path="/auth" element={user ? (<Navigate to="/"/>) : (<Signin/>)} />
             {/* <Route path="/auth" element={ !user ? <AuthPage/> : <Navigate to="/"/> }/> */}
             <Route element={<Layout />}>
+              
+
+
+
+
+
+
               <Route path="/" element={user? (<Navigate to="/dashboard" replace />):(<Navigate to="/auth" replace />)} />
               <Route path="/dashboard" element={user? (<Dashboard />): (<Navigate to="/auth" replace />)} />
               <Route path="/details/:id" element={user? (<DetailPage />): (<Navigate to="/auth" replace />)} />
