@@ -108,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                   number: 6,
                   rating: 4.8,
                   color: Colors.yellow,
-                  onPressed: () => Get.to(() => EventsOrganized()),
+                  onPressed: () => Get.to(() => const EventsOrganized()),
                 ),
 
                 Obx(

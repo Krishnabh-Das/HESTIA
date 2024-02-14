@@ -145,7 +145,7 @@ class HomeStatsRatingController extends GetxController {
 
       // Query documents where the 'cluster_id' field is equal to 2
       QuerySnapshot querySnapshot = await markersCollection
-          .where('cluster', isEqualTo: homelessSightingsClusterId?.value)
+          .where('cluster', isEqualTo: homelessSightingsClusterId.value)
           .get();
 
       // Loop through the documents

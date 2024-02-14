@@ -1,8 +1,6 @@
 // -- Get Image From URL (Use to get the firebase Storage Images)
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 Future<File> getImageFile(String assetImagePath, dynamic id) async {

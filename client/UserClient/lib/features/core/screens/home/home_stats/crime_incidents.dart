@@ -1,10 +1,6 @@
-import 'package:hestia/features/core/screens/home/home_stats/widgets/circular_score.dart';
-import 'package:hestia/features/core/screens/home/home_stats/widgets/current_address_and_button.dart';
-import 'package:hestia/features/core/screens/home/home_stats/widgets/stats_markers_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
-import 'package:hestia/features/core/screens/home/sos/sos_screen.dart';
 
 class CrimeIncidents extends StatelessWidget {
   final HomeStatsRatingController homeStatsRatingController = Get.find();
@@ -23,7 +19,7 @@ class CrimeIncidents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(child: Text("Coming Soon")),
     );
   }

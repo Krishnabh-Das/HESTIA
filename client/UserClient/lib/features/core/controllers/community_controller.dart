@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/utils/formatters/formatter.dart';
-import 'package:http/http.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -148,11 +147,12 @@ class CommunityController extends GetxController {
         return data;
       }).toList();
 
-      print("Load More Community post json: $listOfCommunityPostRetrieved");
+      debugPrint(
+          "Load More Community post json: $listOfCommunityPostRetrieved");
 
       listOfCommunityPost.addAll(listOfCommunityPostRetrieved);
     } catch (e) {
-      print("Error fetching load more community posts: $e");
+      debugPrint("Error fetching load more community posts: $e");
     }
   }
 
@@ -267,6 +267,9 @@ class CommunityController extends GetxController {
   Future<void> uploadUserComment(
       String name, String comment, String userId, String postId) async {
     try {
+      final storageRef =
+          FirebaseFirestore.instance.collection("Community").doc(postId);
+
       // Create the new comment map
       Map<String, dynamic> commentJson = {
         "name": name,
@@ -276,14 +279,33 @@ class CommunityController extends GetxController {
       };
 
       // Update the document by adding the new comment to the existing Comments array
-      await FirebaseFirestore.instance
-          .collection('Community')
-          .doc(postId)
-          .update({
+      await storageRef.update({
         'Comments': FieldValue.arrayUnion([commentJson])
+      });
+
+      await storageRef.update({
+        'Generic_Post_Info.total_comments': FieldValue.increment(1),
+      });
+
+      listOfCommunityPost.value
+          .where((val) => val["Generic_Post_Info"]["post_id"] == postId)
+          .forEach((val) {
+        debugPrint(
+            "val[Generic_Post_Info][total_comments]: ${val["Generic_Post_Info"]["total_comments"]}");
+        if (val["Generic_Post_Info"]["total_comments"] != null) {
+          val["Generic_Post_Info"]["total_comments"]++;
+          debugPrint(
+              "val[Generic_Post_Info][total_comments]: ${val["Generic_Post_Info"]["total_comments"]}");
+        } else {
+          val["Generic_Post_Info"]["total_comments"] = 0;
+          debugPrint(
+              "val[Generic_Post_Info][total_comments]: ${val["Generic_Post_Info"]["total_comments"]}");
+        }
       });
     } catch (e) {
       debugPrint("User Comment Upload Error: $e");
     }
   }
+
+  Future<void> getCommentsForPost() async {}
 }
