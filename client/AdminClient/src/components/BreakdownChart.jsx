@@ -57,8 +57,8 @@ const BreakdownChart = ({ isDashboard = false }) => {
   }, []);
   
   
-        console.log("sosLen inside breakdown chart------->>>>>>>>>>>>>>>>>>", sosLen);
-        console.log("sosList in breakdown chart---------->>>>>>>>>>>>>>>>>>", sosList);
+        // console.log("sosLen inside breakdown chart------->>>>>>>>>>>>>>>>>>", sosLen);
+        // console.log("sosList in breakdown chart---------->>>>>>>>>>>>>>>>>>", sosList);
 
 
 

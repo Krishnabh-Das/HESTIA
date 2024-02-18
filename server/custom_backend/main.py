@@ -8,13 +8,13 @@ from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, chat
+from api import auth, chat, community
 
 from db.mongodb_connect import connectDB
 
 from schemas.userSchema import userId
-from schemas.adminSchmeas import Initator
-from schemas.VizSchmeas import coordSchema
+from schemas.adminSchmea import Initator
+from schemas.vizSchmea import coordSchema
 from schemas.utilsSchema import getLocSchema
 from schemas.chatSchema import chatSchema, urlContextSchema
 
@@ -169,7 +169,6 @@ async def add_context_URL(urlContext: urlContextSchema):
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
 # ----------------------- Visualization  ------------------------#
 @app.post("/viz/getStatsByCoord", tags=["Visualization"])
 async def getStatsByCoord(coords: coordSchema):
@@ -270,7 +269,8 @@ async def User_Name(userId: userId):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
-
+# ------------------------- Community --------------------------#
+app.include_router(community.router, prefix="/api/v2", tags=["Community"])
 # --------------------------  Admin  ----------------------------#
 @app.put("/admin/regionMapGen", tags=["Admin"])
 def regionMapGen(Initator: Initator):

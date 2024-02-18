@@ -6,9 +6,9 @@ import {
   Search,
   ArrowDropDownOutlined,
 } from "@mui/icons-material";
-import FlexBetween from "components/FlexBetween";
+import FlexBetween from "./FlexBetween";
 import { useDispatch } from "react-redux";
-import { setMode } from "state";
+import { setMode } from "../state/index";
 import {
   AppBar,
   Button,
@@ -53,7 +53,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
 
       navigate('/auth')
   
-      console.log(auth?.currentUser?.email);
+      // console.log(auth?.currentUser?.email);
     } catch (err) {
       console.error(err);
     }

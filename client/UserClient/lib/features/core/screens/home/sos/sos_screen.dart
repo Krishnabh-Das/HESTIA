@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hestia/common/common_values.dart';
 import 'package:hestia/features/core/controllers/sos_mini_map_controller.dart';
 import 'package:hestia/features/core/screens/home/sos/widgets/form_submit_button.dart';
 import 'package:hestia/features/core/screens/home/sos/widgets/incident_address.dart';
@@ -18,20 +19,6 @@ class SOSScreen extends StatefulWidget {
 }
 
 class _SOSScreen extends State<SOSScreen> {
-  // List of Crime Categories
-  List<String> categories = <String>[
-    'Physical Assault',
-    'Verbal Abuse',
-    'Sexual Misconduct',
-    'Discrimination',
-    'Substance Abuse',
-    'Public Nuisance',
-    'Exploitation',
-    'Trafficking/Kidnapping',
-    'Bullying',
-    'Other'
-  ];
-
   bool isImagePicked = false;
   var imageFile;
   DateTime? incidentTime;
@@ -152,7 +139,7 @@ class _SOSScreen extends State<SOSScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Select Crime Category',
                       ),
-                      items: categories.map((String category) {
+                      items: CommonValues.categories.map((String category) {
                         return DropdownMenuItem<String>(
                           value: category,
                           child: Text(category),

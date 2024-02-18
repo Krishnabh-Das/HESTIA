@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
@@ -24,6 +25,6 @@ class SOSMiniMapController extends GetxController {
         position: position,
         icon: BitmapDescriptor.defaultMarker);
     markers.assignAll({tapMarker});
-    print("New mini tap marker: $tapMarker");
+    debugPrint("New mini tap marker: $tapMarker");
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import FlexBetween from "components/FlexBetween";
-import Header from "components/Header";
+import FlexBetween from "../../components/FlexBetween";
+import Header from "../../components/Header";
 import {
   DownloadOutlined,
   Email,
@@ -22,9 +22,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import BreakdownChart from "components/BreakdownChart";
-import OverviewChart from "components/OverviewChart";
-import StatBox from "components/StatBox";
+import BreakdownChart from "../../components/BreakdownChart";
+// import OverviewChart from "../../components/OverviewChart";
+import StatBox from "../../components/StatBox";
 
 // import { db, auth, storage } from "../../config/firebase";
 import { db, auth, storage } from "../../config/firebase";
@@ -87,18 +87,18 @@ const SosReportsRef = collection(db, "SOS_Reports")
 
     const sosStats = filteredData.length;
 
-    console.log("sosStats------------------->", sosStats);
+    // console.log("sosStats------------------->", sosStats);
 
 
 
-      console.log("data in getSos>>>>>>>>", data);
+      // console.log("data in getSos>>>>>>>>", data);
       setSosList(filteredData);
-      console.log("filtereddata in getSos>>>>>>>>", filteredData);
+      // console.log("filtereddata in getSos>>>>>>>>", filteredData);
 
       //this is showing empty as the filteddata has to be prosseced before
-      console.log("sosList in getSos>>>>>>>>", sosList);
+      // console.log("sosList in getSos>>>>>>>>", sosList);
 
-    console.log("||||||||||||||||||||||||||||");
+    // console.log("||||||||||||||||||||||||||||");
 
     return {sosStats, filteredData};
 
@@ -110,7 +110,7 @@ const SosReportsRef = collection(db, "SOS_Reports")
 
   const sosStats = sosList.length;
 
-  console.log("sosStats ------------------>", sosStats);
+  // console.log("sosStats ------------------>", sosStats);
 
 
 
@@ -134,7 +134,7 @@ const SosReportsRef = collection(db, "SOS_Reports")
   
       const markerStats = filteredData.length;
   
-      console.log("markerStats------------------->", markerStats);
+      // console.log("markerStats------------------->", markerStats);
 
       return markerStats;
 
@@ -167,7 +167,7 @@ const SosReportsRef = collection(db, "SOS_Reports")
 
       const regionStats = filteredData.length;
 
-      console.log("regionStats------------------->", regionStats);
+      // console.log("regionStats------------------->", regionStats);
 
       return regionStats;
     }catch(err){
@@ -179,11 +179,11 @@ const SosReportsRef = collection(db, "SOS_Reports")
   useEffect(() => {
     const fetchData = async () => {
       const regionStats = await getRegionStats();
-      console.log("regionStats in useEffect", regionStats);
+      // console.log("regionStats in useEffect", regionStats);
       setRegionLen(regionStats)
 
       const markerStats = await getMarkerStats();
-      console.log("markerStats in useEffect", markerStats);
+      // console.log("markerStats in useEffect", markerStats);
       setMarkerLen(markerStats)
 
       const {sosStats, filteredData}= await getSosReportsList();
@@ -195,8 +195,8 @@ const SosReportsRef = collection(db, "SOS_Reports")
 
       setSosList(filteredData)
 
-      console.log("sosLen in useEffect", sosLen);
-      console.log("sosList in useEffect", sosList);
+      // console.log("sosLen in useEffect", sosLen);
+      // console.log("sosList in useEffect", sosList);
 
       // setMarkerLen(markerStats)
       // Now you can set the state or perform any other logic with regionStats
@@ -206,8 +206,8 @@ const SosReportsRef = collection(db, "SOS_Reports")
   }, []);
 
 
-  console.log("sosLen in outside", sosLen);
-  console.log("sosList in outside", sosList);
+  // console.log("sosLen in outside", sosLen);
+  // console.log("sosList in outside", sosList);
 
 
 
@@ -219,9 +219,9 @@ const handleRowSelection = (selection) => {
   // Assuming you want to navigate when a single row is selected
   if (selection.length === 1) {
     const selectedRowIndex = selection[0];
-    console.log("selectedRowIndex>>>>>>>>>>>>>>>>>>>>",selectedRowIndex );
+    // console.log("selectedRowIndex>>>>>>>>>>>>>>>>>>>>",selectedRowIndex );
     const selectedRowData = sosList[selectedRowIndex];
-    console.log("Selected Row Data:", selectedRowData);
+    // console.log("Selected Row Data:", selectedRowData);
     // Navigate to a new page (you need to replace '/detail' with your actual detail page route)
     navigate(`/details/${selectedRowIndex}`);
   }
@@ -267,7 +267,7 @@ const handleRowSelection = (selection) => {
       <FlexBetween>
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
 
-        <Box>
+        {/* <Box>
           <Button
             sx={{
               backgroundColor: theme.palette.secondary.light,
@@ -280,7 +280,7 @@ const handleRowSelection = (selection) => {
             <DownloadOutlined sx={{ mr: "10px" }} />
             Download Reports
           </Button>
-        </Box>
+        </Box> */}
       </FlexBetween>
 
       <Box
