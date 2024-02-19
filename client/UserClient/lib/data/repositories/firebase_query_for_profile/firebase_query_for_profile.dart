@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -30,7 +31,7 @@ class firebaseQueryForProfile {
       // -- Upload Image url in Firestore
       await uploadImageinProfile(userId, imageUrl);
     } catch (error) {
-      print("Image Upload Error: $error");
+      debugPrint("Image Upload Error: $error");
       rethrow;
     }
   }
@@ -61,7 +62,7 @@ class firebaseQueryForProfile {
       }
     } catch (e) {
       // Handle exceptions
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
   }
 
@@ -80,10 +81,10 @@ class firebaseQueryForProfile {
 
       image.copySync(imageFile.path);
 
-      print('Image added to cache: ${imageFile.path}');
+      debugPrint('Image added to cache: ${imageFile.path}');
     } catch (e) {
       // Handle exceptions
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
   }
 
@@ -102,8 +103,7 @@ class firebaseQueryForProfile {
       if (snapshot.docs.isNotEmpty) {
         // Document exists, update the field
         for (var doc in snapshot.docs) {
-          Map<String, dynamic> existingData =
-              doc.data();
+          Map<String, dynamic> existingData = doc.data();
           existingData[type] = fieldValue;
           await userRef.doc(doc.id).set(existingData, SetOptions(merge: true));
         }
@@ -112,7 +112,7 @@ class firebaseQueryForProfile {
         await userRef.add({type: fieldValue});
       }
     } catch (e) {
-      print("updateProfileFieldsInProfile error: ${e.toString()}");
+      debugPrint("updateProfileFieldsInProfile error: ${e.toString()}");
     }
   }
 }

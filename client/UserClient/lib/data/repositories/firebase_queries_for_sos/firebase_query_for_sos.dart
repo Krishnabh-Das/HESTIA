@@ -23,6 +23,7 @@ class FirebaseQueryForSOS {
       required LatLng position,
       required DateTime incidentTime,
       required String incidentCategory,
+      required isResolved,
       File? incidentImage,
       String? senderID}) async {
     try {
@@ -53,7 +54,8 @@ class FirebaseQueryForSOS {
         "incidentTime": incidentTime,
         "incidentCategory": incidentCategory,
         "incidentImageLink": imageUrl,
-        "senderID": senderID
+        "senderID": senderID,
+        "IsResolved": isResolved
       });
       print("Report Submitted");
     } catch (err) {
