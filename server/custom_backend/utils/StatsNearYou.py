@@ -391,7 +391,7 @@ class statsNearYou:
                 res_dict.update(data2.to_dict())
                 res_dict.update(
                     {
-                        "Marker_cluster:": int(marker["cluster_label"]),  # type: ignore
+                        "Marker_cluster": int(marker["cluster_label"]),  # type: ignore
                         "SOS_cluster": int(SOS["cluster_label"]),  # type: ignore
                     }
                 )
@@ -406,7 +406,7 @@ class statsNearYou:
                 res_dict.update(
                     {
                         "SOS_cluster": int(SOS["cluster_label"]), # type: ignore
-                        "Marker_cluster:": int(-2),
+                        "Marker_cluster": int(-2),
                         "marker_star": int(5),
                         "marker_count": 0
                     }
