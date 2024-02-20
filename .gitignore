@@ -113,3 +113,7 @@ app.*.map.json
 
 **/AdminClient_
 notebooks/model.tflite
+notebooks/yolov8n.pt
+notebooks/installed_packages.txt
+notebooks/detection_pipeline.json
+notebooks/detection_pipeline.yaml
