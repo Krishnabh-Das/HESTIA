@@ -65,7 +65,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Create Events",
+    text: "CreateEvents",
     icon: <WorkIcon />,
   },
   {
