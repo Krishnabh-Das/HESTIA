@@ -83,6 +83,7 @@ function EventDetails() {
             width: '100%',
             padding: "0px", // Ensures the Card takes full width if maxWidth is not reached
             // margin: '0 auto', // Center the Card horizontally
+          position: 'relative'
           }}
         >
           <CardMedia
@@ -268,6 +269,7 @@ function EventDetails() {
 
 
 </Box>
+
             {/* <Box
                       display="flex"
                       alignItems="center"
@@ -278,6 +280,19 @@ function EventDetails() {
 
 
           </CardContent>
+
+          <Box position="absolute" top={10} right={10}> {/* Positioned the EditIcon button */}
+  <IconButton sx={{
+    background: '#fff',
+    '&:hover': {
+      background: '#eee', // Change the hover background color as needed
+    },
+  }}>
+    <EditIcon sx={{
+      color: '#000'
+    }}/>
+  </IconButton>
+</Box>
 
         </Card>
         
@@ -305,9 +320,7 @@ function EventDetails() {
     </Card> */}
       </Box>
 
-      <IconButton>
-      <EditIcon/>
-      </IconButton>
+
 
     </Box>
   );
