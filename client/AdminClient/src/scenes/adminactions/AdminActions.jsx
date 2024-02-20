@@ -51,7 +51,6 @@ import AdminActionsModal from '../../components/modals/AdminActionsModal'
     const user = useSelector(selectUser);
     console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.email);
     console.log("</>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user);
-    // const theme = useTheme();
     const theme = useTheme();
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);

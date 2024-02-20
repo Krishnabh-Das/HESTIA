@@ -17,9 +17,9 @@ import Markers from "./scenes/markers/Markers";
 import DetailPage from "./components/DetailPage";
 import MarkerDetailPage from "./components/MarkerDetailPage";
 import Signin from "./components/Signin";
-import DateTime from "./components/DateTime";
-
 import './App.css'
+
+import EventDetails from './scenes/eventDetails/EventDetails'
 
 import {auth} from "./config/firebase";
 
@@ -63,7 +63,7 @@ function App() {
               <Route path="/regionmap" element={user? (<Regionmap />): (<Navigate to="/auth" replace />)} />
               {/* <Route path="/admin" element={user? (<Admin />) : (<Navigate to="/auth" replace />)} /> */}
               <Route path="/createevents" element={user? (<CreateEvent />): (<Navigate to="/auth" replace />)} />
-              <Route path="/hi" element={user? (<DateTime />): (<Navigate to="/auth" replace />)} />
+              <Route path="/eventdetails" element={user? (<EventDetails />): (<Navigate to="/auth" replace />)} />
             </Route>
           </Routes>
         </ThemeProvider>
