@@ -69,7 +69,7 @@ const navItems = [
     icon: <WorkIcon />,
   },
   {
-    text: "Event Details",
+    text: "EventDetails",
     icon: <BarChartIcon />,
   },
 ];
