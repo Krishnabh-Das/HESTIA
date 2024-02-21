@@ -65,7 +65,7 @@ class SuccessScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onPressed,
                   child: Text(
-                    MyAppTexts.MyAppcontinue,
+                    MyAppTexts.myAppcontinue,
                     style: Theme.of(context)
                         .textTheme
                         .headlineSmall!

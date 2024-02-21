@@ -32,11 +32,11 @@ class SignupController extends GetxController {
 
   void signup() async {
     if (passwordString != confirmPasswordString) {
-      print("Password & Confirm Password doesn't match");
+      debugPrint("Password & Confirm Password doesn't match");
       return null;
     }
 
-    print("Signing up...");
+    debugPrint("Signing up...");
     _auth.signUpWithEmailAndPassword(
         emailString,
         passwordString,

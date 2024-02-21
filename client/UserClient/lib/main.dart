@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:hestia/bottom_nav_bar.dart';
-import 'package:hestia/features/authentication/screens/login/login_screen.dart';
-import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
 import 'package:hestia/features/authentication/screens/splash_screen.dart';
 import 'package:hestia/features/core/controllers/chatbot_controller.dart';
+import 'package:hestia/features/core/controllers/community_controller.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
 import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
@@ -22,34 +20,38 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: APIConstants.firebase_api_key,
-        appId: APIConstants.firebase_app_id,
-        projectId: APIConstants.firebase_project_id,
-        messagingSenderId: APIConstants.firebase_messaging_sender_id,
-      ),
-    );
+    try {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: APIConstants.firebase_api_key,
+          appId: APIConstants.firebase_app_id,
+          projectId: APIConstants.firebase_project_id,
+          messagingSenderId: APIConstants.firebase_messaging_sender_id,
+        ),
+      );
+    } catch (e) {
+      debugPrint("Firebase Initialize App $e");
+    }
   } else {
     try {
       await Firebase.initializeApp();
     } catch (e) {
-      print("Firebase Initialize App $e");
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-      runApp(const App());
+      debugPrint("Firebase Initialize App $e");
     }
   }
 
-  await GetStorage.init();
+  // Check if Firebase has been successfully initialized
+  if (Firebase.apps.isNotEmpty) {
+    // Initialize GetStorage
+    await GetStorage.init();
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  runApp(const App());
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    runApp(const App());
+  }
 }
 
 class App extends StatelessWidget {
@@ -63,12 +65,18 @@ class App extends StatelessWidget {
     Get.put(TokensController());
     Get.put(ChatBotController());
     Get.put(HomeStatsRatingController());
+    Get.put(CommunityController());
+
+    if (FirebaseAuth.instance.currentUser != null &&
+        FirebaseAuth.instance.currentUser!.emailVerified) {
+      MarkerMapController.instance.initData();
+    }
 
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.system,
         theme: MyAppTheme.lightTheme,
         darkTheme: MyAppTheme.darkTheme,
-        home: SplashScreen());
+        home: const SplashScreen());
   }
 }

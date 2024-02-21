@@ -18,7 +18,7 @@ import {
 } from "firebase/firestore";
 import CircularProgress from '@mui/material/CircularProgress';
 import { db, auth, storage } from "../../config/firebase";
-import Header from "components/Header";
+import Header from "../../components/Header";
 import { ref, uploadBytes } from "firebase/storage";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
@@ -37,6 +37,13 @@ import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../../st
 import {
   onAuthStateChanged,
 } from "firebase/auth";
+
+
+import AdminActionsModal from '../../components/modals/AdminActionsModal'  
+
+
+
+
 
 
   const AdminActions = () => {
@@ -155,6 +162,8 @@ import {
     return (
       <Box m="1.5rem 2.5rem">
         <Header title="ADMIN ACTIONS" subtitle="trigger admin actions" />
+
+
         <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={snackbarOpen}
@@ -172,6 +181,8 @@ import {
         </MuiAlert>
       </Snackbar>
 
+
+
  
       {adminActionsList.length !== 0 ? (
         <Box
@@ -185,46 +196,87 @@ import {
             "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
           }}
         >
-          {adminActionsList.map(({ id, actionName, actionRoute }) => (
-            <Card
-              key={id}
-              sx={{
-                backgroundImage: "none",
-                backgroundColor: theme.palette.background.alt,
-                borderRadius: "0.55rem",
-              }}
-            >
-              <CardContent>
-                <Typography
-                  sx={{ fontSize: 20 }}
-                  color={theme.palette.grey[50]}
-                  gutterBottom
+          {adminActionsList.map(({ id, actionName, actionRoute, actionType }) => { 
+
+            switch (actionType) {
+              case 'url':
+                return(
+                  <Card
+                  key={id}
+                  sx={{
+                    backgroundImage: "none",
+                    backgroundColor: theme.palette.background.alt,
+                    borderRadius: "0.55rem",
+                  }}
                 >
-                  {actionName}
-                </Typography>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 20 }}
+                      color={theme.palette.grey[50]}
+                      gutterBottom
+                    >
+                      {actionName}
+                    </Typography>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="flex-end"
+                    >
+              <AdminActionsModal actionRoute={actionRoute}/>
+    
+                    </Box>
+                  </CardContent>
+                </Card> 
+                )                
+
+            
+              default:
+                return(
+                  <Card
+                  key={id}
+                  sx={{
+                    backgroundImage: "none",
+                    backgroundColor: theme.palette.background.alt,
+                    borderRadius: "0.55rem",
+                  }}
                 >
-                  <IconButton
-                    size="large"
-                    sx={{
-            backgroundColor: 'success.main',
-  }}
-                    onClick={() => handleAdminActionClick(actionRoute)}
-                  >
-                                      {loading ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      <ReplayIcon fontSize="inherit" />
-                    )}
-                  </IconButton>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 20 }}
+                      color={theme.palette.grey[50]}
+                      gutterBottom
+                    >
+                      {actionName}
+                    </Typography>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="flex-end"
+                    >
+                      <IconButton
+                        size="large"
+                        sx={{
+                backgroundColor: 'success.main',
+      }}
+                        onClick={() => handleAdminActionClick(actionRoute)}
+                      >
+                                          {loading ? (
+                          <CircularProgress size={24} color="inherit" />
+                        ) : (
+                          <ReplayIcon fontSize="inherit" />
+                        )}
+                      </IconButton>
+    
+                    </Box>
+                  </CardContent>
+                </Card> 
+                )
+
+            }
+
+          })} 
         </Box>
+        
       ) : (
         <CircularProgress />
       )}

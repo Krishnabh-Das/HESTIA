@@ -8,8 +8,8 @@ import Dashboard from "./scenes/dashboard";
 import Regionmap from "./scenes/regionmap";
 // import Admin from "scenes/admin";
 import SosReports from "./scenes/sosreports/SosReports";
-import AdminLogs from "./scenes/adminlogs/AdminLogs";
-import AdminActions from "./scenes/adminactions/AdminActions";
+// import AdminLogs from "./scenes/adminlogs/AdminLogs";
+// import AdminActions from "./scenes/adminactions/AdminActions";
 import CreateEvent from "./scenes/createEvent/CreateEvent";
 
 import Markers from "./scenes/markers/Markers";
@@ -17,6 +17,7 @@ import Markers from "./scenes/markers/Markers";
 import DetailPage from "./components/DetailPage";
 import MarkerDetailPage from "./components/MarkerDetailPage";
 import Signin from "./components/Signin";
+import DateTime from "./components/DateTime";
 
 import './App.css'
 
@@ -57,12 +58,12 @@ function App() {
               <Route path="/details/:id" element={user? (<DetailPage />): (<Navigate to="/auth" replace />)} />
               <Route path="/markers/:id" element={user? (<MarkerDetailPage/>) : (<Navigate to="/auth" replace />)} />
               <Route path="/sosreports" element={user? (<SosReports />): (<Navigate to="/auth" replace />)} />
-              <Route path="/adminlogs" element={user? (<AdminLogs />): (<Navigate to="/auth" replace />)} />
+             
               <Route path="/markers" element={user? (<Markers />): (<Navigate to="/auth" replace />)} />
               <Route path="/regionmap" element={user? (<Regionmap />): (<Navigate to="/auth" replace />)} />
               {/* <Route path="/admin" element={user? (<Admin />) : (<Navigate to="/auth" replace />)} /> */}
-              <Route path="/adminactions" element={user? (<AdminActions />) : (<Navigate to="/auth" replace />)} />
-              <Route path="/createEvent" element={user? (<CreateEvent />): (<Navigate to="/auth" replace />)} />
+              <Route path="/createevents" element={user? (<CreateEvent />): (<Navigate to="/auth" replace />)} />
+              <Route path="/hi" element={user? (<DateTime />): (<Navigate to="/auth" replace />)} />
             </Route>
           </Routes>
         </ThemeProvider>

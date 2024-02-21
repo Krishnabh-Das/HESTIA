@@ -27,7 +27,7 @@ class searchBar extends StatelessWidget {
           children: [
             TextFormField(
               controller: markerMapController.searchController,
-              style: TextStyle(color: MyAppColors.darkishGrey),
+              style: const TextStyle(color: MyAppColors.darkishGrey),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,

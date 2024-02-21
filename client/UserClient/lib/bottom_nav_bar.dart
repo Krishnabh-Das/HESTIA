@@ -6,16 +6,14 @@ import 'package:hestia/features/core/controllers/tokens_controller.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/ChatBot/chat_bot.dart';
-import 'package:hestia/features/core/screens/Tokens/tokens.dart';
+import 'package:hestia/features/core/screens/Community/community_screen.dart';
 import 'package:hestia/features/core/screens/home/home.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/features/personalization/screens/settings/settings_screen.dart';
 import 'package:iconsax/iconsax.dart';
 
-class bottomNavBar extends StatelessWidget {
-  bottomNavBar({super.key}) {
-    MarkerMapController.instance.initData();
-  }
+class BottomNavBar extends StatelessWidget {
+  BottomNavBar({super.key}) {}
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +29,7 @@ class bottomNavBar extends StatelessWidget {
         ChatBotController.instance.dispose();
         NavigationController.instance.dispose();
         HomeStatsRatingController.instance.dispose();
-        print("Will Pop Called");
+        debugPrint("Will Pop Called");
       },
       child: Scaffold(
         bottomNavigationBar: Obx(
@@ -39,7 +37,7 @@ class bottomNavBar extends StatelessWidget {
             destinations: const [
               NavigationDestination(icon: Icon(Iconsax.home), label: "Home"),
               NavigationDestination(
-                  icon: Icon(Icons.leaderboard_outlined), label: "Tokens"),
+                  icon: Icon(Icons.people_alt_outlined), label: "Community"),
               NavigationDestination(
                   icon: Icon(Icons.chat_bubble_outline_sharp),
                   label: "Chatbot"),
@@ -50,22 +48,22 @@ class bottomNavBar extends StatelessWidget {
             height: 80,
             selectedIndex: navBarController.selectedIndex.value,
             onDestinationSelected: (value) {
-              pageController.animateToPage(
-                value,
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.easeInOutCubicEmphasized,
-              );
+              // Set the selected index directly without animation
+              navBarController.selectedIndex.value = value;
+
+              // Jump directly to the selected page
+              pageController.jumpToPage(value);
             },
           ),
         ),
         body: PageView(
           controller: pageController,
-          physics: const NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           children: [
-            HomeScreen(),
-            Tokens(),
-            ChatScreen(),
-            SettingsScreen(),
+            HomeScreen(key: const PageStorageKey('Page1')),
+            CommunityScreen(key: const PageStorageKey('Page2')),
+            ChatScreen(key: const PageStorageKey('Page3')),
+            SettingsScreen(key: const PageStorageKey('Page4')),
           ],
           onPageChanged: (index) {
             navBarController.selectedIndex.value = index;

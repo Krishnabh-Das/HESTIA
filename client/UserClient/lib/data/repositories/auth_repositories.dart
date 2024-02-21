@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthRepository {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -9,10 +10,10 @@ class AuthRepository {
     return auth
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((UserCredential credential) {
-      print("Signed Up");
+      debugPrint("Signed Up");
       onSuccess();
     }).onError((error, stackTrace) {
-      print("$error");
+      debugPrint("$error");
     });
   }
 
@@ -22,10 +23,10 @@ class AuthRepository {
     return auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((UserCredential credential) {
-      print("Signed In");
+      debugPrint("Signed In");
       onSuccess();
     }).onError((error, stackTrace) {
-      print("$error");
+      debugPrint("$error");
     });
   }
 
