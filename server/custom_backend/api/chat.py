@@ -13,15 +13,18 @@ from utils.logingUtils import logger
 from utils.ragPipeline import (
     addDocVectorStore,
     getResponse,
+    getResponseUncontext,
     loaderToDoc,
     querySimilarSearch,
     loadURLdata,
 )
 from utils.llmHelper import (
     FireStoreInitiate,
+    GetAppInstrPromptTemplate,
     GetLLMChain,
     GetPromptTemplate,
     GetSummaryMemory,
+    checkTypeQuestion,
     model,
 )
 
@@ -44,25 +47,52 @@ async def chat_send(chat: chatSchema):
     user = chat.user
 
     try:
-        message_history = FireStoreInitiate(user_id=user, session_id=user)
-        summary_memory = GetSummaryMemory(
-            llm=model,
-            chat_memory=message_history,
-        )
-        logger.info("/chat/send: summary_memory iniated")
-        conversation = GetLLMChain(
-            llm=model, memory=summary_memory, prompt=GetPromptTemplate()
-        )
-        logger.info("/chat/send: conversation stated")
-        docs = querySimilarSearch(
-            question=question,
-        )
-        logger.info("/chat/send: Similarity search stated")
+        QuestionTypeJson = checkTypeQuestion(query=question)
+        # logger.info(pformat(QuestionTypeJson))
+        logger.info("Question checked")
+        
+        if QuestionTypeJson["question_type"] == "STATS":
+            res_json = {"reply": "Not Implemented yet."}
+            logger.info("Question type STATS")
+            return JSONResponse(content=res_json, status_code=200)
+        
+        if QuestionTypeJson["question_type"] == "APP_USAGE":
+            logger.info("Question type APP_USAGE")
+            message_history = FireStoreInitiate(user_id=user, session_id=user+"_APP_Info")
+            summary_memory = GetSummaryMemory(
+                llm=model,
+                chat_memory=message_history,
+            )
+            logger.info("/chat/send: summary_memory iniated")
+            conversation = GetLLMChain(
+                llm=model, memory=summary_memory, prompt=GetAppInstrPromptTemplate()
+            )
+            logger.info("/chat/send: conversation stated")
+            res = getResponseUncontext(conversation=conversation, question=question)
+            res_json = {"reply": res["text"]}
+            return JSONResponse(content=res_json, status_code=200)
 
-        res = getResponse(conversation=conversation, context=docs, question=question)
+        if QuestionTypeJson["question_type"] == "OTHER":
+            logger.info("Question type OTHER")
+            message_history = FireStoreInitiate(user_id=user, session_id=user)
+            summary_memory = GetSummaryMemory(
+                llm=model,
+                chat_memory=message_history,
+            )
+            logger.info("/chat/send: summary_memory iniated")
+            conversation = GetLLMChain(
+                llm=model, memory=summary_memory, prompt=GetPromptTemplate()
+            )
+            logger.info("/chat/send: conversation stated")
+            docs = querySimilarSearch(
+                question=question,
+            )
+            logger.info("/chat/send: Similarity search stated")
 
-        res_json = {"reply": res["text"]}
-        return JSONResponse(content=res_json, status_code=200)
+            res = getResponse(conversation=conversation, context=docs, question=question)
+
+            res_json = {"reply": res["text"]}
+            return JSONResponse(content=res_json, status_code=200)
 
     except Exception as e:
         traceback_str = traceback.format_exc()

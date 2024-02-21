@@ -91,3 +91,17 @@ def getResponse(conversation, context: list[str], question: str):
         str: Response from the conversation.
     """
     return conversation({"context": context, "question": question})
+
+def getResponseUncontext(conversation, question: str):
+    """
+    Get a response from the llm based on the provided context and question.
+
+    Args:
+        conversation: Language model conversation chain.
+        context (list[str]): List of context strings.
+        question (str): Question for the conversation.
+
+    Returns:
+        str: Response from the conversation.
+    """
+    return conversation({"question": question})
