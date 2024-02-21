@@ -30,7 +30,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchEvents, fetchPosts } from "../../api/Ngo";
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 function EventDetails() {
 
@@ -39,8 +39,8 @@ function EventDetails() {
 
 
 
-  const handleVolunteerClick = (option) => { 
-    navigate(`/eventdetailsvolunteer/:id/${option}`)
+  const handleVolunteerClick = (option, id) => { 
+    navigate(`/eventdetailsvolunteer/${id}/${option}`)
     // navigate(`/eventdetailsvolunteer`)
    }
 
@@ -48,9 +48,10 @@ function EventDetails() {
 
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
 
-  const handleAddressClick = () => { 
+  const handleAddressClick = (lat,long) => { 
     // window.location.href = 'https://www.google.com/maps?q=51.917168,-0.227051'
-    window.open('https://www.google.com/maps?q=51.917168,-0.227051', '_blank');
+    window.open(`https://www.google.com/maps?q=${lat},${long}`, '_blank');
+    // window.open('https://www.google.com/maps?q=51.917168,-0.227051', '_blank');
    } 
 
    const {
@@ -71,17 +72,18 @@ function EventDetails() {
       />
       <Box
         mt="20px"
-        display="grid"
-        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-        justifyContent="space-between"
-        rowGap="20px"
-        columnGap="1.33%"
+        display="flex"
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent="center"
+        gap={3}
         sx={{
           "& > div": { gridColumn:  "span 4" },
         }}
       >
    {isLoading ? <CircularProgress/> : 
     events.map((event) =>(
+
       <Card
         key={event.event_id}
       sx={{
@@ -101,7 +103,7 @@ function EventDetails() {
           alt="event"
           height="300"
           // width='500'
-          image={destination}
+          image={event.poster}
           //1
           // image={event.poster}
           sx={{
@@ -138,25 +140,33 @@ function EventDetails() {
   <Box display='flex' justifyContent='space-between' alignItems='center'>
   <Box>
   <Box display='flex' gap={1}>
-  <AlarmIcon color="secondary" sx={{ height: '100%', width: '20px'}}/>
-  <Typography variant="h5" >7:00 PM - 8:00 PM</Typography>
+  <CalendarMonthIcon color="secondary" sx={{ height: '100%', width: '20px'}}/>
+  <Typography variant="h5" >{event.fromDate}- {event.toDate}</Typography>
   </Box>
   
   </Box>
   
   <Box>
-  <IconButton sx={{backgroundColor: '#33de9a'}} onClick={handleAddressClick}>
+  <IconButton sx={{backgroundColor: '#33de9a'}} onClick={ () => handleAddressClick
+    (event.location._lat, event.location._long)
+    }>
       <RoomIcon sx={{color: 'white'}}/>
   </IconButton>
   </Box>
   </Box>
   
+  <Box display='flex' justifyContent='space-between' alignItems='center'>
+  <Box display='flex' gap={1}>
+  <AlarmIcon color="secondary" sx={{ height: '100%', width: '20px'}}/>
+  <Typography variant="h5" >{event.time}</Typography>
+  </Box>
+  </Box>
   
   <Box display='flex' justifyContent='space-between' alignItems='center'>
   <Box>
   <Box display='flex' gap={1}>
   <EmailIcon color="secondary" sx={{ height: '100%', width: '20px'}}/>
-  <Typography variant="h5" >test@gmail.com</Typography>
+  <Typography variant="h5" >{event.eventContact}</Typography>
   </Box>
   
   </Box>  
@@ -165,7 +175,7 @@ function EventDetails() {
   <Box display='flex' gap={1} alignItems='center' >
   <HandshakeIcon color="secondary" sx={{ height: '100%'}}/>
   <Box width='100px' display='flex' alignItems='flex-start' justifyContent='flex-start'>
-  <Typography variant="h5" >type </Typography>
+  <Typography variant="h5" >{event.type} </Typography>
   </Box>
   </Box>
   </Box> 
@@ -180,7 +190,7 @@ function EventDetails() {
                   size="medium"
                   label="Event Description"
                   variant="filled"
-                  value={'o implement the functionality you described, where tabs are created based on the option in the URL params, and the data grid displays a list of volunteers accordingly, you can follow these steps Parse the option from the URL params Use the parsed option to determine which tab should be active initially.Use the parsed option to filter the list of volunteers for each tabUpdate the data grid to display the filtered list of volunteers based on the active tab.Here how you can modify your EventDetailsVolunteer component to achieve this'}
+                  value={event.eventDescription}
                   // onChange={(e) => setEventDescription(e.target.value)}
                   multiline
                   rows={4}
@@ -223,7 +233,7 @@ function EventDetails() {
                       padding: "10px 20px",
                     }}
   
-                    onClick={() => handleVolunteerClick('pending')}
+                    onClick={() => handleVolunteerClick('pending', event.event_id)}
          >
            Pending
          </Button>
@@ -237,7 +247,7 @@ function EventDetails() {
                       fontWeight: "bold",
                       padding: "10px 20px",
                     }}
-                    onClick={() => handleVolunteerClick('accepted')}
+                    onClick={() => handleVolunteerClick('accepted',event.event_id)}
          >
            Accepted
          </Button>
@@ -274,6 +284,8 @@ function EventDetails() {
   </Box>
   
       </Card>
+
+
     ))
 }
 
