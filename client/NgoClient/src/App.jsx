@@ -26,7 +26,7 @@ import {auth} from "./config/firebase";
 import {
   onAuthStateChanged,
 } from "firebase/auth";
-
+import EventDetailsVolunteer from './components/EventDetailsVolunteer'
 import { useDispatch, useSelector } from "react-redux";
 
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "./state/userSlice";
@@ -64,6 +64,7 @@ function App() {
               {/* <Route path="/admin" element={user? (<Admin />) : (<Navigate to="/auth" replace />)} /> */}
               <Route path="/createevents" element={user? (<CreateEvent />): (<Navigate to="/auth" replace />)} />
               <Route path="/eventdetails" element={user? (<EventDetails />): (<Navigate to="/auth" replace />)} />
+              <Route path="/eventdetailsvolunteer/:id/:option" element={user? (<EventDetailsVolunteer />): (<Navigate to="/auth" replace />)} />
             </Route>
           </Routes>
         </ThemeProvider>

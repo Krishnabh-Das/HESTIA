@@ -16,6 +16,7 @@ import {
   Tooltip, 
   TextField
 } from "@mui/material";
+
 import {
   getDocs,
   collection,
@@ -24,6 +25,12 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+
+import { useNavigate } from 'react-router-dom';
+
+
+import EventDetailsVolunteer from '../../components/EventDetailsVolunteer'
+
 
 import destination from "../../assets/map_image.jpg";
 
@@ -38,6 +45,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 
 function EventDetails() {
+
+  const navigate = useNavigate();
+
+
+  const handleVolunteerClick = (option) => { 
+    navigate(`/eventdetailsvolunteer/:id/${option}`)
+    // navigate(`/eventdetailsvolunteer`)
+   }
+
   const theme = useTheme();
 
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
@@ -168,7 +184,7 @@ function EventDetails() {
                     size="medium"
                     label="Event Description"
                     variant="filled"
-                    defaultValue={'hi'}
+                    defaultValue={'o implement the functionality you described, where tabs are created based on the option in the URL params, and the data grid displays a list of volunteers accordingly, you can follow these steps Parse the option from the URL params Use the parsed option to determine which tab should be active initially.Use the parsed option to filter the list of volunteers for each tabUpdate the data grid to display the filtered list of volunteers based on the active tab.Here how you can modify your EventDetailsVolunteer component to achieve this'}
                     // onChange={(e) => setEventDescription(e.target.value)}
                     multiline
                     rows={4}
@@ -246,6 +262,8 @@ function EventDetails() {
                         fontWeight: "bold",
                         padding: "10px 20px",
                       }}
+
+                      onClick={() => handleVolunteerClick('pending')}
            >
              Pending
            </Button>
@@ -259,6 +277,7 @@ function EventDetails() {
                         fontWeight: "bold",
                         padding: "10px 20px",
                       }}
+                      onClick={() => handleVolunteerClick('accepted')}
            >
              Accepted
            </Button>
