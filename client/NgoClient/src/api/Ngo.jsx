@@ -32,10 +32,10 @@ import {
     }
 }
 
-   export async function fetchPosts() {
-    const response = await fetch('http://localhost:3000/posts');
-    return response.json()
-}
+//    export async function fetchPosts() {
+//     const response = await fetch('http://localhost:3000/posts');
+//     return response.json()
+// }
 
 
 export const fetchEventsById = async (ngoID) => {
@@ -58,7 +58,17 @@ export const fetchEventsById = async (ngoID) => {
 
 export const fetchVolunteers = async () => { 
     try {
-        
+        const volunteersRef = collection(db, "Volunteers");
+        const data = await getDocs(volunteersRef);
+
+
+        const filteredData = data.docs.map((doc) => ({
+            volunteer_id: doc.id,
+            ...doc.data(),
+          }));
+
+          return filteredData;
+
     } catch (err) {
         console.log('error in fetching events', err);
     }

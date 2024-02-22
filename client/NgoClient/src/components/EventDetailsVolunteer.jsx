@@ -21,9 +21,14 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
 
+import CancelIcon from '@mui/icons-material/Cancel';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../state/userSlice";
 
 import DataGridCustomToolbar from "../components/DataGridCustomToolbar";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Header from "../components/Header";
 
@@ -39,13 +44,16 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import HandshakeIcon from "@mui/icons-material/Handshake";
 
+
+import { fetchVolunteers } from "../api/Ngo";
+
 const EventDetailsVolunteer = () => {
     const user = useSelector(selectUser);
     console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.uid);
   const theme = useTheme();
   const { id, option } = useParams();
   const [activeTab, setActiveTab] = useState(0);
-  const [volunteers, setVolunteers] = useState([]);
+//   const [volunteers, setVolunteers] = useState([]);
 
   useEffect(() => {
     // Parse the option from the URL params and set the active tab accordingly
@@ -78,10 +86,54 @@ const EventDetailsVolunteer = () => {
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
+    { field: "status", headerName: "Status", flex: 1,
+    // renderCell: (params) => {
+    //   switch (params.status) {
+    //     case 'pending':
+    //         <h1>hi</h1>
+    //       break;
+    //     case 'accepted':
+    //         <h1>hi2</h1>
+    //     break;
+    //     case 'accepted':
+    //       <h1>hi3</h1>
+    //   break;
+    //     default:
+    //       break;
+    //   }
+    // }
+
+
+    renderCell: (params) => {
+      switch (params.value) {
+        case 'pending':
+          return <HourglassTopIcon sx={{color: '#EDD000'}}/>
+        case 'accepted':
+          return <VerifiedUserIcon sx={{color: '#5bff86'}}/>
+        case 'rejected':
+          return <CancelIcon sx={{color: 'red'}}/>
+        default:
+          return null;
+      }
+    }
+  },
     { field: "actions", headerName: "More details", flex: 1 },
     // Add more columns as needed
   ];
+
+
+  const {
+    isLoading,
+    isError,
+    data: volunteers,
+    error,
+  } = useQuery({
+    queryKey: ["volunteers"],
+    queryFn: fetchVolunteers 
+  });
+
+
+  console.log(volunteers);
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -126,9 +178,15 @@ const EventDetailsVolunteer = () => {
             <Tab label="Accepted" />
             <Tab label="Rejected" />
           </Tabs>
-          {activeTab === 0 && <DataGrid rows={volunteers} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
-          {activeTab === 1 && <DataGrid rows={volunteers} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
-          {activeTab === 2 && <DataGrid rows={volunteers} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+          {activeTab === 0 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'pending')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+
+          {activeTab === 1 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'accepted')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+
+
+          {activeTab === 2 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'rejected')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+        
+
+          
         </Box>
         
 

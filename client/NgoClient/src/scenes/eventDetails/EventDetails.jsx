@@ -29,7 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchEvents, fetchPosts, fetchEventsById } from "../../api/Ngo";
+import { fetchEvents, fetchEventsById } from "../../api/Ngo";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../../state/userSlice";
@@ -49,7 +49,6 @@ function EventDetails() {
   const theme = useTheme();
 
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
-2
   const handleAddressClick = (lat,long) => { 
     // window.location.href = 'https://www.google.com/maps?q=51.917168,-0.227051'
     window.open(`https://www.google.com/maps?q=${lat},${long}`, '_blank');
