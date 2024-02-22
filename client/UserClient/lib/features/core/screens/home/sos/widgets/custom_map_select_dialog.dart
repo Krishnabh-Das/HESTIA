@@ -89,6 +89,7 @@ class CustomMapSelectDialog extends StatelessWidget {
                                   sosMiniMapController
                                       .miniMapTapMarker(position);
                                 },
+                                // ignore: invalid_use_of_protected_member
                                 markers: sosMiniMapController.markers.value,
                               ),
                       ),

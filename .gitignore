@@ -23,7 +23,7 @@ notebooks/keys/*
 
 # Python related
 **/__pycache__
-
+**__pycache__**
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
@@ -112,3 +112,8 @@ app.*.map.json
 *.sw?
 
 **/AdminClient_
+notebooks/model.tflite
+notebooks/yolov8n.pt
+notebooks/installed_packages.txt
+notebooks/detection_pipeline.json
+notebooks/detection_pipeline.yaml

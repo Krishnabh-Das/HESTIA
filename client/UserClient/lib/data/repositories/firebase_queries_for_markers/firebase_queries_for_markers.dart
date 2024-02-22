@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 
 class FirebaseQueryForMarkers {
@@ -13,9 +14,9 @@ class FirebaseQueryForMarkers {
           .collection('Markers')
           .doc("$markerId")
           .set(json);
-      print('Marker added successfully in Markers!');
+      debugPrint('Marker added successfully in Markers!');
     } else {
-      print("User ID is null");
+      debugPrint("User ID is null");
     }
   }
 
@@ -23,13 +24,13 @@ class FirebaseQueryForMarkers {
     try {
       final snapshot =
           await FirebaseFirestore.instance.collection('Markers').get();
-      print("Markers retrieved from Markers");
+      debugPrint("Markers retrieved from Markers");
 
       return snapshot.docs
           .map((doc) => doc.data())
           .toList(); // List of all the Json
     } catch (error) {
-      print('Error getting markers: $error');
+      debugPrint('Error getting markers: $error');
       return [];
     }
   }
@@ -40,7 +41,7 @@ class FirebaseQueryForMarkers {
 
       // Checking if user is signed in
       if (userId == null) {
-        print('User is not signed in.');
+        debugPrint('User is not signed in.');
         return;
       }
 
@@ -56,12 +57,12 @@ class FirebaseQueryForMarkers {
       if (snapshot.docs.isNotEmpty) {
         // Delete the document
         await markers.doc(snapshot.docs.first.id).delete();
-        print('Marker document deleted successfully');
+        debugPrint('Marker document deleted successfully');
       } else {
-        print('Marker document not found in Firestore');
+        debugPrint('Marker document not found in Firestore');
       }
     } catch (e) {
-      print('Error deleting marker document: $e');
+      debugPrint('Error deleting marker document: $e');
     }
   }
 }

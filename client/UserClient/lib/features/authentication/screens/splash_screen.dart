@@ -1,14 +1,10 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hestia/bottom_nav_bar.dart';
-import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/features/authentication/screens/login/login_screen.dart';
 import 'package:hestia/features/authentication/screens/on_board/onBoarding.dart';
-import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 
@@ -33,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 3000),
     );
 
     _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
@@ -57,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
                   duration: const Duration(milliseconds: 1000),
                 )
               : Get.to(
-                  () => bottomNavBar(),
+                  () => BottomNavBar(),
                   transition: Transition.topLevel,
                   duration: const Duration(milliseconds: 1000),
                 );

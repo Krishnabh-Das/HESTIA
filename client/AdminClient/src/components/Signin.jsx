@@ -62,13 +62,13 @@ export default function SignIn() {
   const handleLogout = async() => { 
     try {
       await signOut(auth);
-      console.log(auth?.currentUser);
+      // console.log(auth?.currentUser);
       localStorage.removeItem("user")
       dispatch(setUser(null))
 
       navigate('/auth')
   
-      console.log(auth?.currentUser?.email);
+      // console.log(auth?.currentUser?.email);
     } catch (err) {
       console.error(err);
     }
@@ -83,18 +83,18 @@ export default function SignIn() {
         email, password
         });
         await signInWithEmailAndPassword(auth, email, password);
-        console.log(auth?.currentUser);
+        // console.log(auth?.currentUser);
   
-        console.log(auth?.currentUser?.email);
+        // console.log(auth?.currentUser?.email);
 
         
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
               // User is signed in, log the user information
-              console.log(user);
-              console.log(user.email);
-              console.log(user.uid);
+              // console.log(user);
+              // console.log(user.email);
+              // console.log(user.uid);
 
               localStorage.setItem("user", JSON.stringify(user));
 
@@ -123,10 +123,10 @@ export default function SignIn() {
   };
 
 
-  console.log(auth?.currentUser);
-  console.log(auth?.currentUser?.email);
-  // console.log(auth?.currentUser?.accessToken);
-  console.log(auth?.currentUser?.uid);
+  // console.log(auth?.currentUser);
+  // console.log(auth?.currentUser?.email);
+  // // console.log(auth?.currentUser?.accessToken);
+  // console.log(auth?.currentUser?.uid);
 
 
   return (

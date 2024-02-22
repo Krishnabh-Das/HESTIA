@@ -53,7 +53,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
 
       navigate('/auth')
   
-      console.log(auth?.currentUser?.email);
+      // console.log(auth?.currentUser?.email);
     } catch (err) {
       console.error(err);
     }

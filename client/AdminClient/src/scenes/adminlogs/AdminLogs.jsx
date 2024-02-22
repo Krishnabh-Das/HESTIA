@@ -62,7 +62,7 @@ const getRegionMapLogList = async () => {
 
     setAdminLogList(filteredData)
 
-  console.log("filtered data in adminLogRef>>>>>>>>", filteredData);
+  // console.log("filtered data in adminLogRef>>>>>>>>", filteredData);
   } catch (err) {
     console.log("error in adminLogRef ref", err);
   }
@@ -81,7 +81,7 @@ const getRegionMapLogList = async () => {
        }, []);
 
 
-       console.log("all region map log list>>>>>>>>>>>>>>>>>>>>>> ", adminLogList);
+      //  console.log("all region map log list>>>>>>>>>>>>>>>>>>>>>> ", adminLogList);
 
    const columns = [
 
@@ -110,7 +110,7 @@ const getRegionMapLogList = async () => {
          <Header title="ADMIN LOGS" subtitle="the users that have accessed admin actions " />
  
          <Box>
-           <Button
+           {/* <Button
              sx={{
                backgroundColor: theme.palette.secondary.light,
                color: theme.palette.background.alt,
@@ -121,7 +121,7 @@ const getRegionMapLogList = async () => {
            >
              <DownloadOutlined sx={{ mr: "10px" }} />
              Download Reports
-           </Button>
+           </Button> */}
          </Box>
        </FlexBetween>
        <Container maxWidth="lg">

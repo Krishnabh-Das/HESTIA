@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
+import 'package:hestia/features/core/screens/MarkerMap/MapScreen.dart';
 import 'package:hestia/features/core/screens/home/widgets/custom_clipper.dart';
 import 'package:hestia/features/core/screens/home/widgets/half_map_search_button.dart';
 import 'package:hestia/features/core/screens/home/widgets/move_to_makrer_screen_button.dart';
@@ -46,7 +47,7 @@ class HomeHeaderMapWithButtons extends StatelessWidget {
                   : GoogleMap(
                       initialCameraPosition: CameraPosition(
                           target: MarkerMapController.instance.currPos.value!,
-                          zoom: 16,
+                          zoom: 15,
                           tilt: 50),
                       onMapCreated: (controller) {
                         if (MyAppHelperFunctions.isNightTime()) {
@@ -55,6 +56,9 @@ class HomeHeaderMapWithButtons extends StatelessWidget {
                         halfMapController.halfMapGoogleMapController =
                             controller;
                       },
+                      liteModeEnabled: true,
+                      onTap: (value) => Get.to(() => MarkerMapScreen()),
+                      // ignore: invalid_use_of_protected_member
                       markers: halfMapController.allHalfMapMarkers.value),
             ),
           ),
