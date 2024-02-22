@@ -26,6 +26,8 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../state/userSlice";
 
+import VolunteerDetailsModal from '../components/modals/VolunteerDetailsModal'
+
 import DataGridCustomToolbar from "../components/DataGridCustomToolbar";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -117,7 +119,13 @@ const EventDetailsVolunteer = () => {
       }
     }
   },
-    { field: "actions", headerName: "More details", flex: 1 },
+    { field: "actions", headerName: "More details", flex: 1,
+    renderCell: (params) => {
+      return (
+        <VolunteerDetailsModal/>
+      )
+    }
+  },
     // Add more columns as needed
   ];
 
