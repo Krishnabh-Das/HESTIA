@@ -19,6 +19,9 @@ import {
   TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { useDispatch, useSelector } from "react-redux";
+
+import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../state/userSlice";
 
 import DataGridCustomToolbar from "../components/DataGridCustomToolbar";
 
@@ -37,7 +40,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 
 const EventDetailsVolunteer = () => {
-
+    const user = useSelector(selectUser);
+    console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.uid);
   const theme = useTheme();
   const { id, option } = useParams();
   const [activeTab, setActiveTab] = useState(0);

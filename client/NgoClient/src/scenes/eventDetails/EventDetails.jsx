@@ -29,8 +29,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchEvents, fetchPosts } from "../../api/Ngo";
+import { fetchEvents, fetchPosts, fetchEventsById } from "../../api/Ngo";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../../state/userSlice";
 
 function EventDetails() {
 
@@ -38,16 +40,16 @@ function EventDetails() {
   const queryClient = useQueryClient();
 
 
-
   const handleVolunteerClick = (option, id) => { 
     navigate(`/eventdetailsvolunteer/${id}/${option}`)
     // navigate(`/eventdetailsvolunteer`)
    }
-
+   const user = useSelector(selectUser);
+   console.log("<>userid?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.uid);
   const theme = useTheme();
 
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
-
+2
   const handleAddressClick = (lat,long) => { 
     // window.location.href = 'https://www.google.com/maps?q=51.917168,-0.227051'
     window.open(`https://www.google.com/maps?q=${lat},${long}`, '_blank');
@@ -60,8 +62,8 @@ function EventDetails() {
     data: events,
     error,
   } = useQuery({
-    queryKey: ["events"],
-    queryFn: fetchEvents,
+    queryKey: ["events", user?.uid], // Include user.uid in the query key
+    queryFn: () => fetchEventsById(user?.uid), // Call fetchEventsById with user.uid
   });
 
   return (
