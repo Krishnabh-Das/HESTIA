@@ -16,6 +16,11 @@ tags_metadata = [
         "description": "Routes to interact with Gemini Pro and langchain based chatbot.",
     },
     {
+        "name": "Pipeline",
+        "description": "Routes to interact with Ml results from vertexAI pipelines.",
+    },
+    
+    {
         "name": "Community",
         "description": "Community feature related routes.",
     },

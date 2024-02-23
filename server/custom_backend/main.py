@@ -8,7 +8,7 @@ from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, chat, community
+from api import auth, chat, clusteringPipeline, community
 
 from db.mongodb_connect import connectDB
 
@@ -77,57 +77,6 @@ start_date, end_date = startEndTime()
 # ---------------------------  Chat  ----------------------------#
 app.include_router(chat.router, prefix="/api/v2", tags=["Chatbot"])
 
-@app.post("/chat/send", tags=["Chatbot"])
-async def chat_send(chat: chatSchema):
-    """
-    Endpoint to handle query to chatbots and generate responses.
-
-    Args:
-    - `chat` (chatSchema): Chat schema containing user and question.
-
-    Returns:
-    - JSONResponse: Response containing the generated reply or an error message.
-    """
-    logger.info("/chat/send: Route triggered")
-    question = str(chat.question).lower()
-    logger.critical(question)
-    user = chat.user
-    # add question to firebase chat
-    try:
-        message_history = FireStoreInitiate(user_id=user, session_id=user)
-        summary_memory = GetSummaryMemory(
-            llm=model,
-            chat_memory=message_history,
-        )
-        logger.info("/chat/send: summary_memory iniated")
-        conversation = GetLLMChain(
-            llm=model, memory=summary_memory, prompt=GetPromptTemplate()
-        )
-        logger.info("/chat/send: conversation stated")
-        docs = querySimilarSearch(
-            question=question,
-        )
-        logger.info("/chat/send: Similarity search stated")
-        # logger.debug(pformat({
-        #     "conversation":conversation, # type: ignore
-        #     "context":docs, # type: ignore
-        #     "question":question # type: ignore
-        # }))
-        res = getResponse(conversation=conversation, context=docs, question=question)
-        # add response to firebase chat
-        res_json = {"reply": res["text"]}
-        return JSONResponse(content=res_json, status_code=200)
-    except Exception as e:
-        # Handle exceptions or validation errors and return an appropriate HTTP response code.
-        traceback_str = traceback.format_exc()
-        error_message = {
-            "detail": f"An error occurred: {str(e)}",
-            "traceback": traceback_str,
-        }
-        logger.critical(pformat(error_message))
-        return JSONResponse(content=error_message, status_code=500)
-
-
 @app.put("/chat/add_context/byURL", tags=["Chatbot"])
 async def add_context_URL(urlContext: urlContextSchema):
     """
@@ -168,6 +117,9 @@ async def add_context_URL(urlContext: urlContextSchema):
     except Exception as e:
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
+
+# --------------------  clusteringPipeline  ---------------------#
+app.include_router(clusteringPipeline.router, prefix="/api/v2", tags=["Pipeline"])
 
 # ----------------------- Visualization  ------------------------#
 @app.post("/viz/getStatsByCoord", tags=["Visualization"])
