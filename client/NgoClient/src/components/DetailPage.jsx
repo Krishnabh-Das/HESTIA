@@ -34,11 +34,23 @@ import pinIcon2 from "../assets/pin.png";
 import pinIcon3 from "../assets/destination.png";
 
 import { Icon, divIcon, point } from "leaflet";
-import { fetchVolunteerById } from "../api/Ngo";
+import { fetchVolunteerById, updateVolunteerStatusById } from "../api/Ngo";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const DetailPage = () => {
+
+  const queryClient = useQueryClient();
+
+
+  const updateVolunteerStatusMutation = useMutation({
+    mutationFn: updateVolunteerStatusById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['volunteers']});
+      console.log("success bro!")
+    }
+  });
+
   const theme = useTheme();
 
   const { id } = useParams();
@@ -53,8 +65,8 @@ const DetailPage = () => {
     queryFn: () => fetchVolunteerById(id),
   });
 
-  console.log("volunteer id in page", id);
-  console.log("volunteer  data page", volunteer);
+  // console.log("volunteer id in page", id);
+  // console.log("volunteer  data page", volunteer);
 
   const pin2 = new Icon({
     iconUrl: pinIcon2,
@@ -68,6 +80,16 @@ const DetailPage = () => {
       iconSize: point(33, 33, true),
     });
   };
+
+  const handleVolunteerStatus = ( status) => { 
+    console.log('click id',id);
+    console.log('click status',status);
+
+    updateVolunteerStatusMutation.mutate({
+      id,
+      status
+    })
+   }
 
   return (
     <Container
@@ -261,9 +283,9 @@ const DetailPage = () => {
                     <Button
                       variant="contained"
                       color="secondary"
-                      // onClick={() =>
-                      //   handleToggleResolved(id, !detailData.isResolved)
-                      // }
+                      onClick={() =>
+                        handleVolunteerStatus('accepted' )
+                      }
                     >
                       Accept
                     </Button>
@@ -271,9 +293,9 @@ const DetailPage = () => {
                     <Button
                       variant="contained"
                       color="error"
-                      // onClick={() =>
-                      //   // handleToggleResolved(id, !detailData.isResolved)
-                      // }
+                      onClick={() =>
+                        handleVolunteerStatus('rejected' )
+                      }
                     >
                       Reject
                     </Button>

@@ -99,6 +99,21 @@ export const fetchVolunteerById = async (id) => {
       }
     };
 
+export const updateVolunteerStatusById = async (e) => { 
+    try {
+        const volunteerRef = doc(db, "Volunteers", e.id);
+
+        await updateDoc(volunteerRef, {
+            status: e.status,
+          });
+
+
+        
+    } catch (err) {
+        console.error('Error fetching detail data:', error);
+    }
+ }
+
 
 
 
