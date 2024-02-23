@@ -1,4 +1,6 @@
 import * as React from 'react';
+
+import { useState, Fragment } from "react";
 // import Button from '@mui/material/Button';
 // import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -41,65 +43,58 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../../state/userSlice";
 
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchVolunteerById } from '../../api/Ngo';
 
-export default function FormDialog({actionRoute}) {
+export default function FormDialog({params}) {
+  const {volunteer_id} = params.row;
 
-  console.log("action route in my add context url", actionRoute);
+
 
   const user = useSelector(selectUser);
-  // console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.email);
-  // console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.uid);
-  // console.log("</>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user);
 
 
-
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
+  
+  
+
+
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  console.log('1');
 
-const handleAddUrl = async ({url}) => { 
-  console.log("handle url>>>>", url);
-  try {
-                  // Set loading to true when the button is clicked
-                  // setLoading(true);
- 
-                  const response = await axios.put(`${actionRoute}`, { user_id:user?.uid, url:url });
-          
-                  const data = response.data;
+  console.log("volunteer ID>>>>>>", volunteer_id);
 
-                  console.log("response after put request>>>>>>>>", data);
-                  // setSnackbarOpen(true);
-    
-  } catch (error) {
-    console.error("Error in handleAddUrl:", error);
-  }
-  // finally {
-  //   // Set loading back to false after the request is complete
-  //   setLoading(false);
-  // }
+  // const {
+  //   isLoading,
+  //   isError,
+  //   data: volunteer,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["volunteer", volunteer_id],
+  //   queryFn: () => fetchVolunteerById(volunteer_id),
+  // });
 
- }
+  const { isLoading, isError, data: volunteer, error } = useQuery({
+    queryKey: ["volunteer", volunteer_id],
+    queryFn: () => fetchVolunteerById(volunteer_id),
+  });
+
+  // Handle loading and error states
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
 
-  const initalValues = {
-    // email: "",
-    // name: "",
-    // password: "",
-    url: '',
-  };
 
   return (
-    <React.Fragment>
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open form dialog
-      </Button> */}
+    <Fragment>
       <Box>
       <IconButton
                     size="large"
@@ -130,138 +125,16 @@ const handleAddUrl = async ({url}) => {
         //   },
         // }}
       >
-        <DialogTitle>Add Context Url</DialogTitle>
+        <DialogTitle>
+          <Typography >Volunteer Details</Typography>
+        </DialogTitle>
         <DialogContent>
-
-
-        <div 
-        // className="MaterialForm"
-        >
-      {/* <Typography variant="h4">
-        Add a url to continue forward
-      </Typography> */}
-      <Formik
-        initialValues={initalValues}
-        validationSchema={object({
-          // email: string().required("Please enter email").email("Invalid email"),
-          url: string().required("please enter a valid url").url(),
-          // name: string().required("Please enter name").min(2, "Name too short"),
-          // password: string()
-          //   .required("Please enter password")
-          //   .min(7, "Password should be minimum 7 characters long"),
-        })}
-        onSubmit={(values, formikHelpers) => {
-          console.log(values);
-          handleAddUrl(values)
-          
-          formikHelpers.resetForm();
-        }}
-      >
-        {({ errors, isValid, touched, dirty }) => (
-          <Form>
-                        <Box height={14} />
-                        <Field
-                        my={20}
-              name="url"
-              // type="email"
-              as={TextField}
-              variant="outlined"
-              color="primary"
-              label="url"
-              fullWidth
-              error={Boolean(errors.url) && Boolean(touched.url)}
-              helperText={Boolean(touched.url) && errors.url}
-            />
-            <Box height={14} />
-
-{/* 
-
-            <Field
-              name="email"
-              type="email"
-              as={TextField}
-              variant="outlined"
-              color="primary"
-              label="Email"
-              fullWidth
-              error={Boolean(errors.email) && Boolean(touched.email)}
-              helperText={Boolean(touched.email) && errors.email}
-            />
-            <Box height={14} />
-
-            <Field
-              name="name"
-              type="name"
-              as={TextField}
-              variant="outlined"
-              color="primary"
-              label="Name"
-              fullWidth
-              error={Boolean(errors.name) && Boolean(touched.name)}
-              helperText={Boolean(touched.name) && errors.name}
-            />
-            <Box height={14} />
-            <Field
-              name="password"
-              type="password"
-              as={TextField}
-              variant="outlined"
-              color="primary"
-              label="Password"
-              fullWidth
-              error={Boolean(errors.password) && Boolean(touched.password)}
-              helperText={Boolean(touched.password) && errors.password}
-            />
-            <Box height={14} /> */}
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              size="large"
-              disabled={!isValid || !dirty}
-            >
-              ADD
-            </Button>
-
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              color="primary"
-              size="large"
-              // disabled={!isValid || !dirty}
-            >
-              Close
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </div>
-
-
-
-
-          {/* <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          /> */}
-
-
-
-
+          <Box> 
+            
+          </Box>
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Add</Button>
-        </DialogActions> */}
+
       </Dialog>
-    </React.Fragment>
+    </Fragment>
   );
 }
