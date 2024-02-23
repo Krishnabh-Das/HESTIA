@@ -117,3 +117,6 @@ notebooks/yolov8n.pt
 notebooks/installed_packages.txt
 notebooks/detection_pipeline.json
 notebooks/detection_pipeline.yaml
+server/custom_backend/db/detectionKey.json
+
+**/detectionKey.json
