@@ -16,10 +16,22 @@ from utils.logingUtils import logger
 from db.bigQueryClient import getBigQueryTableStep3
 from core.config import GCP_STEP3_CLUSTERING_PIPELINE_TABLE
 
-router = APIRouter(prefix="/getCluster")
+router = APIRouter(prefix="/Cluster")
 
-@router.post("/send")
+@router.post("/get")
 async def chat_send(img: UploadFile = File(...)):
+    """
+    This Route takes an uploaded image and compares it to a set of known images to determine which cluster the uploaded image belongs to.
+
+    Args:
+        img (UploadFile): The uploaded image
+
+    Returns:
+        JSONResponse: The cluster ID of the uploaded image, or -1 if no match is found
+
+    Raises:
+        Exception: If an error occurs
+    """
     try:
         filename = img.filename
         contents = await img.read()
