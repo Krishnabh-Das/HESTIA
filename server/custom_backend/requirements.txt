@@ -22,3 +22,5 @@ selenium==4.16.0
 unstructured[all]
 uvicorn[standard]
 pydantic[email]
+face_recognition
+pandas
