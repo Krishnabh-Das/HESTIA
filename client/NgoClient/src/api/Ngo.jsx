@@ -74,6 +74,34 @@ export const fetchVolunteers = async () => {
     }
  }
 
+
+export const fetchVolunteerById = async (id) => { 
+      try {
+        const volunteerRef = doc(db, 'Volunteers', id);
+        const volunteerDocSnapshot = await getDoc(volunteerRef);
+
+        // if (volunteerDocSnapshot.exists()) {
+
+        //     console.log("volunteer data", volunteerDocSnapshot.data());
+        //   return volunteerDocSnapshot.data()
+        // } else {
+        //   console.log('Document does not exist!');
+        // }
+        const volunteer = volunteerDocSnapshot.data()
+
+        console.log('volunteer data in api', volunteer);
+        console.log('volunteer id in api', id);
+
+        return volunteer;
+
+      } catch (error) {
+        console.error('Error fetching detail data:', error);
+      }
+    };
+
+
+
+
 //    export async function fetchPosts() {
 //     const response = await fetch('http://localhost:3000/posts');
 //     return response.json()

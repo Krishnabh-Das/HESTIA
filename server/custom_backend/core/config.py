@@ -55,3 +55,7 @@ conf = ConnectionConfig(
 templates = Jinja2Templates(
     directory="templates"
 )
+
+# GCP
+GCP_PROJECT_NAME = str(os.getenv("GCP_PROJECT_NAME"))
+GCP_STEP3_CLUSTERING_PIPELINE_TABLE= str(os.getenv("GCP_STEP3_CLUSTERING_PIPELINE_TABLE"))
