@@ -5,7 +5,11 @@ import {
   Grid,
   Typography,
   Container,
+  MenuItem,
+  InputLabel,
   Box,
+  FormControl,
+  Select,
 } from "@mui/material";
 import {
   MapContainer,
@@ -29,12 +33,11 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import {
-    Unstable_NumberInput as BaseNumberInput,
-    numberInputClasses,
-  } from '@mui/base/Unstable_NumberInput';
+  Unstable_NumberInput as BaseNumberInput,
+  numberInputClasses,
+} from "@mui/base/Unstable_NumberInput";
 
 // // import Input from '@mui/joy/Input';
-
 
 // import {Input} from '@mui/material'
 
@@ -52,39 +55,33 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import FlexBetween from "../../components/FlexBetween";
 
+import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 
-
-import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-
-import Textarea from '@mui/joy/Textarea';
+import Textarea from "@mui/joy/Textarea";
 
 // import Textarea from '@mui/base/TextareaAutosize'
 
-import { styled } from '@mui/system';
+import { styled } from "@mui/system";
 
 import { useTheme } from "@mui/material";
 
-
 import { useDispatch, useSelector } from "react-redux";
 
-import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../../state/userSlice";
+import {
+  setUser,
+  setAuthChecked,
+  selectUser,
+  selectAuthChecked,
+} from "../../state/userSlice";
 
 const CreateEvent = () => {
+  const theme = useTheme();
+  const user = useSelector(selectUser);
 
+  console.log(user);
 
-    const theme = useTheme();
-    const user = useSelector(selectUser);
-
-    console.log(user);
-
-
-
-
-
-
-    
-      const Textarea = styled(BaseTextareaAutosize)(
-        `
+  const Textarea = styled(BaseTextareaAutosize)(
+    `
         box-sizing: border-box;
         width: 320px;
         font-family: 'IBM Plex Sans', sans-serif;
@@ -111,9 +108,8 @@ const CreateEvent = () => {
         &:focus-visible {
           outline: 0;
         }
-      `,
-      );
-
+      `
+  );
 
   dayjs.extend(localizedFormat);
 
@@ -123,7 +119,6 @@ const CreateEvent = () => {
 
   const [toDate, setToDate] = useState(dayjs().format());
 
-
   const [time, setTime] = React.useState(dayjs().format());
 
   const [eventName, setEventName] = useState("");
@@ -131,11 +126,17 @@ const CreateEvent = () => {
   // const [time, setTime] = useState('');
   const [position, setPosition] = useState(null);
 
-  const [eventDescription, setEventDescription] = useState('')
+  const [eventDescription, setEventDescription] = useState("");
 
-  const [eventContact, setEventContact] =   useState(user.email)
+  const [eventContact, setEventContact] = useState(user.email);
 
-  const [volunteerCount, setVolunteerCount] = useState(0)
+  const [volunteerCount, setVolunteerCount] = useState(0);
+
+  const [type, setType] = useState("");
+
+  const handleChange = (event) => {
+    setType(event.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -157,8 +158,8 @@ const CreateEvent = () => {
       eventDescription,
       eventContact,
       volunteerCount,
-    ngoId: user.uid
-
+      ngoId: user.uid,
+      type: type,
     };
 
     await addDoc(collection(db, "Events"), data);
@@ -230,7 +231,7 @@ const CreateEvent = () => {
                 </div>
               )}
             </Grid>
-            <Grid item xs={12} >
+            <Grid item xs={12}>
               {/* <TextField
                             fullWidth
                             label="Time"
@@ -238,80 +239,124 @@ const CreateEvent = () => {
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
                         /> */}
-<Box display='flex' flexDirection='column' gap={2}>
-<Box display='flex' justifyContent='space-between'>
-<TimePicker
-                label="Time"
-                value={dayjs(time)}
-                onChange={(newValue) => setTime(dayjs(newValue))}
-              />
+              <Box display="flex" flexDirection="column" gap={2}>
+                <Box display="flex" justifyContent="space-between">
+                  <TimePicker
+                    label="Time"
+                    value={dayjs(time)}
+                    onChange={(newValue) => setTime(dayjs(newValue))}
+                  />
 
+                  <TextField
+                    // size='medium'
+                    label="Contact"
+                    variant="outlined"
+                    value={eventContact}
+                    onChange={(e) => setEventContact(e.target.value)}
+                  />
+                </Box>
+                <Box display="flex" justifyContent="space-between">
+                  <DatePicker
+                    label="From"
+                    value={dayjs(fromDate)}
+                    onChange={(newValue) => setFromDate(dayjs(newValue))}
+                  />
+                  <DatePicker
+                    label="To"
+                    value={dayjs(toDate)}
+                    onChange={(newValue) => setToDate(dayjs(newValue))}
+                  />
+                </Box>
+                <Box>
+                  <TextField
+                    fullWidth
+                    size="medium"
+                    label="Event Description"
+                    variant="outlined"
+                    value={eventDescription}
+                    onChange={(e) => setEventDescription(e.target.value)}
+                    multiline
+                    rows={4}
+                  />
+                </Box>
 
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Type
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={type}
+                        label="Type"
+                        onChange={handleChange}
+                      >
+                        <MenuItem value={"Awareness Campaign"}>
+                          Awareness Campaign
+                        </MenuItem>
+                        <MenuItem value={"Fundraising"}>Fundraising</MenuItem>
+                        <MenuItem value={"Volunteer Drive"}>
+                          Volunteer Drive
+                        </MenuItem>
+                        <MenuItem value={"Training and Capacity Building"}>
+                          Training and Capacity Building
+                        </MenuItem>
+                        <MenuItem value={"Cultural and Arts"}>
+                          Cultural and Arts
+                        </MenuItem>
+                        <MenuItem value={"Health and Wellness"}>
+                          Health and Wellness
+                        </MenuItem>
+                        <MenuItem value={"Environmental"}>
+                          Environmental
+                        </MenuItem>
+                        <MenuItem value={"Humanitarian Relief"}>
+                          Humanitarian Relief
+                        </MenuItem>
+                        <MenuItem value={"Celebratory"}>Celebratory</MenuItem>
+                        <MenuItem value={"Networking and Collaboration"}>
+                          Networking and Collaboration
+                        </MenuItem>
+                        <MenuItem value={"Education and Literacy"}>
+                          Education and Literacy
+                        </MenuItem>
+                        <MenuItem
+                          value={"Refugee and Migrant Support Services"}
+                        >
+                          Refugee and Migrant Support
+                        </MenuItem>
+                        <MenuItem value={"Empowerment Workshop"}>
+                          Empowerment Workshop
+                        </MenuItem>
+                        <MenuItem
+                          value={"HIV/AIDS Awareness and Testing Camps"}
+                        >
+                          HIV/AIDS Awareness and Testing Camps
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
 
+                  <TextField
+                    label="volunteer count (optional)"
+                    type="number"
+                    variant="outlined"
+                    value={volunteerCount}
+                    onChange={(e) => setVolunteerCount(e.target.value)}
+                  />
+                </Box>
 
-
-<TextField
-                
-                // size='medium'
-                label="Contact"
-                variant="outlined"
-                value={eventContact}
-                onChange={(e) => setEventContact(e.target.value)}
-              />
-
-
-</Box>
-              <Box display='flex' justifyContent='space-between'>
-                <DatePicker
-                  label="From"
-                  value={dayjs(fromDate)}
-                  onChange={(newValue) => setFromDate(dayjs(newValue))}
-                />
-                 <DatePicker
-                  label="To"
-                  value={dayjs(toDate)}
-                  onChange={(newValue) => setToDate(dayjs(newValue))}
-                />
-              </Box>
-<Box>
-
-              <TextField
-                fullWidth
-                size='medium'
-                label="Event Description"
-                variant="outlined"
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                multiline
-                rows={4}
-              />
-
-              
-</Box>
-
-
-<Box>
-<TextField
-                label="volunteer count (optional)"
-                type="number"
-                variant="outlined"
-                value={volunteerCount}
-                onChange={(e) => setVolunteerCount(e.target.value)}
-              />
-</Box>
-
-              
-
-
-
-              {/* <Textarea
+                {/* <Textarea
               value={eventDescription}
               onChange={(e) => setEventDescription(e.target.value)}
               /> */}
-                
-
-</Box>
-
+              </Box>
             </Grid>
             <Grid item xs={12}>
               <MapContainer
@@ -350,8 +395,6 @@ const CreateEvent = () => {
                 </Grid>
               )}
             </Grid>
-
-    
           </Grid>
           <Button
             type="submit"
