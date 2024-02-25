@@ -77,47 +77,6 @@ start_date, end_date = startEndTime()
 # ---------------------------  Chat  ----------------------------#
 app.include_router(chat.router, prefix="/api/v2", tags=["Chatbot"])
 
-@app.put("/chat/add_context/byURL", tags=["Chatbot"])
-async def add_context_URL(urlContext: urlContextSchema):
-    """
-    Endpoint to add a contest context by providing a URL.
-
-    Args:
-    - `urlContext` (urlContextSchema): Schema containing URL and user ID.
-
-    Returns:
-    - JSONResponse: Response indicating success or failure.
-        - If successful, returns a JSON object with the message:
-        {"Response": "Successfully added to Context"}`
-        - If an error occurs during Firestore storage, returns a JSON object with an error message:
-        {"detail": "Unable to store Source to Firestore: Error Message"}
-        - If an error occurs during Vectorstore storage, returns a JSON object with an error message:
-        {"detail": "Unable to store Source to Vectorstore: Error Message"}
-    """
-    url = urlContext.url
-    user_id = urlContext.user_id
-    current_datetime = datetime.now()
-    current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    try:
-        data = {"type": "URL", "source": url, "User_id": user_id}
-        CSL_ref = firestoreDB.collection("Chatbot_source_list").document(
-            current_datetime_str
-        )
-        CSL_ref.set(data)
-    except Exception as e:
-        error_message = {"detail": f"Unable to store Source to Firestore: {str(e)}"}
-        return JSONResponse(content=error_message, status_code=500)
-    try:
-        pages = loadURLdata([url])
-        text = loaderToDoc(pages)
-        addDocVectorStore(text=text)
-        return JSONResponse(
-            content={"Response": "Successfully add to Context"}, status_code=200
-        )
-    except Exception as e:
-        error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
-        return JSONResponse(content=error_message, status_code=500)
-
 # --------------------  clusteringPipeline  ---------------------#
 app.include_router(clusteringPipeline.router, prefix="/api/v2", tags=["Pipeline"])
 
