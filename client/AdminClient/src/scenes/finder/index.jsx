@@ -56,9 +56,24 @@ import { Icon, divIcon, point } from "leaflet";
 
 import DataGridCustomToolbar from "../../components/DataGridCustomToolbar";
 
-function Markers() {
-    
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { getFinderDetails } from "../../api/Ngo";
+
+
+function Finder() {
+    
+    const queryClient = useQueryClient();
+
+    const {
+      isLoading,
+      isError,
+      data: posts,
+      error,
+    } = useQuery({
+      queryKey: ["markers"],
+      queryFn: getFinderDetails,
+    });
 
     //----------------------------------
 
@@ -424,7 +439,7 @@ function Markers() {
   );
 }
 
-export default Markers;
+export default Finder;
 
 const MarkerPopup = ({ imageUrl, description, formattedTime, address }) => {
   const theme = useTheme();
@@ -525,7 +540,6 @@ const MarkerPopup = ({ imageUrl, description, formattedTime, address }) => {
 
 const FlyToMarker = ({ position, zoom }) => {
   const map = useMap();
-
   map.flyTo(position, zoom, { duration: 2 });
 
   return null;

@@ -12,6 +12,7 @@ import {
   } from "firebase/firestore";
   import axios from "axios";
 
+import dayjs from 'dayjs'
 
   import { db, auth, storage } from "../config/firebase";
 
@@ -134,20 +135,81 @@ export const getAllMarkers = async () => {
 
 export const getFinderDetails = async (photo) => {
     try {
-        
-
-
         const dummyData = {
             Custer: [
-                "1708885500298", "1708885439721", "1708885452075", "1708885469893", "1708885469893"
+                "1708885500298","1708452071221","1708873467031", "1708885439721", "1708885452075", "1708885469893", "1708885469893"
             ],
             CusterId: "test"
         }
+
+        const markers = [];
+
+        for (const markerId of dummyData.Custer) {
+
+            const marker = await getMarkerById(markerId);
+            markers.push(marker);
+
+//             const timeStamp = 1645891200000;
+
+// // Convert timeStamp to date type
+// const date = dayjs(timeStamp).toDate();
+
+// console.log('timestamp to date?>>>>>>>>>>>>',date);
+        }
+        
+        console.log('Markers in the appended array: >>>>>>>>>', markers);
+
+                // Sort markers array based on the 'time' field in descending order
+                markers.sort((a, b) => {
+                    const timeA = dayjs.unix(a.time.seconds);
+                    const timeB = dayjs.unix(b.time.seconds);
+                    return timeB.diff(timeA); // Compare in descending order
+                });
+        
+                console.log('Sorted Markers: >>>>>>>>>>>>>>>', markers);
+
+
+        
+        return {
+            markers: markers
+        };
     } catch (err) {
         console.error(err);
     }
 }
 
+
+export const getMarkerById = async (id) => { 
+    try {
+      const markerRef = doc(db, 'Markers', id);
+      const markerDocSnapshot = await getDoc(markerRef);
+
+      if (markerDocSnapshot.exists()) {
+        console.log('marker data of markerDocSnapshot',markerDocSnapshot.data());
+
+        return markerDocSnapshot.data()
+      } else {
+        console.log("Document does not exist!");
+      }
+
+      // if (volunteerDocSnapshot.exists()) {
+
+      //     console.log("volunteer data", volunteerDocSnapshot.data());
+      //   return volunteerDocSnapshot.data()
+      // } else {
+      //   console.log('Document does not exist!');
+      // }
+    //   const marker = markerDocSnapshot.data()
+
+    //   console.log('marker id in api', id);
+    //   console.log('marker data in api', marker);
+
+    //   return marker;
+
+    } catch (error) {
+      console.error('Error fetching detail data:', error);
+    }
+  };
 
 
 
