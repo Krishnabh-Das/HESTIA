@@ -1,6 +1,5 @@
-import logging
-import colorlog
 import traceback
+from pprint import pformat
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -9,17 +8,23 @@ from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from api import auth, chat, community
+
+from db.mongodb_connect import connectDB
+
 from schemas.userSchema import userId
-from schemas.adminSchmeas import Initator
-from schemas.VizSchmeas import coordSchema
+from schemas.adminSchmea import Initator
+from schemas.vizSchmea import coordSchema
 from schemas.utilsSchema import getLocSchema
 from schemas.chatSchema import chatSchema, urlContextSchema
 
-from docs.metadata import tags_metadata
-from processor.StatsNearYou import stats
-from configs.db import firestoreDB, firestore
+from db.fireStoreDB import firestoreDB, firestore
 
+import core.config as core
+
+from utils.StatsNearYou import stats
 from utils.GeoLoc import geoLoc
+from utils.logingUtils import logger
 from utils.datetimeUtils import startEndTime, testStarttime
 from utils.ragPipeline import (
     addDocVectorStore,
@@ -48,50 +53,30 @@ from utils.regionMapHelper import (
     GeoPoint,
 )
 
+from docs.openApiTags import tags_metadata
+from docs.openApiStatusCodes import AddedOpenAPiStatusCodes
+
 # ------------------------ Init FastAPI -------------------------#
-app = FastAPI(
-    title="Hestia",
-    description="Routes for Hestia.",
-    version="0.0.3dev",
-    openapi_tags=tags_metadata,
-    license_info={
-        "name": "MIT License",
-        "url": "https://mit-license.org/",
-    },
-)
+app = FastAPI(title=core.settings.app_name,openapi_tags=tags_metadata, responses=AddedOpenAPiStatusCodes)  # type: ignore
 # --------------------------- Config ----------------------------#
 load_dotenv()
 
 origins = ["*"]
 
+connectDB()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=core.origins,  # type: ignore
+    allow_credentials=core.allow_credentials,  # type: ignore
+    allow_methods=["*"],  # type: ignore
+    allow_headers=core.allow_headers,  # type: ignore
 )
-
 start_date, end_date = startEndTime()
 
-handler = logging.StreamHandler()
-logging.getLogger().setLevel(logging.DEBUG)
-handler.setFormatter(
-    colorlog.ColoredFormatter(
-        "%(log_color)s%(levelname)-8s%(reset)s - %(asctime)s - %(message)s",
-        log_colors={
-            "DEBUG": "cyan",
-            "INFO": "green",
-            "WARNING": "yellow",
-            "ERROR": "red",
-            "CRITICAL": "red,bg_white",
-        },
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-)
-logger.addHandler(handler)
-
 # ---------------------------  Chat  ----------------------------#
+app.include_router(chat.router, prefix="/api/v2", tags=["Chatbot"])
+
 @app.post("/chat/send", tags=["Chatbot"])
 async def chat_send(chat: chatSchema):
     """
@@ -105,7 +90,7 @@ async def chat_send(chat: chatSchema):
     """
     logger.info("/chat/send: Route triggered")
     question = str(chat.question).lower()
-    print(question)
+    logger.critical(question)
     user = chat.user
     # add question to firebase chat
     try:
@@ -123,6 +108,11 @@ async def chat_send(chat: chatSchema):
             question=question,
         )
         logger.info("/chat/send: Similarity search stated")
+        # logger.debug(pformat({
+        #     "conversation":conversation, # type: ignore
+        #     "context":docs, # type: ignore
+        #     "question":question # type: ignore
+        # }))
         res = getResponse(conversation=conversation, context=docs, question=question)
         # add response to firebase chat
         res_json = {"reply": res["text"]}
@@ -134,6 +124,7 @@ async def chat_send(chat: chatSchema):
             "detail": f"An error occurred: {str(e)}",
             "traceback": traceback_str,
         }
+        logger.critical(pformat(error_message))
         return JSONResponse(content=error_message, status_code=500)
 
 
@@ -194,6 +185,7 @@ async def getStatsByCoord(coords: coordSchema):
     lon = float(coords.lon)
     try:
         stats_here = stats.statsByCoord(lat=lat, lon=lon)
+        logger.info(pformat(stats_here))
         return JSONResponse(content=stats_here, status_code=200)
     except Exception as e:
         traceback_str = traceback.format_exc()
@@ -202,6 +194,7 @@ async def getStatsByCoord(coords: coordSchema):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
 
 # --------------------------  Utils  ----------------------------#
 @app.post("/location/get", tags=["Utils"])
@@ -248,6 +241,7 @@ async def location_get(getLoc: getLocSchema):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
+
 # --------------------------  User ----------------------------#
 @app.post("/user/getNamebyID", tags=["Users"])
 async def User_Name(userId: userId):
@@ -275,6 +269,8 @@ async def User_Name(userId: userId):
         error_message = {"detail": f"An error occurred: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
 
+# ------------------------- Community --------------------------#
+app.include_router(community.router, prefix="/api/v2", tags=["Community"])
 # --------------------------  Admin  ----------------------------#
 @app.put("/admin/regionMapGen", tags=["Admin"])
 def regionMapGen(Initator: Initator):
@@ -367,6 +363,7 @@ def regionMapGen(Initator: Initator):
         }
         return JSONResponse(content=error_message, status_code=500)
 
+
 @app.put("/admin/UpdateClusterStats", tags=["Admin"])
 def UpdateClusterStats(Initator: Initator):
     """
@@ -379,8 +376,20 @@ def UpdateClusterStats(Initator: Initator):
         JSONResponse: Response indicating the success or failure of the operation.
     """
     try:
-        stats.getAllMarkers()
-        stats.cluster_markers_fn()
+        try:
+            stats.getAllMarkers()
+            stats.getAllSOS()
+            stats.cluster_markers_fn()
+            stats.cluster_SOS_Reports_fn()
+            stats.upadteClusterIDSOSfirestore()
+            stats.upadteClusterIDfirestore()
+        except Exception as e:
+            traceback_str = traceback.format_exc()
+            error_message = {
+                "detail": f"An error occurred: {str(e)}",
+                "traceback": traceback_str,
+            }
+            return JSONResponse(content=error_message, status_code=500)
         try:
             current_datetime = datetime.now()
             current_datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")[
@@ -393,7 +402,8 @@ def UpdateClusterStats(Initator: Initator):
                 "type": "UpdateClusterStats",
             }
             firestoreDB.collection("Admin_logs").add(data)
-            return JSONResponse(content={"Status": "done"}, status_code=500)
+            logger.info("Added to admin Logs")
+            return JSONResponse(content={"Status": "done"}, status_code=200)
         except Exception as e:
             traceback_str = traceback.format_exc()
             error_message = {
@@ -408,3 +418,6 @@ def UpdateClusterStats(Initator: Initator):
             "traceback": traceback_str,
         }
         return JSONResponse(content=error_message, status_code=500)
+
+# --------------------------  Admin  ----------------------------#
+app.include_router(auth.router, prefix="/api/v2", tags=["Auth"])

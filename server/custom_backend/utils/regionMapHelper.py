@@ -7,7 +7,7 @@ from itertools import combinations
 from geopy.distance import geodesic
 
 from utils.GeoLoc import geoLoc
-from configs.db import firestoreDB
+from db.fireStoreDB import firestoreDB
 
 def calculate_convex_hull_area(coords):
     """

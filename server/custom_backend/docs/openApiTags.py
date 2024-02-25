@@ -1,5 +1,9 @@
 tags_metadata = [
     {
+        "name": "Auth",
+        "description": "Operations with users.",
+    },
+    {
         "name": "Users",
         "description": "Operations with users.",
     },
@@ -10,6 +14,10 @@ tags_metadata = [
     {
         "name": "Chatbot",
         "description": "Routes to interact with Gemini Pro and langchain based chatbot.",
+    },
+    {
+        "name": "Community",
+        "description": "Community feature related routes.",
     },
     {
         "name": "Utils",

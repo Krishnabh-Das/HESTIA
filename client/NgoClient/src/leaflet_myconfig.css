@@ -1,0 +1,63 @@
+/* height of the container */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+.leaflet-container {
+    height: 570px;
+    width: 100%;
+    /* border-radius: 2rem; */
+  }
+  
+  .cluster-icon {
+    background-color: #333;
+    height: 2em;
+    width: 2em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 0 0px 5px #fff;
+  }
+
+
+  /* .leaflet-grab {
+    cursor: default !important; 
+  } */
+
+
+
+  /* <CardContent>
+  <Box mb={4}>
+  <MapContainer center={[detailData.incidentPosition._lat, detailData.incidentPosition._long]} zoom={15}>
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      /> */
+      /* <MarkerClusterGroup
+        chunkedLoading
+        iconCreateFunction={createClusterCustomIcon}
+      > */
+/* <Marker position={detailData.incidentPosition} icon={pin2}>
+  <Popup>{detailData.incidentDescription}<h1>hi</h1></Popup>
+</Marker> */
+      /* </MarkerClusterGroup> */
+    /* </MapContainer> */
+  /* </Box> */
+  /* <Typography
+    sx={{ fontSize: 16, color: theme.palette.secondary[300], marginBottom: '20px', textAlign: "center" }}
+    gutterBottom
+  >
+    Address: {e.location}
+  </Typography> */
+/* </CardContent> */
+
+
+
+
+
