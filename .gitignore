@@ -119,3 +119,6 @@ notebooks/detection_pipeline.json
 notebooks/detection_pipeline.yaml
 notebooks/pipelines/clus_class_pipeline.yaml
 notebooks/pipelines/detection_pipeline.yaml
+server/custom_backend/db/detectionKey.json
+
+**/detectionKey.json

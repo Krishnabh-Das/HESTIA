@@ -8,7 +8,7 @@ from fastapi.logger import logger
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import auth, chat, community
+from api import auth, chat, clusteringPipeline, community
 
 from db.mongodb_connect import connectDB
 
@@ -117,6 +117,9 @@ async def add_context_URL(urlContext: urlContextSchema):
     except Exception as e:
         error_message = {"detail": f"Unable to store Source to Vectorstore: {str(e)}"}
         return JSONResponse(content=error_message, status_code=500)
+
+# --------------------  clusteringPipeline  ---------------------#
+app.include_router(clusteringPipeline.router, prefix="/api/v2", tags=["Pipeline"])
 
 # ----------------------- Visualization  ------------------------#
 @app.post("/viz/getStatsByCoord", tags=["Visualization"])
