@@ -1,9 +1,9 @@
-import 'package:hestia/features/core/screens/home/home_stats/widgets/circular_score.dart';
-import 'package:hestia/features/core/screens/home/home_stats/widgets/current_address_and_button.dart';
-import 'package:hestia/features/core/screens/home/home_stats/widgets/stats_markers_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hestia/features/core/controllers/home_stats_ratings_controller.dart';
+import 'package:hestia/features/core/screens/home/home_stats/widgets/circular_score.dart';
+import 'package:hestia/features/core/screens/home/home_stats/widgets/current_address_and_button.dart';
+import 'package:hestia/features/core/screens/home/home_stats/widgets/stats_markers_list.dart';
 import 'package:hestia/features/core/screens/home/sos/sos_screen.dart';
 
 class CrimeIncidents extends StatelessWidget {
@@ -16,7 +16,8 @@ class CrimeIncidents extends StatelessWidget {
   Future<void> crimeIncidentsInit() async {
     debugPrint(
         "homeStatsRatingController.crimeClusterId.value: ${homeStatsRatingController.crimeClusterId.value}");
-    if (homeStatsRatingController.crimeClusterId.value != -2) {
+    if (homeStatsRatingController.crimeClusterId.value >= 0 &&
+        homeStatsRatingController.crimeMarkerMapList.isEmpty) {
       await homeStatsRatingController.crimeIncidentsMarker();
     }
   }
@@ -24,12 +25,6 @@ class CrimeIncidents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Coming Soon")),
-    );
-  }
-}
-/*
-Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 15, 69, 79),
         automaticallyImplyLeading: false,
@@ -78,14 +73,13 @@ Scaffold(
             ),
 
             // --Marker Post List
-            Obx(
-              () => StatsPostList(
-                  homeStatsRatingList:
-                      homeStatsRatingController.crimeMarkerMapList),
-            )
+            StatsPostList(
+              homeStatsRatingList: homeStatsRatingController.crimeMarkerMapList,
+              isHomelessSightings: false,
+            ),
           ],
         ),
       ),
     );
-  
-*/ 
+  }
+}

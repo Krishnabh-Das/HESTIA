@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:share_plus/share_plus.dart';
 
 class halfMapSearchButton extends StatelessWidget {
   const halfMapSearchButton({

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:hestia/bottom_nav_bar.dart';
 import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
-import 'package:hestia/features/authentication/screens/splash_screen.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -40,7 +39,7 @@ class LoginController extends GetxController {
             color: Colors.green.shade400,
             text: "Login Successful",
             icon: Iconsax.tick_circle);
-        Get.offAll(() => BottomNavBar());
+        Get.offAll(() => const BottomNavBar());
       }
     } on FirebaseAuthException catch (e) {
       debugPrint("Error signing in: $e");

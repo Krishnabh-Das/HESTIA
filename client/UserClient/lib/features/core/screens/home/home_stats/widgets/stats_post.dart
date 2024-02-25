@@ -13,7 +13,7 @@ class StatsPost extends StatelessWidget {
     this.image,
   });
 
-  final String time, description, address;
+  final String? time, description, address;
   final File? image;
 
   @override
@@ -53,7 +53,7 @@ class StatsPost extends StatelessWidget {
                       children: [
                         const Spacer(),
                         Text(
-                          time,
+                          time ?? "unknown time",
                           style: const TextStyle(fontSize: 12),
                         )
                       ],
@@ -73,7 +73,7 @@ class StatsPost extends StatelessWidget {
                         ),
                         Flexible(
                           child: Text(
-                            address,
+                            address ?? "unknown address",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 5,
                             style: const TextStyle(fontSize: 12),
@@ -87,7 +87,7 @@ class StatsPost extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        description,
+                        description ?? "unknown description",
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                     ),

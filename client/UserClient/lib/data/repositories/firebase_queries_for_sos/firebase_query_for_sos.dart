@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hestia/common/time_format.dart';
 
 final FirebaseStorage _storage = FirebaseStorage.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -47,6 +48,8 @@ class FirebaseQueryForSOS {
       CollectionReference sosReportsCollection =
           _firestore.collection("SOS_Reports");
 
+      String incidentFormattedTime = formatTimestamp(Timestamp.now());
+
       DocumentReference documentReference = await sosReportsCollection.add({
         "incidentDescription": incidentDescription,
         "incidentAddress": incidentAddress ?? "",
@@ -55,6 +58,7 @@ class FirebaseQueryForSOS {
         "incidentCategory": incidentCategory,
         "incidentImageLink": imageUrl,
         "senderID": senderID,
+        "incidentFormattedTime": incidentFormattedTime,
         "IsResolved": isResolved
       });
       print("Report Submitted");

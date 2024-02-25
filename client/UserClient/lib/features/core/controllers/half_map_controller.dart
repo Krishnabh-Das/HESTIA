@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
@@ -12,7 +13,7 @@ class HalfMapController extends GetxController {
   Future<void> makeHalfMapMarkers(var listofRetrievedMarkers) async {
     var userID = AuthRepository().getUserId();
 
-    print("makeHalfMapMarkers is called : $listofRetrievedMarkers");
+    debugPrint("makeHalfMapMarkers is called : $listofRetrievedMarkers");
 
     for (var map in listofRetrievedMarkers) {
       LatLng? position = map["lat"] != null && map["long"] != null

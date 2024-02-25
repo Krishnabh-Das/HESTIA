@@ -17,7 +17,7 @@ class SwipeableWidget extends StatefulWidget {
 
   final bool isActive;
 
-  SwipeableWidget(
+  const SwipeableWidget(
       {Key? key,
       required this.child,
       required this.height,
@@ -25,9 +25,7 @@ class SwipeableWidget extends StatefulWidget {
       required this.onSwipeValueCallback,
       required this.isActive,
       this.swipePercentageNeeded = 0.75})
-      : assert(child != null &&
-            onSwipeCallback != null &&
-            swipePercentageNeeded <= 1.0),
+      : assert(swipePercentageNeeded <= 1.0),
         super(key: key);
 
   @override
@@ -97,18 +95,18 @@ class _SwipeableWidgetState extends State<SwipeableWidget>
             final swipeValue = 60.0 / widgetSize;
             if (delta > deltaNeededToBeSwiped) {
               _controller.animateTo(swipeValue,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.fastOutSlowIn);
               widget.onSwipeCallback();
             } else {
               _controller.animateTo(1.0,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.fastOutSlowIn);
               widget.onSwipeValueCallback(1.0);
             }
           }
         },
-        child: Container(
+        child: SizedBox(
           height: widget.height,
           child: Align(
             alignment: Alignment.centerRight,
@@ -122,4 +120,4 @@ class _SwipeableWidgetState extends State<SwipeableWidget>
   }
 }
 
-typedef SwipeValueCallBack(double value);
+typedef SwipeValueCallBack = Function(double value);

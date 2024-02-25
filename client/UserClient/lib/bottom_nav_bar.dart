@@ -13,7 +13,7 @@ import 'package:hestia/features/personalization/screens/settings/settings_screen
 import 'package:iconsax/iconsax.dart';
 
 class BottomNavBar extends StatelessWidget {
-  BottomNavBar({super.key}) {}
+  const BottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         body: PageView(
           controller: pageController,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             HomeScreen(key: const PageStorageKey('Page1')),
             CommunityScreen(key: const PageStorageKey('Page2')),
@@ -81,7 +81,7 @@ class NavigationController extends GetxController {
 
   @override
   void onClose() {
-    print('NavigationController closed');
+    debugPrint('NavigationController closed');
 
     super.onClose();
   }

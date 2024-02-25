@@ -10,7 +10,7 @@ class HomelessSightings extends StatelessWidget {
   final HomeStatsRatingController homeStatsRatingController = Get.find();
 
   HomelessSightings({super.key}) {
-    print(
+    debugPrint(
         "homeStatsRatingController.homelessSightingsMarkerMapList.value: ${homeStatsRatingController.homelessSightingsMarkerMapList.value}");
     if (homeStatsRatingController
         .homelessSightingsMarkerMapList.value.isEmpty) {
@@ -78,8 +78,10 @@ class HomelessSightings extends StatelessWidget {
 
             // --Marker Post List
             StatsPostList(
-                homeStatsRatingList:
-                    homeStatsRatingController.homelessSightingsMarkerMapList)
+              homeStatsRatingList:
+                  homeStatsRatingController.homelessSightingsMarkerMapList,
+              isHomelessSightings: true,
+            )
           ],
         ),
       ),

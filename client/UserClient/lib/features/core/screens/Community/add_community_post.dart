@@ -24,8 +24,8 @@ class AddCommunityPost extends StatefulWidget {
 
 class _AddCommunityPostState extends State<AddCommunityPost> {
   TextEditingController desc = TextEditingController();
-  var imageFile = null;
-  var compressedImage = null;
+  var imageFile;
+  var compressedImage;
   bool isImagePicked = false;
   bool isDonate = false;
   var communtiyController = CommunityController.instance;

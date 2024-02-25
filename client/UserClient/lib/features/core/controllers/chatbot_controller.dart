@@ -20,8 +20,8 @@ class ChatBotController extends GetxController {
 
   Future<void> uploadAndGetResponseFromChatbot(String userMsg) async {
     try {
-      var url =
-          Uri.https('hestiabackend-vu6qon67ia-el.a.run.app', '/chat/send');
+      var url = Uri.https(
+          'hestiabackend-vu6qon67ia-el.a.run.app', '/api/v2/chat/send');
 
       var payload = {
         "question": userMsg,

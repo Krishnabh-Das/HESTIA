@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
                   duration: const Duration(milliseconds: 1000),
                 )
               : Get.to(
-                  () => BottomNavBar(),
+                  () => const BottomNavBar(),
                   transition: Transition.topLevel,
                   duration: const Duration(milliseconds: 1000),
                 );

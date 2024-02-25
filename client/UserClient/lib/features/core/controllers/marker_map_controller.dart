@@ -125,7 +125,7 @@ class MarkerMapController extends GetxController {
   // ------------------------------- FUNCTIONS ---------------------------------------------
 
   Future<void> initData() async {
-    print("Init is called");
+    debugPrint("Init is called");
 
     // Getting Profile Image
     await getUserLocation();
