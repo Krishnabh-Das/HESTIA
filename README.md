@@ -8,18 +8,23 @@
 </p>
 <p align="center">
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
-  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+  <a href="https://hestia-admin-panel.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
+  <a href="https://hestia-ngo-portal.netlify.app/"><strong>Try out the NGO Portal »</strong></a>
 </p>
 
 ## Table of Contents
 1. [About HESTIA](#about-hestia)
 2. [Features](#features)
-3. [Project Structure](#project-structure)
-4. [Diagrams](#diagrams)
-5. [Kanban Board](#kanban-board)
-6. [Technologies Used](#technologies-used)
-7. [Future Plans](#future-plans)
-8. [Team Members](#team-hestia)
+3. [Project Setup](#project-setup)
+4. [Project Structure](#project-structure)
+5. [Diagrams](#diagrams)
+6. [Kanban Board](#kanban-board)
+7. [Technologies Used](#technologies-used)
+8. [Future Plans](#future-plans)
+9. [Team Members](#team-hestia)
 
 ## About HESTIA
 
@@ -42,17 +47,42 @@ Our range of features include -
 * **Web Portals for Management** - Dedicated web portals for Admins and NGOs to interact with the database.
   * **Admin Portals** - Admins can initiate database operations and manage region map generation, verification of markers, handling of SOS alerts, and providing data visualizations.
   * **NGO Portals** - NGOs can create announcements or post events, query databases for relevant information, and facilitate community interaction.
-* **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identify potential criminals, identification of specific people who need required resources by NGOs or Government Agencies, or monitor suspicious individuals.
+* **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identify potential criminals, identification of specific people who need required resources by NGOs or Government Agencies or monitor suspicious individuals.
 * **Community Page** - Display events with address and time, post announcements, request donations, donate to causes, help find missing individuals, and general community engagement.
 * **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on regional and global leaderboards.
 
 ![Application Screens](./assets/FINAL%20FEATURE%20LIST.png)
+
+## Project Setup
+
+First, clone the repository as such,
+```
+$ git clone https://github.com/Krishnabh-Das/HESTIA.git
+```
+Now to set the server, also populate .env.example
+```
+$ cd server/custom_backend
+$ pip install requirements
+$ uvicorn main:app --reload
+```
+To set up the web portals, navigate to each portal's folder and run the following set of commands, also populate .env.example
+```
+$ npm install
+$ npm start
+```
+
 
 ## Project Structure
 ```
 ├── 🌐 assets
 ├── 📱 client
 │   ├── 🧑‍💼 AdminClient
+│   │   ├── jsconfig.json
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── public
+│   │   └── src
+│   ├── 🧑‍💻 NGOClient
 │   │   ├── jsconfig.json
 │   │   ├── package.json
 │   │   ├── package-lock.json
@@ -93,18 +123,22 @@ Our range of features include -
     │   ├── functions
     │   └── README.md
     └── custom_backend
-        ├── configs
-        ├── custoimErrors
-        ├── docker-compose_beta.yaml
-        ├── docker-compose_dev.yaml
-        ├── Dockerfile
-        ├── docs
-        ├── main.py
-        ├── processor
-        ├── __pycache__
-        ├── requirements.txt
-        ├── schemas
-        └── utils
+    │   ├── configs
+    │   ├── custoimErrors
+    │   ├── docker-compose_beta.yaml
+    │   ├── docker-compose_dev.yaml
+    │   ├── Dockerfile
+    │   ├── docs
+    │   ├── main.py
+    │   ├── processor
+    │   ├── __pycache__
+    │   ├── requirements.txt
+    │   ├── schemas
+    │   └── utils
+    └── pipelines
+        ├── human_detection
+        └── clustering_classification
+
 
 ```
 
@@ -139,12 +173,14 @@ Our range of features include -
 * Adapt the platform to make it relevant worldwide and accessible to people of different cultures and backgrounds.
 * Form business alliances to promote sponsorship and workforce collaboration.
 * Integrate social media for optimal reach and simple sharing.
-* Use innovative and advanced analytics tools to gain insights in real-time.
+* Use innovative and advanced analytics tools to gain insights in real time.
 * Improve AI capabilities to provide more precise support.
 * Create agreements for data exchange with organizations.
 * Improve leaderboard functionality to maintain long-term user interest.
 * Ally with government organizations to ensure that the transfer of resources to the homeless is properly monitored.
 * Redeem HESTIA tokens to get merchandise featuring homelessness awareness on t-shirts and other items.
+
+## How to Setup the Project
 
 
 ## Team HESTIA
