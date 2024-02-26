@@ -137,14 +137,20 @@ export const getFinderDetails = async (photo) => {
     try {
         const dummyData = {
             Custer: [
-                "1708885500298","1708452071221","1708873467031", "1708885439721", "1708885452075", "1708885469893", "1708885469893"
+                "1708885500298_0","1708452071221_0","1708873467031_0", "1708885439721_0", "1708885452075_0", "1708885469893_0", "1708885469893_0"
             ],
             CusterId: "test"
         }
 
+      
+      let modifiedCuster = dummyData.Custer.map(item => item.slice(0, -2));
+      
+      console.log('modifiedCuster',modifiedCuster);
+      
+
         const markers = [];
 
-        for (const markerId of dummyData.Custer) {
+        for (const markerId of modifiedCuster) {
 
             const marker = await getMarkerById(markerId);
             markers.push(marker);
