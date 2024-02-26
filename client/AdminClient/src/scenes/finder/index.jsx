@@ -17,7 +17,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 
-import MarkerActions from "../markers/MarkerActions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   Box,
@@ -43,6 +43,7 @@ import {
   Marker,
   Popup,
   Polygon,
+  Polyline,
   useMap,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -55,27 +56,31 @@ import pinIcon3 from "../../assets/destination.png";
 import { Icon, divIcon, point } from "leaflet";
 
 import DataGridCustomToolbar from "../../components/DataGridCustomToolbar";
+import { getFinderDetails, searchFinderDetails, getMarkerById } from "../../api/Ngo";
+import CustomMarker from "../../components/CustomMarker";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { getFinderDetails } from "../../api/Ngo";
+import dayjs from 'dayjs'
 
 
-function Finder() {
-    
-    const queryClient = useQueryClient();
 
-    const {
-      isLoading,
-      isError,
-      data: posts,
-      error,
-    } = useQuery({
-      queryKey: ["markers"],
-      queryFn: getFinderDetails,
-    });
+function Markers() {
 
-    //----------------------------------
+  const [finderMarkers, setFinderMarkers] = useState([])
+  const purpleOptions = { color: "purple" };
+
+  const queryClient = useQueryClient();
+
+  // const {
+  //   isLoading,
+  //   isError,
+  //   data: finderMarkers,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["finder"],
+  //   queryFn: getFinderDetails,
+  // });
+
+  console.log("finder markers>>>>", finderMarkers);
 
   // const map = useMap();
   const theme = useTheme();
@@ -117,8 +122,17 @@ function Finder() {
 
   const markerDisplay = async () => {
     try {
+      console.log("hi 1");
+      console.log("markerIndex hi 1", markerIndex);
+      console.log("hi2");
       const markerDocRef = doc(db, "Markers", markerIndex);
+      console.log("hi3");
+      console.log("markerDocRef", markerDocRef);
       const markerDocSnapshot = await getDoc(markerDocRef);
+
+      
+
+      console.log("hi 4");
 
       if (markerDocSnapshot.exists()) {
         console.log(
@@ -133,8 +147,6 @@ function Finder() {
     } catch (error) {}
   };
 
-  //  markerDisplay();
-
   //MUI datagrid setup
   // const [selectedRow, setSelectedRow] = useState(null);
 
@@ -147,48 +159,30 @@ function Finder() {
 
       // Set the marker index
       setMarkerIndex(selectedRowIndex);
-
-      // try {
-      //   // Call markerDisplay after setting the state to ensure it uses the updated markerIndex
-      //   await markerDisplay();
-
-      //   //BEEP BEEP: write a functional Map component that has all the content that is supposed to be rendered when a data grid element is cliked
-
-      //   //but I dont want to all markers to vanish
-
-      //   // Zoom to the selected marker's position
-      //   // if (markerData && markerData.lat && markerData.long) {
-      //   //   map.flyTo([markerData.lat, markerData.long], 15, {
-      //   //     duration: 2, // Adjust duration as needed
-      //   //   });
-      //   // }
-      // } catch (error) {
-      //   console.error("Error in markerDisplay:", error);
-      // }
     }
   };
-
-  // try {
-  //   // Call markerDisplay after setting the state to ensure it uses the updated markerIndex
-  //   await markerDisplay();
-  // } catch (error) {
-  //   console.error("Error in markerDisplay:", error);
-  // }
 
   console.log(
     "markerIndex after setting the selectedRowIndex>>>>>>>>>>>>>>>>>",
     markerIndex
   );
 
-  useEffect(() => {
-    getMarkers();
-  }, []);
+  // useEffect(() => {
+  //   getMarkers();
+  // }, []);
 
+  useEffect(() => {
+    if (finderMarkers) {
+      setMarkerList(finderMarkers);
+    }
+  }, [finderMarkers]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (markerIndex !== null) {
           await markerDisplay();
+        } else {
+          console.log("marker Display not runned");
         }
       } catch (error) {
         console.error("Error in markerDisplay:", error);
@@ -211,7 +205,7 @@ function Finder() {
       // hide: true,
     },
     {
-      field: "marker_id",
+      field: "id",
       headerName: "id",
       flex: 1,
       hide: true,
@@ -235,13 +229,6 @@ function Finder() {
       field: "address",
       headerName: "Address",
       flex: 1,
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      type: "actions",
-      width: 150,
-      renderCell: (params) => <MarkerActions {...{ params }} />,
     },
   ];
 
@@ -270,13 +257,99 @@ function Finder() {
 
   // const map = useMap();
 
+  const coordinates = finderMarkers?.map((marker) => [marker.lat, marker.long]);
+
+  console.log("coordinates for the finderMarkers", coordinates);
+
+  const [file, setFile] = useState(null);
+
+  const searchFinderDetailsMutation = useMutation({
+    mutationFn: searchFinderDetails,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['finder']});
+      console.log("success bro!")
+    }
+  });
+
+  const handleFileChange = (e) => {
+    console.log('file change?', e.target.files[0] );
+    setFile(e.target.files[0]);
+  };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      console.error('No file selected');
+      return;
+    }
+
+    console.log('file', file);
+
+    const formData = new FormData();
+    formData.append('img', file);
+
+
+    console.log('fomDaata', formData);
+
+    // searchFinderDetailsMutation.mutate(formData)
+
+
+    try {
+      const response = await axios.post('https://hestiabackend-vu6qon67ia-el.a.run.app/api/v2/Cluster/get', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Photo uploaded successfully');
+
+      let clusterData = response.data.Cluster
+
+      console.log('response of mutipart', clusterData);
+
+      let modifiedCuster = clusterData.map(item => item.slice(0, -2));
+
+      console.log('modifiedCuster',modifiedCuster);
+
+      const markers = [];
+
+      for (const markerId of modifiedCuster) {
+
+          const marker = await getMarkerById(markerId);
+          markers.push(marker);
+
+      }
+      
+      console.log('Markers in the appended array: >>>>>>>>>', markers);
+
+              // Sort markers array based on the 'time' field in descending order
+              markers.sort((a, b) => {
+                  const timeA = dayjs.unix(a.time.seconds);
+                  const timeB = dayjs.unix(b.time.seconds);
+                  return timeB.diff(timeA); // Compare in descending order
+              });
+      
+              console.log('Sorted Markers: >>>>>>>>>>>>>>>', markers);
+
+              setFinderMarkers(markers)
+      
+      return markers
+
+
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+    }
+  };
+
   return (
     <>
       <Box m="1.5rem 2.5rem">
         <FlexBetween>
           <Header
-            title="MARKERS"
-            subtitle="all the markers created by the users"
+            title="FINDER"
+            subtitle="track a lost person by uploading an image"
           />
 
           {/* <Box>
@@ -312,6 +385,13 @@ function Finder() {
             },
           }}
         >
+          <Box>
+          <form onSubmit={handleSubmit}>
+      <input type="file" onChange={handleFileChange} />
+      <button type="submit">Upload Photo</button>
+    </form>
+          </Box>
+{}
           <Box
             display="flex"
             flexWrap="wrap"
@@ -320,9 +400,7 @@ function Finder() {
             gap={3}
             // height='30vh'
           >
-            {markerList.length === 0 ? (
-              <CircularProgress />
-            ) : (
+            {markerList.length !== 0 && (
               <>
                 <Box
                   sx={{
@@ -355,7 +433,7 @@ function Finder() {
                 >
                   <DataGrid
                     // loading={isLoading || !sosList}
-                    getRowId={(row) => row.marker_id}
+                    getRowId={(row) => row.id}
                     rows={(markerList && markerList) || []}
                     columns={columns}
                     sortModel={[
@@ -402,22 +480,39 @@ function Finder() {
                             chunkedLoading
                             iconCreateFunction={createClusterCustomIcon}
                           >
-                            {markerList.map((marker) => (
-                              <Marker
+                            {markerList.map((marker, index) => (
+                              // <Marker
+                              //   position={[marker?.lat, marker?.long]}
+                              //   icon={pin3}
+                              // >
+                              //   {/* <Popup>{marker?.description}</Popup> */}
+                              //   <Popup>
+                              //     <MarkerPopup
+                              //       description={marker?.description}
+                              //       imageUrl={marker?.imageUrl}
+                              //       address={marker?.address}
+                              //       formattedTime={marker?.formattedTime}
+                              //     />
+                              //   </Popup>
+                              // </Marker>
+
+                              <CustomMarker
+                                description={marker?.description}
+                                imageUrl={marker?.imageUrl}
+                                address={marker?.address}
+                                formattedTime={marker?.formattedTime}
                                 position={[marker?.lat, marker?.long]}
-                                icon={pin3}
-                              >
-                                {/* <Popup>{marker?.description}</Popup> */}
-                                <Popup>
-                                  <MarkerPopup
-                                    description={marker?.description}
-                                    imageUrl={marker?.imageUrl}
-                                    address={marker?.address}
-                                    formattedTime={marker?.formattedTime}
-                                  />
-                                </Popup>
-                              </Marker>
+                                order={index + 1}
+                              />
                             ))}
+
+                            {coordinates && (
+                              <Polyline
+                                pathOptions={purpleOptions}
+                                positions={coordinates}
+                              />
+                            )}
+
                             {markerData && (
                               <FlyToMarker
                                 position={[markerData?.lat, markerData?.long]}
@@ -439,7 +534,7 @@ function Finder() {
   );
 }
 
-export default Finder;
+export default Markers;
 
 const MarkerPopup = ({ imageUrl, description, formattedTime, address }) => {
   const theme = useTheme();
@@ -540,6 +635,7 @@ const MarkerPopup = ({ imageUrl, description, formattedTime, address }) => {
 
 const FlyToMarker = ({ position, zoom }) => {
   const map = useMap();
+
   map.flyTo(position, zoom, { duration: 2 });
 
   return null;
