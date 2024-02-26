@@ -8,13 +8,13 @@ importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: "",
-    measurementId: ""
+    apiKey: "AIzaSyDCFjdOajWjZjeENpHhfd7R3AVnuT1amX0",
+    authDomain: "plenary-truck-411220.firebaseapp.com",
+    projectId: "plenary-truck-411220",
+    storageBucket: "plenary-truck-411220.appspot.com",
+    messagingSenderId: "199171467504",
+    appId: "1:199171467504:web:b3a415d4bc11c9828bfa35",
+    measurementId: "G-R0XZPLHV5T"
 };
 
 

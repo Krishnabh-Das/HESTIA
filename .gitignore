@@ -117,13 +117,11 @@ notebooks/yolov8n.pt
 notebooks/installed_packages.txt
 notebooks/detection_pipeline.json
 notebooks/detection_pipeline.yaml
-<<<<<<< HEAD
 notebooks/pipelines/clus_class_pipeline.yaml
 notebooks/pipelines/detection_pipeline.yaml
-=======
 server/custom_backend/db/detectionKey.json
 
 **/detectionKey.json
 server/custom_backend/temp
 server/custom_backend/test.py
->>>>>>> 8d9deeb1b10c53d4cbeb3517d966f021e3fa9ad7
+client/AdminClient/public/firebase-messaging-sw.js
