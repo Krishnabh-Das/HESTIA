@@ -18,12 +18,13 @@
 ## Table of Contents
 1. [About HESTIA](#about-hestia)
 2. [Features](#features)
-3. [Project Structure](#project-structure)
-4. [Diagrams](#diagrams)
-5. [Kanban Board](#kanban-board)
-6. [Technologies Used](#technologies-used)
-7. [Future Plans](#future-plans)
-8. [Team Members](#team-hestia)
+3. [Project Setup](#project-setup)
+4. [Project Structure](#project-structure)
+5. [Diagrams](#diagrams)
+6. [Kanban Board](#kanban-board)
+7. [Technologies Used](#technologies-used)
+8. [Future Plans](#future-plans)
+9. [Team Members](#team-hestia)
 
 ## About HESTIA
 
@@ -46,11 +47,29 @@ Our range of features include -
 * **Web Portals for Management** - Dedicated web portals for Admins and NGOs to interact with the database.
   * **Admin Portals** - Admins can initiate database operations and manage region map generation, verification of markers, handling of SOS alerts, and providing data visualizations.
   * **NGO Portals** - NGOs can create announcements or post events, query databases for relevant information, and facilitate community interaction.
-* **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identify potential criminals, identification of specific people who need required resources by NGOs or Government Agencies, or monitor suspicious individuals.
+* **Face-Tagged Database** - Clustering of faces in the database by using supervised and unsupervised face clustering. These face tags can be used to locate missing individuals, identify potential criminals, identification of specific people who need required resources by NGOs or Government Agencies or monitor suspicious individuals.
 * **Community Page** - Display events with address and time, post announcements, request donations, donate to causes, help find missing individuals, and general community engagement.
 * **Gamification** - To further improve engagement with the community, points are rewarded to individuals by acts of volunteering, posting reports, helping in spreading awareness, etc. These points will be then posted on regional and global leaderboards.
 
 ![Application Screens](./assets/FINAL%20FEATURE%20LIST.png)
+
+## Project Setup
+
+First, clone the repository as such,
+```
+$ git clone https://github.com/Krishnabh-Das/HESTIA.git
+```
+Now to set the server,
+```
+$ pip install requirements
+$ uvicorn main:app --reload
+```
+To set up the web portals, navigate to each portal's folder and run the following set of commands,
+```
+$ npm install
+$ npm start
+```
+
 
 ## Project Structure
 ```
