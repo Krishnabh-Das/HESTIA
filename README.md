@@ -59,12 +59,13 @@ First, clone the repository as such,
 ```
 $ git clone https://github.com/Krishnabh-Das/HESTIA.git
 ```
-Now to set the server,
+Now to set the server, also populate .env.example
 ```
+$ cd server/custom_backend
 $ pip install requirements
 $ uvicorn main:app --reload
 ```
-To set up the web portals, navigate to each portal's folder and run the following set of commands,
+To set up the web portals, navigate to each portal's folder and run the following set of commands, also populate .env.example
 ```
 $ npm install
 $ npm start
