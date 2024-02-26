@@ -253,6 +253,45 @@ function Markers() {
 
   console.log("coordinates for the finderMarkers", coordinates);
 
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    console.log('file change?', e.target.files[0] );
+    setFile(e.target.files[0]);
+  };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      console.error('No file selected');
+      return;
+    }
+
+    console.log('file', file);
+
+    const formData = new FormData();
+    formData.append('photo', file);
+
+
+    console.log('fomDaata', formData);
+
+    try {
+      const response = await axios.post('https://v2.convertapi.com/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Photo uploaded successfully');
+
+      console.log('response of mutipart', response);
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+    }
+  };
+
   return (
     <>
       <Box m="1.5rem 2.5rem">
@@ -295,6 +334,13 @@ function Markers() {
             },
           }}
         >
+          <Box>
+          <form onSubmit={handleSubmit}>
+      <input type="file" onChange={handleFileChange} />
+      <button type="submit">Upload Photo</button>
+    </form>
+          </Box>
+
           <Box
             display="flex"
             flexWrap="wrap"
