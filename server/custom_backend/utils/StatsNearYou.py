@@ -525,6 +525,8 @@ class statsNearYou:
         """
         try:
             marker = self.find_nearest_marker(target_lat=lat, target_lon=lon)
+            logger.debug("##marker:")
+            logger.debug(marker)
         except Exception as e:
             traceback_str = traceback.format_exc()
             logger.error("An error occurred: %s", str(e))
@@ -576,6 +578,7 @@ class statsNearYou:
                         "Events_cluster": int(Events["cluster_label"]),  # type: ignore
                     }
                 )
+            
             elif marker is None and SOS is not None and Events is not None:
                 logger.debug("marker is None and SOS is not None and Events is not None")
                 data2 = (
@@ -590,36 +593,66 @@ class statsNearYou:
                 )
                 logger.info("successfully got Stats for given coord")
                 res_dict = data2.to_dict()
-                res_dict.update(data2.to_dict())
                 res_dict.update(data3.to_dict())
                 res_dict.update(
                     {
-                        "SOS_cluster": int(SOS["cluster_label"]),  # type: ignore
                         "Marker_cluster": int(-2),
                         "marker_star": int(5),
                         "marker_count": 0,
+                        "SOS_cluster": int(SOS["cluster_label"]),  # type: ignore
                         "Events_cluster": int(Events["cluster_label"]),  # type: ignore
                     }
                 )  # type: ignore
-            elif SOS is None and marker is not None and Events is not None:
+            elif marker is not None and SOS is None and Events is not None:
                 logger.debug("marker is not None and SOS is None and Events is not None")
                 data = (
                     self.firebaseClient.collection("Stats")
                     .document(f"{marker['cluster_label']}")  # type: ignore
                     .get()
                 )
+                data3 = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"Events_{Events['cluster_label']}")  # type: ignore
+                    .get()
+                )
                 logger.info("successfully got Stats for given coord")
                 res_dict = data.to_dict()
+                res_dict.update(data3.to_dict())
                 res_dict.update(
                     {
                         "Marker_cluster": int(marker["cluster_label"]),  # type: ignore
-                        "SOS_cluster": int(-2),
-                        "SOS_Reports_star": int(5),
-                        "SOS_Reports_count": 0,
-                        "Events_cluster": int(Events["cluster_label"]),  # type: ignore
+                        "Events_cluster": int(-2),
+                        "Events_Reports_star": int(5),
+                        "Events_Reports_count": 0,
+                        "SOS_cluster": int(SOS["cluster_label"]),  # type: ignore
                     }
-                )  # type: ignore
-            elif SOS is not None and marker is None and Events is None:
+                )  # type: ignore         
+            elif marker is not None and SOS is not None and Events is None:
+                logger.debug("marker is not None and SOS is None and Events is not None")
+                data = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"{marker['cluster_label']}")  # type: ignore
+                    .get()
+                )
+                data2 = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"SOS_{SOS['cluster_label']}")  # type: ignore
+                    .get()
+                )
+                logger.info("successfully got Stats for given coord")
+                res_dict = data.to_dict()
+                res_dict.update(data2.to_dict())
+                res_dict.update(
+                    {
+                        "Marker_cluster": int(marker["cluster_label"]),  # type: ignore
+                        "SOS_cluster": int(SOS["cluster_label"]),
+                        "Events_cluster": int(-2),
+                        "Events_Reports_star": int(5),
+                        "Events_Reports_count": 0,
+                    }
+                )
+            
+            elif marker is None and SOS is not None and Events is None:
                 logger.debug("SOS is not None and marker is None and Events is None")
                 data = (
                     self.firebaseClient.collection("Stats")
@@ -638,8 +671,28 @@ class statsNearYou:
                         "Events_Reports_star": int(5),
                         "Events_Reports_count": 0,
                     }
+                )         
+            elif marker is not None and SOS is None and Events is None:
+                logger.debug("SOS is not None and marker is None and Events is None")
+                data = (
+                    self.firebaseClient.collection("Stats")
+                    .document(f"{marker['cluster_label']}")  # type: ignore
+                    .get()
                 )
-            elif Events is not None and marker is None and SOS is None:
+                logger.info("successfully got Stats for given coord")
+                res_dict = data.to_dict()
+                res_dict.update(
+                    {
+                        "Marker_cluster": int(marker["cluster_label"]),  # type: ignore
+                        "SOS_cluster": int(-2),
+                        "SOS_Reports_star": int(5),
+                        "SOS_Reports_count": 0,
+                        "Events_cluster": int(-2),
+                        "Events_Reports_star": int(5),
+                        "Events_Reports_count": 0,
+                    }
+                )
+            elif marker is None and SOS is None and Events is not None:
                 logger.debug("Events is not None and marker is None and Events is None")
                 data = (
                     self.firebaseClient.collection("Stats")
@@ -659,26 +712,7 @@ class statsNearYou:
                         "SOS_Reports_count": 0,
                     }
                 )
-            elif SOS is None and marker is not None and Events is None:
-                logger.debug("SOS is None and marker is not None and Events is None")
-                data = (
-                    self.firebaseClient.collection("Stats")
-                    .document(f"{marker['cluster_label']}")  # type: ignore
-                    .get()
-                )
-                logger.info("successfully got Stats for given coord")
-                res_dict = data.to_dict()
-                res_dict.update(
-                    {
-                        "Marker_cluster": int(marker["cluster_label"]),  # type: ignore
-                        "SOS_cluster": int(-2),
-                        "SOS_Reports_star": int(5),
-                        "SOS_Reports_count": 0,
-                        "Events_cluster": int(-2),
-                        "Events_Reports_star": int(5),
-                        "Events_Reports_count": 0,
-                    }
-                )  # type: ignore
+            
             else:
                 res_dict = {
                     "Marker_cluster": int(-2),
@@ -691,6 +725,7 @@ class statsNearYou:
                     "Events_Reports_star": int(5),
                     "Events_Reports_count": 0,
                 }
+            
             return res_dict  # type: ignore
         except Exception as e:
             traceback_str = traceback.format_exc()
