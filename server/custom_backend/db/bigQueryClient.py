@@ -1,5 +1,6 @@
 import pandas as pd
 from google.cloud import bigquery
+from face_recognition import load_image_file
 
 def getBigQueryTableStep3(TableID: str) -> pd.DataFrame:
     """

@@ -26,7 +26,10 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { setUser, setAuthChecked, selectUser, selectAuthChecked } from "../state/userSlice";
 
+import VolunteerDetailsModal from '../components/modals/VolunteerDetailsModal'
+
 import DataGridCustomToolbar from "../components/DataGridCustomToolbar";
+import { Delete, Edit, Preview } from '@mui/icons-material';
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -44,12 +47,14 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import HandshakeIcon from "@mui/icons-material/Handshake";
 
+import { useNavigate } from 'react-router-dom'; 
 
 import { fetchVolunteers } from "../api/Ngo";
 
 const EventDetailsVolunteer = () => {
     const user = useSelector(selectUser);
     console.log("<>user in Admin Actions?>>>>>>>>>>>>>>>>>>>>>>>>>",user?.uid);
+    const navigate = useNavigate();
   const theme = useTheme();
   const { id, option } = useParams();
   const [activeTab, setActiveTab] = useState(0);
@@ -71,39 +76,24 @@ const EventDetailsVolunteer = () => {
         setActiveTab(0); // Default to 'pending' if option is not recognized
         break;
     }
+  }, []);
 
-    // Fetch volunteers data based on the option (you need to implement this)
-    // Example fetchVolunteers function:
-    // const fetchVolunteers = async () => {
-    //   const response = await fetch(`/api/volunteers?option=${option}`);
-    //   const data = await response.json();
-    //   setVolunteers(data);
-    // };
-    // fetchVolunteers();
-  }, [option]);
+  const handleMoreDetails = (id) => { 
+    console.log("hi");
+    console.log(id);
+      navigate(`/details/${id}`);
+    }
 
-  // Define columns for the data grid
   const columns = [
+    {
+      field: "volunteer_id",
+      headerName: "id",
+      flex: 1,
+      hide: true,
+    },
     { field: "name", headerName: "Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "status", headerName: "Status", flex: 1,
-    // renderCell: (params) => {
-    //   switch (params.status) {
-    //     case 'pending':
-    //         <h1>hi</h1>
-    //       break;
-    //     case 'accepted':
-    //         <h1>hi2</h1>
-    //     break;
-    //     case 'accepted':
-    //       <h1>hi3</h1>
-    //   break;
-    //     default:
-    //       break;
-    //   }
-    // }
-
-
     renderCell: (params) => {
       switch (params.value) {
         case 'pending':
@@ -117,7 +107,21 @@ const EventDetailsVolunteer = () => {
       }
     }
   },
-    { field: "actions", headerName: "More details", flex: 1 },
+  {
+    field: "details",
+    headerName: "More details",
+    flex: 1,
+    renderCell: (params) => {
+      return (
+        <IconButton
+          // onClick={() => handleToggleResolved(params.row.id, !params.row.isResolved)}
+          onClick={() => handleMoreDetails(params.row.volunteer_id)}
+        > 
+          <Preview/>
+        </IconButton>
+      );
+    },
+  },
     // Add more columns as needed
   ];
 
@@ -184,9 +188,6 @@ const EventDetailsVolunteer = () => {
 
 
           {activeTab === 2 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'rejected')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
-        
-
-          
         </Box>
         
 

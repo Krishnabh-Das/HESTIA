@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   Button,
   TextField,
@@ -22,9 +23,10 @@ import { db, storage } from "../../config/firebase";
 import {
   // getFirestore,
   collection,
-  // doc,
+  doc,
   addDoc,
   GeoPoint,
+  setDoc,
   // getDoc,
   // getDocs,
   // updateDoc,
@@ -80,6 +82,8 @@ const CreateEvent = () => {
 
   console.log(user);
 
+
+
   const Textarea = styled(BaseTextareaAutosize)(
     `
         box-sizing: border-box;
@@ -115,11 +119,25 @@ const CreateEvent = () => {
 
   const [fromDate, setFromDate] = useState(dayjs().format());
 
-  const inputRef = React.useRef(null);
-
   const [toDate, setToDate] = useState(dayjs().format());
 
   const [time, setTime] = React.useState(dayjs().format());
+
+  const [rawTime, setRawTime] = useState(dayjs().format())
+
+  const [rawFromDate, setRawFromDate] = useState(dayjs().format())
+
+  const [rawToDate, setRawToDate] = useState(dayjs().format())
+
+
+  console.log('time',time);
+  console.log('rawTime',rawTime);
+
+  console.log('fromDate',fromDate);
+  console.log('rawFromDate',rawFromDate);
+
+  console.log('toDate',toDate);
+  console.log('rawToDate',rawToDate);
 
   const [eventName, setEventName] = useState("");
   const [poster, setPoster] = useState(null);
@@ -139,37 +157,72 @@ const CreateEvent = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    const storageRef = ref(storage, `EventPosters/${poster.name}`);
-    await uploadBytes(storageRef, poster).then((snapshot) => {
-      console.log("Uploaded a blob or file!");
-    });
-    const posterUrl = await getDownloadURL(storageRef);
-    // Here you can submit the form data to your backend or handle it as needed
-    const locPoint = new GeoPoint(position.lat, position.lng);
-    const data = {
-      eventName: eventName,
-      poster: posterUrl,
-      time: dayjs(time).format("LT"),
-      location: locPoint,
-      fromDate: dayjs(fromDate).format("L"),
-      toDate: dayjs(toDate).format("L"),
-      eventDescription,
-      eventContact,
-      volunteerCount,
-      ngoId: user.uid,
-      type: type,
-    };
+    try {
+      e.preventDefault();
 
-    await addDoc(collection(db, "Events"), data);
+      const eventID = dayjs().valueOf();
+      console.log("dayjs", eventID);
 
-    console.log({ eventName, posterUrl, time, position });
+      const posterExt = poster.name.split(".").slice(-1)[0];
+  
+      const storageRef = ref(
+        storage,
+        `Event/${eventID}/Poster/Poster.${posterExt}`
+      );
+      await uploadBytes(storageRef, poster).then((snapshot) => {
+        console.log("Uploaded a blob or file!");
+      });
+      const posterUrl = await getDownloadURL(storageRef);
+      // Here you can submit the form data to your backend or handle it as needed
+      const locPoint = new GeoPoint(position.lat, position.lng);
+      const data = {
+        eventName: eventName,
+        poster: posterUrl,
+        time: dayjs(time).format("LT"),
+        rawTime: dayjs(time).format(),
+        location: locPoint,
+        fromDate: dayjs(fromDate).format("L"),
+        rawFromDate: dayjs(fromDate).format(),
+        toDate: dayjs(toDate).format("L"),
+        rawToDate: dayjs(toDate).format(),
+        eventDescription,
+        eventContact,
+        volunteerCount,
+        ngoId: user.uid,
+        type: type,
+      };
+  
+      // const eventDocRef = doc(collection(db, "Events"), eventID);
+  
+      // await setDoc(eventDocRef,collection(db, "Events"), data);
+  
+      const eventDocRef = doc(collection(db, "Events"), eventID.toString());
+  
+      await setDoc(eventDocRef, data);
+  
+      console.log({ eventName, posterUrl, time, position });
+    } catch (err) {
+      console.log('error in handle submit', err);
+    }
+
   };
 
   const handlePosterChange = (e) => {
     const file = e.target.files[0];
-    setPoster(file);
+    if (file) {
+      const fileType = file.type;
+      if (
+        fileType === "image/jpeg" ||
+        fileType === "image/png" ||
+        fileType === "image/jpg"
+      ) {
+        setPoster(file);
+      } else {
+        // Display an error message or handle the invalid file type as needed
+        console.error("Invalid file type. Please upload a JPEG or PNG image.");
+      }
+    }
   };
 
   const handleMapClick = (e) => {
@@ -215,6 +268,7 @@ const CreateEvent = () => {
                 <div>
                   <Typography variant="body1" gutterBottom>
                     Poster uploaded: {poster.name}
+                    {/* Extension: {poster.name.split('.').slice(-1)[0]} */}
                   </Typography>
                   <img
                     src={URL.createObjectURL(poster)}
@@ -244,7 +298,11 @@ const CreateEvent = () => {
                   <TimePicker
                     label="Time"
                     value={dayjs(time)}
-                    onChange={(newValue) => setTime(dayjs(newValue))}
+                    onChange={(newValue) => {
+                      setTime(dayjs(newValue))
+                      setRawTime(dayjs(newValue))
+                    }
+                    }
                   />
 
                   <TextField
@@ -259,12 +317,20 @@ const CreateEvent = () => {
                   <DatePicker
                     label="From"
                     value={dayjs(fromDate)}
-                    onChange={(newValue) => setFromDate(dayjs(newValue))}
+                    onChange={(newValue) => {
+                      setFromDate(dayjs(newValue))
+                      setRawFromDate(dayjs(newValue))
+                    
+                    }}
                   />
                   <DatePicker
                     label="To"
                     value={dayjs(toDate)}
-                    onChange={(newValue) => setToDate(dayjs(newValue))}
+                    onChange={(newValue) =>{ 
+                      setToDate(dayjs(newValue))
+                      setRawToDate(dayjs(newValue))
+
+                    }}
                   />
                 </Box>
                 <Box>
