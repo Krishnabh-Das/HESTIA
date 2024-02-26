@@ -56,23 +56,29 @@ import pinIcon3 from "../../assets/destination.png";
 import { Icon, divIcon, point } from "leaflet";
 
 import DataGridCustomToolbar from "../../components/DataGridCustomToolbar";
-import { getFinderDetails } from "../../api/Ngo";
+import { getFinderDetails, searchFinderDetails, getMarkerById } from "../../api/Ngo";
 import CustomMarker from "../../components/CustomMarker";
 
+import dayjs from 'dayjs'
+
+
+
 function Markers() {
+
+  const [finderMarkers, setFinderMarkers] = useState([])
   const purpleOptions = { color: "purple" };
 
   const queryClient = useQueryClient();
 
-  const {
-    isLoading,
-    isError,
-    data: finderMarkers,
-    error,
-  } = useQuery({
-    queryKey: ["finder"],
-    queryFn: getFinderDetails,
-  });
+  // const {
+  //   isLoading,
+  //   isError,
+  //   data: finderMarkers,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["finder"],
+  //   queryFn: getFinderDetails,
+  // });
 
   console.log("finder markers>>>>", finderMarkers);
 
@@ -123,6 +129,8 @@ function Markers() {
       console.log("hi3");
       console.log("markerDocRef", markerDocRef);
       const markerDocSnapshot = await getDoc(markerDocRef);
+
+      
 
       console.log("hi 4");
 
@@ -255,6 +263,14 @@ function Markers() {
 
   const [file, setFile] = useState(null);
 
+  const searchFinderDetailsMutation = useMutation({
+    mutationFn: searchFinderDetails,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['finder']});
+      console.log("success bro!")
+    }
+  });
+
   const handleFileChange = (e) => {
     console.log('file change?', e.target.files[0] );
     setFile(e.target.files[0]);
@@ -272,13 +288,16 @@ function Markers() {
     console.log('file', file);
 
     const formData = new FormData();
-    formData.append('photo', file);
+    formData.append('img', file);
 
 
     console.log('fomDaata', formData);
 
+    // searchFinderDetailsMutation.mutate(formData)
+
+
     try {
-      const response = await axios.post('https://v2.convertapi.com/upload', formData, {
+      const response = await axios.post('https://hestiabackend-vu6qon67ia-el.a.run.app/api/v2/Cluster/get', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -286,7 +305,39 @@ function Markers() {
 
       console.log('Photo uploaded successfully');
 
-      console.log('response of mutipart', response);
+      let clusterData = response.data.Cluster
+
+      console.log('response of mutipart', clusterData);
+
+      let modifiedCuster = clusterData.map(item => item.slice(0, -2));
+
+      console.log('modifiedCuster',modifiedCuster);
+
+      const markers = [];
+
+      for (const markerId of modifiedCuster) {
+
+          const marker = await getMarkerById(markerId);
+          markers.push(marker);
+
+      }
+      
+      console.log('Markers in the appended array: >>>>>>>>>', markers);
+
+              // Sort markers array based on the 'time' field in descending order
+              markers.sort((a, b) => {
+                  const timeA = dayjs.unix(a.time.seconds);
+                  const timeB = dayjs.unix(b.time.seconds);
+                  return timeB.diff(timeA); // Compare in descending order
+              });
+      
+              console.log('Sorted Markers: >>>>>>>>>>>>>>>', markers);
+
+              setFinderMarkers(markers)
+      
+      return markers
+
+
     } catch (error) {
       console.error('Error uploading photo:', error);
     }
@@ -340,7 +391,7 @@ function Markers() {
       <button type="submit">Upload Photo</button>
     </form>
           </Box>
-
+{}
           <Box
             display="flex"
             flexWrap="wrap"
@@ -349,9 +400,7 @@ function Markers() {
             gap={3}
             // height='30vh'
           >
-            {markerList.length === 0 ? (
-              <CircularProgress />
-            ) : (
+            {markerList.length !== 0 && (
               <>
                 <Box
                   sx={{

@@ -155,12 +155,6 @@ export const getFinderDetails = async (photo) => {
             const marker = await getMarkerById(markerId);
             markers.push(marker);
 
-//             const timeStamp = 1645891200000;
-
-// // Convert timeStamp to date type
-// const date = dayjs(timeStamp).toDate();
-
-// console.log('timestamp to date?>>>>>>>>>>>>',date);
         }
         
         console.log('Markers in the appended array: >>>>>>>>>', markers);
@@ -224,18 +218,58 @@ export const getMarkerById = async (id) => {
 //   export async function fetchPost(id) {
 //     const response = await fetch(`http://localhost:3000/posts/${id}`);
 //     return response.json()
+
+// https://v2.convertapi.com/upload
 //   }
   
-//   export async function createPost(newPost) {
-//     const response = await fetch(`http://localhost:3000/posts`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json"
-//       },
-//       body: JSON.stringify(newPost)
-//     });
-//     return response.json()
-//   }
+  export async function searchFinderDetails(formData) {
+    try {
+      const response = await axios.post('https://hestiabackend-vu6qon67ia-el.a.run.app/api/v2/Cluster/get', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Photo uploaded successfully');
+
+      let clusterData = response.data.Cluster
+
+      console.log('response of mutipart', clusterData);
+
+      let modifiedCuster = clusterData.map(item => item.slice(0, -2));
+
+      console.log('modifiedCuster',modifiedCuster);
+
+          const markers = [];
+
+        for (const markerId of modifiedCuster) {
+
+            const marker = await getMarkerById(markerId);
+            markers.push(marker);
+
+        }
+        
+        console.log('Markers in the appended array: >>>>>>>>>', markers);
+
+                // Sort markers array based on the 'time' field in descending order
+                markers.sort((a, b) => {
+                    const timeA = dayjs.unix(a.time.seconds);
+                    const timeB = dayjs.unix(b.time.seconds);
+                    return timeB.diff(timeA); // Compare in descending order
+                });
+        
+                console.log('Sorted Markers: >>>>>>>>>>>>>>>', markers);
+
+
+        
+        return markers
+
+
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+    }
+  };
+  
   
 //   export async function updatePost(updatedPost) {
 //     const response = await fetch(`http://localhost:3000/posts/${updatedPost.id}`, {
