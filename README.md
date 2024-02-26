@@ -8,7 +8,11 @@
 </p>
 <p align="center">
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
-  <a href="https://65ad57e031747e8804359623--monumental-licorice-36f7bf.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+  <a href="https://hestia-admin-panel.netlify.app/"><strong>Try out the Admin Portal »</strong></a>
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="25" height="25"/>
+  <a href="https://hestia-ngo-portal.netlify.app/"><strong>Try out the NGO Portal »</strong></a>
 </p>
 
 ## Table of Contents
@@ -58,6 +62,12 @@ Our range of features include -
 │   │   ├── package-lock.json
 │   │   ├── public
 │   │   └── src
+│   ├── 🧑‍💻 NGOClient
+│   │   ├── jsconfig.json
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── public
+│   │   └── src
 │   └── 👤 UserClient
 │       ├── analysis_options.yaml
 │       ├── android
@@ -93,18 +103,22 @@ Our range of features include -
     │   ├── functions
     │   └── README.md
     └── custom_backend
-        ├── configs
-        ├── custoimErrors
-        ├── docker-compose_beta.yaml
-        ├── docker-compose_dev.yaml
-        ├── Dockerfile
-        ├── docs
-        ├── main.py
-        ├── processor
-        ├── __pycache__
-        ├── requirements.txt
-        ├── schemas
-        └── utils
+    │   ├── configs
+    │   ├── custoimErrors
+    │   ├── docker-compose_beta.yaml
+    │   ├── docker-compose_dev.yaml
+    │   ├── Dockerfile
+    │   ├── docs
+    │   ├── main.py
+    │   ├── processor
+    │   ├── __pycache__
+    │   ├── requirements.txt
+    │   ├── schemas
+    │   └── utils
+    └── pipelines
+        ├── human_detection
+        └── clustering_classification
+
 
 ```
 
@@ -139,12 +153,14 @@ Our range of features include -
 * Adapt the platform to make it relevant worldwide and accessible to people of different cultures and backgrounds.
 * Form business alliances to promote sponsorship and workforce collaboration.
 * Integrate social media for optimal reach and simple sharing.
-* Use innovative and advanced analytics tools to gain insights in real-time.
+* Use innovative and advanced analytics tools to gain insights in real time.
 * Improve AI capabilities to provide more precise support.
 * Create agreements for data exchange with organizations.
 * Improve leaderboard functionality to maintain long-term user interest.
 * Ally with government organizations to ensure that the transfer of resources to the homeless is properly monitored.
 * Redeem HESTIA tokens to get merchandise featuring homelessness awareness on t-shirts and other items.
+
+## How to Setup the Project
 
 
 ## Team HESTIA
