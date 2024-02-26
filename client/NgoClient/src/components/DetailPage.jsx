@@ -36,7 +36,9 @@ import pinIcon3 from "../assets/destination.png";
 import { Icon, divIcon, point } from "leaflet";
 import { fetchVolunteerById, updateVolunteerStatusById } from "../api/Ngo";
 
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 
 const  DetailPage = () => {
 
@@ -104,7 +106,7 @@ const  DetailPage = () => {
         flexWrap="wrap"
         gap={3}
       >
-        {!volunteer  ? (
+        {!isLoading ? (
           <>
             <Card
               sx={{
@@ -305,91 +307,11 @@ const  DetailPage = () => {
         )}
       </Box>
 
-            <Card>
-        <CardContent>
-                <CardMedia
-                  sx={{
-                    height: "500px",
-                    width: "100%",
-                    objectFit: "contain",
-                    padding: "10px",
-                    marginBottom: "10px",
-                  }}
-                  image={volunteer.imageURL}
-                  title="volunteer"
-                />
-                <Box mt={2} display="flex">
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      mr={1}
-                      sx={{ color: theme.palette.secondary[500] }}
-                    >
-                      Name:
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      sx={{ color: theme.palette.secondary[100] }}
-                    >
-                      {volunteer.name}
-                    </Typography>
-                  </Box>
-                </Box>
+      </Container>
+  )
+        }
 
-                <Box display="flex">
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      mr={1}
-                      sx={{ color: theme.palette.secondary[500] }}
-                    >
-                      Email
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      sx={{ color: theme.palette.secondary[100] }}
-                    >
-                      {volunteer.email}
-                    </Typography>
-                  </Box>
-                </Box>
 
-                <Box display="flex">
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      mr={1}
-                      sx={{
-                        color: theme.palette.secondary[500],
-                        display: "inline",
-                      }}
-                    >
-                      Phone:
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: theme.palette.secondary[100],
-                        display: "inline",
-                      }}
-                    >
-                      {volunteer.number}
-                    </Typography>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-
-    </Container>
-    // <h1>hi</h1>
- )
-                    }
 
 
                     export default DetailPage;

@@ -16,6 +16,7 @@ import {
   import { db, auth, storage } from "../config/firebase";
 
 
+
   export const fetchEvents = async() => { 
     try {
         const eventsRef = collection(db, "Events");
