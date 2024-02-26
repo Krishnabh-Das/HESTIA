@@ -136,14 +136,14 @@ export const getAllMarkers = async () => {
 export const getFinderDetails = async (photo) => {
     try {
         const dummyData = {
-            Custer: [
+            Cluster: [
                 "1708885500298_0","1708452071221_0","1708873467031_0", "1708885439721_0", "1708885452075_0", "1708885469893_0", "1708885469893_0"
             ],
-            CusterId: "test"
+            ClusterId: "test"
         }
 
       
-      let modifiedCuster = dummyData.Custer.map(item => item.slice(0, -2));
+      let modifiedCuster = dummyData.Cluster.map(item => item.slice(0, -2));
       
       console.log('modifiedCuster',modifiedCuster);
       
@@ -176,9 +176,7 @@ export const getFinderDetails = async (photo) => {
 
 
         
-        return {
-            markers: markers
-        };
+        return markers
     } catch (err) {
         console.error(err);
     }
