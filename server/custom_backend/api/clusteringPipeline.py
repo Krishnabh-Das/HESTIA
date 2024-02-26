@@ -1,6 +1,5 @@
 import io
 import os
-from pprint import pformat
 import tempfile
 import traceback
 
@@ -17,7 +16,6 @@ from utils.logingUtils import logger
 from db.bigQueryClient import getBigQueryTableStep3
 from core.config import GCP_STEP3_CLUSTERING_PIPELINE_TABLE
 
-router = APIRouter(prefix="/Cluster")
 
 
 @router.post("/get")
@@ -40,7 +38,7 @@ async def chat_send(img: UploadFile = File(...)):
         with tempfile.TemporaryDirectory() as temp_dir:
             # Specify the file path within the temporary directory
             uk_file_path = os.path.join(temp_dir, filename)  # type: ignore
-            # logger.debug(uk_file_path)
+            logger.debug(uk_file_path)
 
             # Write the contents of the uploaded image to the temporary file
             with open(uk_file_path, "wb") as file:
@@ -51,7 +49,6 @@ async def chat_send(img: UploadFile = File(...)):
             img = np.array(img)  # type: ignore
 
             df = getBigQueryTableStep3(GCP_STEP3_CLUSTERING_PIPELINE_TABLE)
-            # logger.debug(pformat(df))
 
             unique_clusters = df["cluster"].unique().tolist()
 
@@ -63,14 +60,14 @@ async def chat_send(img: UploadFile = File(...)):
                 imgs = Image.open(requests.get(url, stream=True).raw)
                 imgs.save(os.path.join(temp_dir, f"{id}.png"))
                 img_path = os.path.join(temp_dir, f"{id}.png")
-                # logger.debug(img_path)
+                logger.debug(img_path)
                 clusters[str(row["cluster"])].append([img_path, id])
 
             known_encodings = {str(key): [] for key in unique_clusters}
             for key in clusters.keys():
                 if key != "-1":
                     for imgs in clusters[key]:
-                        # logger.debug(imgs[0])
+                        logger.debug(imgs[0])
                         known_img = face_recognition.load_image_file(imgs[0])
                         encodings = face_recognition.face_encodings(
                             known_img, num_jitters=2
@@ -97,17 +94,9 @@ async def chat_send(img: UploadFile = File(...)):
                 res = face_recognition.compare_faces(
                     known_encodings[key], encoding_uk, tolerance=0.6
                 )
-                # print()
+                print()
                 if res:
-                    # logger.debug(pformat(df[df["cluster"] == int(key)]))
-                    filtered_values = df[df["cluster"] == int(key)]["markedId"].tolist()
-                    return JSONResponse(
-                        content={
-                            "Cluster": filtered_values, 
-                            "ClusterID": key
-                        },
-                        status_code=200,
-                    )
+                    return JSONResponse(content={"ClusterID": key}, status_code=200)
 
             return JSONResponse(content={"ClusterID": -1}, status_code=200)
 
@@ -115,3 +104,4 @@ async def chat_send(img: UploadFile = File(...)):
         traceback_str = traceback.format_exc()
         logger.error(traceback_str)
         return JSONResponse(content={"error": str(e)}, status_code=500)
+

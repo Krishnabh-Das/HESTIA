@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import PushPinIcon from '@mui/icons-material/PushPin';
 import RoomIcon from '@mui/icons-material/Room';
-
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import SosIcon from '@mui/icons-material/Sos';
 
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -71,6 +71,10 @@ const navItems = [
   {
     text: "AdminLogs",
     icon: <BarChartIcon />,
+  },
+  {
+    text: "Finder",
+    icon: <PersonSearchIcon />,
   },
 ];
 
