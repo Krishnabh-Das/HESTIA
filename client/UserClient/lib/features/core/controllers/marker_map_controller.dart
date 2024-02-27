@@ -37,6 +37,7 @@ class MarkerMapController extends GetxController {
   Rx<String?> sessionToken = Rx<String?>(null);
   RxList<dynamic> placesList = [].obs;
   Rx<bool> isSearchBarVisible = false.obs;
+  Rx<bool> searchBarLoading = false.obs;
 
   // -- CHANGING MAP TYPE
   final Rx<MapType> _currentMapType = MapType.normal.obs;
@@ -159,7 +160,7 @@ class MarkerMapController extends GetxController {
   }
 
   // Add Markers when tapped
-  void addTapMarkers(LatLng position, dynamic id) {
+  void addTapMarkers(LatLng position, dynamic id, String? infoWindowString) {
     markers.clear();
     markers.add(
       Marker(
@@ -167,6 +168,7 @@ class MarkerMapController extends GetxController {
         position: position,
         draggable: true,
         onDragEnd: (value) => tapPosition = value,
+        infoWindow: InfoWindow(title: infoWindowString ?? "Tapped Marker"),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       ),
     );
@@ -183,9 +185,9 @@ class MarkerMapController extends GetxController {
 
   // Add a specific made up marker (but not adding Current Location in fixed)
   void addSpecificMarker(Marker marker, bool isCurr) {
-    print("inside addspecificmarker: $markers");
+    debugPrint("inside addspecificmarker: $markers");
     if (!isCurr) {
-      print("Added fixedMarkers");
+      debugPrint("Added fixedMarkers");
       fixedMarkers.add(marker);
     }
 
@@ -213,12 +215,14 @@ class MarkerMapController extends GetxController {
         "https://maps.googleapis.com/maps/api/place/autocomplete/json";
     String request =
         '$baseUrl?input=$input&key=${APIConstants.google_api_key}&sessiontoken=${sessionToken.value}';
+    debugPrint("request search: $request");
 
     var response = await http.get(Uri.parse(request));
-    print("Response: ${response.body.toString()}");
+    debugPrint("Response of Map: ${response.body.toString()}");
 
     if (response.statusCode == 200) {
-      placesList = jsonDecode(response.body.toString())['predictions'];
+      placesList.value = jsonDecode(response.body.toString())['predictions'];
+      debugPrint("PlaceList: $placesList");
     } else {
       throw Exception('Failed to load data');
     }
@@ -227,7 +231,7 @@ class MarkerMapController extends GetxController {
   // -- Take permission and get current location
   Future<void> getUserLocation() async {
     try {
-      print("getUser is called");
+      debugPrint("getUser is called");
 
       bool serviceEnabled;
       PermissionStatus permissionGranted;
@@ -349,18 +353,18 @@ class MarkerMapController extends GetxController {
 
   // -- Add the marker of the current location and move the camera there
   Future<void> moveToCurrLocation(File? imageFile) async {
-    print(
+    debugPrint(
         "customInfoWindowController type: ${customInfoWindowController.runtimeType}");
-    print("googleMapController type: ${googleMapController.runtimeType}");
+    debugPrint("googleMapController type: ${googleMapController.runtimeType}");
 
     customInfoWindowController.value.hideInfoWindow!();
-    print("Animating camera...");
+    debugPrint("Animating camera...");
     try {
       await googleMapController
           .animateCamera(CameraUpdate.newLatLngZoom(currPos.value!, 16));
-      print("Animate Camera Called");
+      debugPrint("Animate Camera Called");
     } catch (e) {
-      print("Error animating camera: $e");
+      debugPrint("Error animating camera: $e");
     }
 
     final marker = Marker(

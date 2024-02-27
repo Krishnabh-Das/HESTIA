@@ -15,9 +15,9 @@ class HomeStatsRatingController extends GetxController {
 
   Rx<String> currentAddress = "".obs;
 
-  Rx<double> homelessSightingsRate = 0.0.obs;
-  Rx<double> crimeRate = 0.0.obs;
-  Rx<double> eventsOrganizedRate = 0.0.obs;
+  Rx<int> homelessSightingsRate = 0.obs;
+  Rx<int> crimeRate = 0.obs;
+  Rx<int> eventsOrganizedRate = 0.obs;
 
   Rx<int> homelessSightingsNumber = 0.obs;
   Rx<int> crimeNumber = 0.obs;
@@ -58,10 +58,12 @@ class HomeStatsRatingController extends GetxController {
         // Stats Rate
         homelessSightingsRate.value = jsonResponse["marker_star"];
         crimeRate.value = jsonResponse["SOS_Reports_star"];
+        eventsOrganizedRate.value = jsonResponse["SOS_Reports_star"];
 
         // Stats Number
         homelessSightingsNumber.value = jsonResponse["marker_count"];
         crimeNumber.value = jsonResponse["SOS_Reports_count"];
+        eventsOrganizedNumber.value = jsonResponse["Events_Reports_count"];
         debugPrint("Stats Number: ${homelessSightingsNumber.value}");
 
         debugPrint(
@@ -71,6 +73,7 @@ class HomeStatsRatingController extends GetxController {
         // Cluster ID
         crimeClusterId.value = jsonResponse["SOS_cluster"];
         homelessSightingsClusterId.value = jsonResponse["Marker_cluster"];
+        eventOrganizedClusterId.value = jsonResponse["Events_cluster"];
         HomeStatsRatingController.instance.hasCrimeIncidentsJSONReceived.value =
             true;
         debugPrint("CLuster Id: $homelessSightingsClusterId");

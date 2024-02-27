@@ -13,7 +13,7 @@ class Cart extends StatelessWidget {
 
   final String title;
   final int number;
-  final double rating;
+  final int rating;
   final Color color;
   final VoidCallback? onPressed;
 

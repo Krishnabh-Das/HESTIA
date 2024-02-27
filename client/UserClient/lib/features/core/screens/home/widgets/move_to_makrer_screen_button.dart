@@ -10,7 +10,7 @@ class halfMapMoveToMarkerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 130,
+      top: 90,
       right: 7,
       child: Container(
           height: 45,

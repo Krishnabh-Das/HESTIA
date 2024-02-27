@@ -88,17 +88,17 @@ class EventsOrganized extends StatelessWidget {
                     return Column(
                       children: [
                         EventPost(
-                          description: mapValue["eventDescription"],
-                          eventName: mapValue["eventName"],
-                          email: mapValue["eventContact"],
-                          fromDate: mapValue["fromDate"],
-                          toDate: mapValue["toDate"],
-                          time: mapValue["time"],
-                          type: mapValue["type"],
-                          eventId: mapValue["eventId"],
-                          address: mapValue["address"],
-                          imageUrl: mapValue["poster"],
-                        ),
+                            description: mapValue["eventDescription"],
+                            eventName: mapValue["eventName"],
+                            email: mapValue["eventContact"],
+                            fromDate: mapValue["fromDate"],
+                            toDate: mapValue["toDate"],
+                            time: mapValue["time"],
+                            type: mapValue["type"],
+                            eventId: mapValue["eventId"],
+                            address: mapValue["address"],
+                            imageUrl: mapValue["poster"],
+                            eventPostIndex: index),
                         Container(
                           height: 10,
                           color: const Color.fromARGB(255, 213, 212, 212),
@@ -129,9 +129,10 @@ class EventPost extends StatefulWidget {
     required this.eventId,
     required this.address,
     required this.imageUrl,
+    required this.eventPostIndex,
   });
 
-  final String eventName,
+  final String? eventName,
       time,
       fromDate,
       toDate,
@@ -141,6 +142,7 @@ class EventPost extends StatefulWidget {
       address,
       eventId,
       imageUrl;
+  final int eventPostIndex;
 
   @override
   State<EventPost> createState() => _EventPostState();
@@ -157,12 +159,24 @@ class _EventPostState extends State<EventPost> {
   File? image = null;
 
   Future<void> init() async {
-    await urlToFile(widget.imageUrl).then((value) {
-      if (value != null) {
-        image = value;
-        setState(() {});
-      }
-    });
+    var eventImage = HomeStatsRatingController
+        .instance.eventsPostList[widget.eventPostIndex]["eventPostImage"];
+    if (widget.imageUrl != null &&
+        HomeStatsRatingController.instance.eventsPostList[widget.eventPostIndex]
+                ["eventPostImage"] ==
+            null) {
+      await urlToFile(widget.imageUrl!).then((value) {
+        if (value != null) {
+          image = value;
+          HomeStatsRatingController.instance
+              .eventsPostList[widget.eventPostIndex]["eventPostImage"] = image;
+          setState(() {});
+        }
+      });
+    } else {
+      image = eventImage;
+      setState(() {});
+    }
   }
 
   @override
@@ -189,7 +203,7 @@ class _EventPostState extends State<EventPost> {
             height: 20,
           ),
           Text(
-            widget.eventName,
+            widget.eventName ?? "No Event Name",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
           SizedBox(
@@ -207,7 +221,7 @@ class _EventPostState extends State<EventPost> {
                         width: 8), // Adding some space between icon and text
                     Flexible(
                       child: Text(
-                        "${widget.time}  ${widget.fromDate} - ${widget.toDate}",
+                        "${widget.time ?? "0:00"}  ${widget.fromDate ?? "00/00/00"} - ${widget.toDate ?? "00/00/00"}",
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
@@ -223,7 +237,7 @@ class _EventPostState extends State<EventPost> {
                         width: 8), // Adding some space between icon and text
                     Flexible(
                       child: Text(
-                        widget.address,
+                        widget.address ?? "No Address Mentioned",
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -248,7 +262,7 @@ class _EventPostState extends State<EventPost> {
                         width: 8), // Adding some space between icon and text
                     Flexible(
                       child: Text(
-                        widget.email,
+                        widget.email ?? "No Email Mentioned",
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
@@ -264,7 +278,7 @@ class _EventPostState extends State<EventPost> {
                         width: 8), // Adding some space between icon and text
                     Flexible(
                       child: Text(
-                        widget.type,
+                        widget.type ?? "No Type Mentioned",
                         softWrap: true,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall,
@@ -282,7 +296,7 @@ class _EventPostState extends State<EventPost> {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              widget.description,
+              widget.description ?? "No Description Mentioned",
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
               softWrap: true,
@@ -298,7 +312,7 @@ class _EventPostState extends State<EventPost> {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () => Get.to(() => VolunteeringForm(
-                        eventId: widget.eventId,
+                        eventId: widget.eventId ?? "No Event Id Mentioned",
                       )),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),

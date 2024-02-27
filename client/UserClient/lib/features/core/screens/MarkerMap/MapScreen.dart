@@ -5,6 +5,7 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/Floating_Buttons_Mark_map_Screen.dart';
 import 'package:hestia/features/core/screens/MarkerMap/widgets/search_bar.dart';
+import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 
 import 'package:iconsax/iconsax.dart';
@@ -64,8 +65,9 @@ class MarkerMapScreen extends StatelessWidget {
                           .customInfoWindowController.value.hideInfoWindow!();
                       if (markerMapController.IsInfoWindowOpen.value == false &&
                           !markerMapController.isSearchBarVisible.value) {
-                        markerMapController.addTapMarkers(latLng, "tap Marker");
                         markerMapController.tapPosition = latLng;
+                        markerMapController.addTapMarkers(
+                            latLng, "tap Marker", null);
                       }
                       markerMapController.changeValueOfInfoWindowOpen(false);
                       markerMapController.isSearchBarVisible.value =
@@ -131,6 +133,124 @@ class MarkerMapScreen extends StatelessWidget {
                 ] else if (markerMapController.isSearchBarVisible.value) ...[
                   searchBar(markerMapController: markerMapController),
                 ],
+
+                Positioned(
+                  bottom: 40,
+                  left: 0.110 * MyAppHelperFunctions.screenWidth(),
+                  child: Container(
+                    width: MyAppHelperFunctions.screenWidth() - 80,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: const Color(0xFF1F616B)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () => MarkerMapController.instance
+                                .toggleShowPolygon(),
+                            icon: Icon(
+                              Icons.change_circle,
+                              color: Colors.white,
+                              size: 30,
+                            )),
+                        IconButton(
+                            onPressed: () => MarkerMapController.instance
+                                .moveToCurrLocation(settingsController
+                                    .instance.profileImage.value),
+                            icon: Icon(
+                              Icons.track_changes_outlined,
+                              color: Colors.white,
+                              size: 30,
+                            )),
+                        IconButton(
+                          onPressed: () => showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30))),
+                              constraints: BoxConstraints.expand(height: 200),
+                              builder: (context) {
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        MarkerMapController.instance
+                                            .getImage(true);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Icon(
+                                            Icons.camera,
+                                            size: 40,
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text(
+                                            "Submit By Camera",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Divider(),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        MarkerMapController.instance
+                                            .getImage(false);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Icon(
+                                            Iconsax.gallery,
+                                            size: 40,
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text("Submit By Gallery",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600))
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    )
+                                  ],
+                                );
+                              }),
+                          icon: Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
     ));

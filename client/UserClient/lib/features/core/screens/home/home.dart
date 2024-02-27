@@ -103,12 +103,15 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                Cart(
-                  title: "Events Organized",
-                  number: 6,
-                  rating: 4.8,
-                  color: Colors.yellow,
-                  onPressed: () => Get.to(() => const EventsOrganized()),
+                Obx(
+                  () => Cart(
+                    title: "Events Organized",
+                    number:
+                        homeStatsRatingController.eventsOrganizedNumber.value,
+                    rating: homeStatsRatingController.eventsOrganizedRate.value,
+                    color: Colors.yellow,
+                    onPressed: () => Get.to(() => EventsOrganized()),
+                  ),
                 ),
 
                 Obx(

@@ -41,18 +41,18 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward().whenComplete(() {
       onboardingShown
-          ? Get.to(
+          ? Get.offAll(
               () => OnBoarding(),
               transition: Transition.topLevel,
               duration: const Duration(milliseconds: 1000),
             )
           : currentUser == null
-              ? Get.to(
+              ? Get.offAll(
                   () => LoginScreen(),
                   transition: Transition.topLevel,
                   duration: const Duration(milliseconds: 1000),
                 )
-              : Get.to(
+              : Get.offAll(
                   () => const BottomNavBar(),
                   transition: Transition.topLevel,
                   duration: const Duration(milliseconds: 1000),

@@ -22,33 +22,12 @@ class FloatingButtonsMarkerMapScreen extends StatelessWidget {
         spacing: 15,
         children: [
           SpeedDialChild(
-            label: "Region Map",
-            child: const Icon(
-              Icons.change_circle,
-            ),
-            onTap: () => MarkerMapController.instance.toggleShowPolygon(),
-          ),
-          SpeedDialChild(
-              label: "Delete Marker",
+              label: "Delete Tap Marker",
               child: const Icon(
                 Icons.delete,
               ),
               onTap: () =>
                   MarkerMapController.instance.deleteMarkersExceptFixed()),
-          SpeedDialChild(
-              label: "Submit by Gallery",
-              child: const Icon(Icons.photo),
-              onTap: () => MarkerMapController.instance.getImage(false)),
-          SpeedDialChild(
-            label: "Submit by Camera",
-            child: const Icon(Icons.camera_alt),
-            onTap: () => MarkerMapController.instance.getImage(true),
-          ),
-          SpeedDialChild(
-              label: "Current Location",
-              child: const Icon(Icons.track_changes_outlined),
-              onTap: () => MarkerMapController.instance.moveToCurrLocation(
-                  settingsController.instance.profileImage.value)),
           SpeedDialChild(
             label: "Change Map",
             child: const Icon(Icons.map),

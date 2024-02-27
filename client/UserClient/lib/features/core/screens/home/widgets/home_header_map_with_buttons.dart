@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hestia/features/core/controllers/half_map_controller.dart';
 import 'package:hestia/features/core/controllers/marker_map_controller.dart';
 import 'package:hestia/features/core/screens/MarkerMap/MapScreen.dart';
+import 'package:hestia/features/core/screens/Tokens/tokens.dart';
 import 'package:hestia/features/core/screens/home/widgets/custom_clipper.dart';
 import 'package:hestia/features/core/screens/home/widgets/half_map_search_button.dart';
 import 'package:hestia/features/core/screens/home/widgets/move_to_makrer_screen_button.dart';
@@ -68,45 +69,49 @@ class HomeHeaderMapWithButtons extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 5,
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 60,
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 7),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(25)),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Image(
-                      image: AssetImage(MyAppImages.points),
-                      fit: BoxFit.fitHeight,
-                      height: 28,
-                    ),
-                    Text(
-                      "460  TOKENS",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: MyAppColors.darkBlack),
-                    ),
-                    const Image(
-                      image: AssetImage(MyAppImages.points),
-                      fit: BoxFit.fitHeight,
-                      height: 28,
-                    ),
-                  ],
+            child: GestureDetector(
+              onTap: () => Get.to(() => Tokens()),
+              child: Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 60,
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 7),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25)),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Image(
+                        image: AssetImage(MyAppImages.points),
+                        fit: BoxFit.fitHeight,
+                        height: 28,
+                      ),
+                      Text(
+                        "460  TOKENS",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall!
+                            .copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: MyAppColors.darkBlack),
+                      ),
+                      const Image(
+                        image: AssetImage(MyAppImages.points),
+                        fit: BoxFit.fitHeight,
+                        height: 28,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )),
 
         // Half Map Action Buttons
-        const halfMapSearchButton(),
+        // const halfMapSearchButton(),
         const halfMapSOS(),
         const halfMapMoveToMarkerScreen(),
       ],

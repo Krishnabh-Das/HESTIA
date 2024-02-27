@@ -133,7 +133,7 @@ class AddMarkerDetailsScreen extends StatelessWidget {
 
                   // Create a destination file in the desired directory
                   File destinationFile =
-                      File('$appDirPath/image_file$randomMarkerID.png');
+                      File('$appDirPath/image_file$randomMarkerID');
 
                   // Copy the original image file to the destination file
                   image.copySync(destinationFile.path);
@@ -172,8 +172,12 @@ class AddMarkerDetailsScreen extends StatelessWidget {
 
                   // Updating the setttings Post
                   // ignore: invalid_use_of_protected_member
-                  settingsController.instance.settingsUserPostDetails.value.add(
-                      {"image": image, "desc": desc.text, "address": address});
+                  settingsController.instance.settingsUserPostDetails.value
+                      .add({
+                    "image": image,
+                    "desc": desc.text.toString() ?? "",
+                    "address": address ?? ""
+                  });
 
                   settingsController.instance.totalPost.value =
                       ++settingsController.instance.totalPost.value;

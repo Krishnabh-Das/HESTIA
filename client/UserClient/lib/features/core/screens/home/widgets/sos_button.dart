@@ -10,7 +10,7 @@ class halfMapSOS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 75,
+      top: 30,
       right: 7,
       child: InkWell(
         onTap: () => Get.to(

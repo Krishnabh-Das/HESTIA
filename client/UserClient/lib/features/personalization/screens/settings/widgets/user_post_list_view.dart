@@ -14,14 +14,14 @@ class UserPostsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => ListView.builder(
-        key: const PageStorageKey<String>('UserPostsListView'),
+        key: const PageStorageKey<String>('UserPostsListView Settings Screen'),
         itemBuilder: (_, index) {
-          return Obx(() => settingsController1
+          return settingsController1
               // ignore: invalid_use_of_protected_member
               .settingsUserPostDetailsWithWidget
-              .value[index]);
+              .value[index];
         },
-        itemCount: settingsController1.settingsUserPostDetails.length,
+        itemCount: settingsController1.settingsUserPostDetails.value.length,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
       ),

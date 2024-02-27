@@ -10,8 +10,6 @@ import 'package:hestia/features/core/controllers/community_controller.dart';
 import 'package:hestia/features/core/screens/Community/add_community_post.dart';
 import 'package:hestia/features/core/screens/Community/widgets/community_post_button.dart';
 import 'package:hestia/features/core/screens/Community/widgets/post_load_mode_button.dart';
-import 'package:hestia/features/core/screens/Community/widgets/community_post_button.dart';
-import 'package:hestia/features/core/screens/Community/widgets/post_load_mode_button.dart';
 import 'package:hestia/features/personalization/controllers/settings_controller.dart';
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
@@ -27,7 +25,6 @@ class CommunityScreen extends StatelessWidget {
   CommunityController communityController = CommunityController.instance;
 
   CommunityScreen({super.key}) {
-    debugPrint(
     debugPrint(
         "communityController.isCommunityPostDataLoaded.value: ${communityController.isCommunityPostDataLoaded.value}");
     if (!communityController.isCommunityPostDataLoaded.value) {
@@ -142,11 +139,6 @@ class CommunityScreen extends StatelessWidget {
                                   individualPost["Generic_Post_Info"]
                                           ["total_comments"] ??
                                       0,
-                                  0,
-                              total_comments:
-                                  individualPost["Generic_Post_Info"]
-                                          ["total_comments"] ??
-                                      0,
                             ),
                             index ==
                                     communityController
@@ -215,10 +207,6 @@ class CommunityScreen extends StatelessWidget {
                                     total_shares:
                                         individualPost["Generic_Post_Info"]
                                                 ["total_shares"] ??
-                                            0,
-                                    total_comments:
-                                        individualPost["Generic_Post_Info"]
-                                                ["total_comments"] ??
                                             0,
                                     total_comments:
                                         individualPost["Generic_Post_Info"]
@@ -509,23 +497,11 @@ class _CommunityPostShareButtonState extends State<CommunityPostShareButton> {
               await CommunityController.instance.addShare(widget.post_id);
               widget.total_shares++;
               setState(() {});
-
-            final result = await Share.shareXFiles(
-              [xFile],
-              text: '${widget.desc}\n\nShared by ${widget.name}',
-              subject: 'Hestia Community',
-              sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-            );
-            if (result.status == ShareResultStatus.success) {
-              await CommunityController.instance.addShare(widget.post_id);
-              widget.total_shares++;
-              setState(() {});
             }
           }
         },
         child: Row(
           children: [
-            const Icon(Icons.share),
             const Icon(Icons.share),
             const SizedBox(
               width: 5,
