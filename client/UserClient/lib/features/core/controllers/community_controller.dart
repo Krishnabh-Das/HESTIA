@@ -303,6 +303,8 @@ class CommunityController extends GetxController {
               "val[Generic_Post_Info][total_comments]: ${val["Generic_Post_Info"]["total_comments"]}");
         }
       });
+      listOfCommentsPerPost.value[postId].add(commentJson);
+      debugPrint("listOfCommentsPerPost: $listOfCommentsPerPost");
     } catch (e) {
       debugPrint("User Comment Upload Error: $e");
     }

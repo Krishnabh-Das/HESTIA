@@ -6,6 +6,7 @@ import 'package:hestia/common/custom_toast_message.dart';
 import 'package:hestia/data/repositories/auth_repositories.dart';
 import 'package:hestia/features/core/controllers/community_controller.dart';
 import 'package:hestia/features/core/screens/Community/widgets/swipe_button_donation.dart';
+import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/formatters/formatter.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
@@ -54,6 +55,8 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
+
     return GestureDetector(
       onDoubleTap: () async {
         widget.hasUserLiked = !widget.hasUserLiked;
@@ -73,8 +76,12 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: widget.isDonatePost
-                  ? const Color.fromARGB(255, 182, 237, 232)
-                  : Colors.white,
+                  ? dark
+                      ? Color.fromARGB(255, 50, 155, 146)
+                      : const Color.fromARGB(255, 182, 237, 232)
+                  : dark
+                      ? Color.fromARGB(255, 98, 95, 95)
+                      : Colors.white,
             ),
             child: Column(
               children: [
@@ -122,7 +129,9 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                           if (widget.isDonatePost) ...[
                             Icon(
                               FontAwesomeIcons.circleDollarToSlot,
-                              color: Colors.teal.shade600,
+                              color: dark
+                                  ? Color.fromARGB(255, 162, 235, 228)
+                                  : Colors.teal.shade600,
                             ),
                           ],
                           PopupMenuButton(
@@ -194,6 +203,7 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                         height: 12,
                       ),
 
+                      // -- Donate Swipe Button
                       if (widget.isDonatePost) ...[
                         const SwipeButtonDonation(),
                         const SizedBox(

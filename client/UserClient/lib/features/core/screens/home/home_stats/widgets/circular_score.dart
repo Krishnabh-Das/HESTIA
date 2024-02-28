@@ -9,7 +9,7 @@ class StatsHeaderCircularScore extends StatelessWidget {
     required this.homeStatsRatingRate,
   });
 
-  final Rx<int> homeStatsRatingRate;
+  final Rx<double> homeStatsRatingRate;
 
   @override
   Widget build(BuildContext context) {

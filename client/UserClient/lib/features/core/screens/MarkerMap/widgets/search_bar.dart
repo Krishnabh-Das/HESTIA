@@ -99,7 +99,6 @@ class searchBar extends StatelessWidget {
                               ListTile(
                                 onTap: () async {
                                   // Add Marker & move Camera to the searched location
-
                                   markerMapController.searchBarLoading.value =
                                       true;
                                   searchBarTapFunction(index);

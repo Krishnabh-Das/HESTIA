@@ -41,8 +41,10 @@ class CommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor:
+          dark ? Color.fromARGB(255, 23, 23, 23) : Colors.grey.shade200,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 15, 69, 79),
         centerTitle: true,
@@ -278,7 +280,9 @@ class _CommunityPostCommentButtonState
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
             builder: (context) => Container(
-                  constraints: const BoxConstraints(minHeight: 340),
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
                   child: Wrap(
                     children: [
                       Container(
@@ -295,7 +299,7 @@ class _CommunityPostCommentButtonState
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Row(
                             children: [
-                              // --User Text Form Field
+                              // --User Comment Text Form Field
                               Expanded(
                                   flex: 9,
                                   child: TextFormField(
@@ -321,20 +325,27 @@ class _CommunityPostCommentButtonState
                                   flex: 1,
                                   child: IconButton(
                                       onPressed: () async {
+                                        var text = widget
+                                            .userMessageControllerCommunity
+                                            .text;
+                                        widget.userMessageControllerCommunity
+                                            .clear();
+                                        Navigator.pop(context);
                                         String name = settingsController
                                             .instance.name.value;
-                                        String comment = widget
-                                            .userMessageControllerCommunity.text
-                                            .toString();
+                                        String comment = text.toString();
                                         String userId =
                                             AuthRepository().getUserId()!;
 
                                         await CommunityController.instance
                                             .uploadUserComment(name, comment,
                                                 userId, widget.widget.postId);
-                                        widget.userMessageControllerCommunity
-                                            .text = "";
+
                                         widget.total_comments++;
+
+                                        debugPrint(
+                                            "Comment posted in the post");
+
                                         setState(() {});
                                       },
                                       icon: const Icon(
@@ -348,12 +359,12 @@ class _CommunityPostCommentButtonState
                       Obx(
                         () => ListView.builder(
                             shrinkWrap: true,
-                            itemCount: CommunityController
+                            itemCount: (CommunityController
                                     .instance
                                     .listOfCommentsPerPost
                                     .value[widget.post_id]
-                                    .length ??
-                                0,
+                                    ?.length ??
+                                0),
                             itemBuilder: (context, itemIndex) =>
                                 CommentMsgCommunity(
                                   desc: CommunityController

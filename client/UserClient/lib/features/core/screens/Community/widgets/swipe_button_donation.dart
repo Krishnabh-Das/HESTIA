@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hestia/common/widgets/buttons/swipe_button_view/swipeable_button.dart';
 import 'package:hestia/features/core/screens/Community/donation.dart';
 import 'package:hestia/features/core/screens/MarkerMap/MapScreen.dart';
+import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SwipeButtonDonation extends StatefulWidget {
@@ -18,6 +19,8 @@ class _SwipeButtonDonationState extends State<SwipeButtonDonation> {
   bool isFinished = false;
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
+
     return SizedBox(
       height: 50,
       child: SwipeableButtonView(
@@ -28,7 +31,7 @@ class _SwipeButtonDonationState extends State<SwipeButtonDonation> {
             color: Colors.grey,
           ),
         ),
-        activeColor: Colors.teal,
+        activeColor: dark ? Color.fromARGB(255, 48, 202, 186) : Colors.teal,
         isFinished: isFinished,
         onWaitingProcess: () {
           Future.delayed(const Duration(milliseconds: 800), () {
