@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 15, 69, 79),
         centerTitle: true,
         title: Text(
-          "HESTIA",
+          "SAADHAN",
           style: Theme.of(context)
               .textTheme
               .headlineSmall!

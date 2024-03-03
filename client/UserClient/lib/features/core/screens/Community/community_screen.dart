@@ -271,11 +271,13 @@ class _CommunityPostCommentButtonState
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
+
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
             context: context,
-            backgroundColor: Colors.teal.shade100,
+            backgroundColor: dark ? MyAppColors.black : Colors.teal.shade100,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
@@ -292,7 +294,9 @@ class _CommunityPostCommentButtonState
                         width: double.infinity,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
+                            color: dark
+                                ? Color.fromARGB(255, 220, 220, 220)
+                                : Colors.white,
                             border:
                                 Border.all(width: 2, color: Colors.black45)),
                         child: Padding(
@@ -307,10 +311,13 @@ class _CommunityPostCommentButtonState
                                         widget.userMessageControllerCommunity,
                                     style:
                                         const TextStyle(color: Colors.black87),
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       hintText: "Type Your Message....",
                                       hintStyle: TextStyle(
-                                          color: Colors.grey, fontSize: 14),
+                                          color: dark
+                                              ? MyAppColors.darkGrey
+                                              : Colors.grey,
+                                          fontSize: 14),
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
                                       enabledBorder: InputBorder.none,
@@ -408,19 +415,28 @@ class CommentMsgCommunity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       padding: const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6), color: Colors.white),
+          borderRadius: BorderRadius.circular(6),
+          color: dark ? MyAppColors.darkGrey : Colors.white),
       child: ListTile(
         title: Text(
           name ?? "",
-          style: Theme.of(context).textTheme.labelLarge,
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge!
+              .copyWith(color: Colors.black, fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
           desc ?? "",
-          style: Theme.of(context).textTheme.labelMedium,
+          style: Theme.of(context)
+              .textTheme
+              .labelMedium!
+              .copyWith(color: MyAppColors.darkBlack),
         ),
         // trailing: GestureDetector(
         //     onTap: () {},

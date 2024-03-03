@@ -10,6 +10,7 @@ import 'package:hestia/features/core/screens/home/home_stats/events_organized/vo
 import 'package:hestia/features/core/screens/home/home_stats/widgets/circular_score.dart';
 import 'package:hestia/features/core/screens/home/home_stats/widgets/current_address_and_button.dart';
 import 'package:hestia/features/core/screens/home/sos/sos_screen.dart';
+import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/constants/images_strings.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:shimmer/shimmer.dart';
@@ -38,8 +39,11 @@ class EventsOrganized extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 213, 212, 212),
+      backgroundColor: dark
+          ? MyAppColors.darkBlack
+          : const Color.fromARGB(255, 213, 212, 212),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 15, 69, 79),
         automaticallyImplyLeading: false,
@@ -61,7 +65,7 @@ class EventsOrganized extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white,
+          color: dark ? MyAppColors.darkBlack : Colors.white,
           padding: EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,7 +105,9 @@ class EventsOrganized extends StatelessWidget {
                             eventPostIndex: index),
                         Container(
                           height: 10,
-                          color: const Color.fromARGB(255, 213, 212, 212),
+                          color: dark
+                              ? MyAppColors.darkBlack
+                              : const Color.fromARGB(255, 213, 212, 212),
                         )
                       ],
                     );
@@ -181,7 +187,9 @@ class _EventPostState extends State<EventPost> {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
     return Container(
+      color: dark ? MyAppColors.darkishGrey : MyAppColors.textWhite,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,

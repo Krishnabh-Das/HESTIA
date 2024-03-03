@@ -138,7 +138,7 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                             iconSize: 24,
                             color: Colors.white,
                             itemBuilder: (context) => [
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 padding: EdgeInsets.all(0),
                                 value: "Post",
                                 child: Padding(
@@ -156,7 +156,8 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                                       Text(
                                         "Report Post",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w500),
+                                            fontWeight: FontWeight.w500,
+                                            color: MyAppColors.black),
                                       ),
                                     ],
                                   ),
@@ -265,13 +266,15 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
   }
 
   Future<dynamic> reportPostDialog(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
     return showDialog(
         context: context,
         builder: (context) => Dialog(
               child: Container(
                 height: 340,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(15)),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.teal.shade100),
                 child: Stack(
                   children: [
                     Positioned(
@@ -301,10 +304,16 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                               height: 40,
                             ),
                             DropdownButtonFormField(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                   labelText: 'Select Report Category',
+                                  labelStyle: TextStyle(
+                                      color: dark
+                                          ? MyAppColors.grey
+                                          : MyAppColors.black),
                                   filled: true,
-                                  fillColor: Colors.white),
+                                  fillColor: dark
+                                      ? MyAppColors.darkerGrey
+                                      : Colors.white),
                               items: CommonValues.categories
                                   .map((String category) {
                                 return DropdownMenuItem<String>(
@@ -328,10 +337,16 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                             TextFormField(
                               controller: descController,
                               maxLines: 2,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                   labelText: "Description",
+                                  labelStyle: TextStyle(
+                                      color: dark
+                                          ? MyAppColors.grey
+                                          : MyAppColors.black),
                                   filled: true,
-                                  fillColor: Colors.white),
+                                  fillColor: dark
+                                      ? MyAppColors.darkerGrey
+                                      : Colors.white),
                               validator: (value) {
                                 if (value == null ||
                                     value.isEmpty ||
@@ -345,6 +360,11 @@ class _CommunityPostItemState extends State<CommunityPostItem> {
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.teal,
+                                    side: const BorderSide(
+                                        color: Color.fromARGB(255, 4, 93, 82)),
+                                  ),
                                   onPressed: () async {
                                     if (_formKeyCommunity.currentState!
                                         .validate()) {

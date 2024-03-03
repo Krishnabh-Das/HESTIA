@@ -10,6 +10,7 @@ import 'package:hestia/features/personalization/controllers/settings_controller.
 import 'package:hestia/utils/constants/colors.dart';
 import 'package:hestia/utils/helpers/helper_function.dart';
 import 'package:hestia/utils/validators/validation.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
 class VolunteeringForm extends StatefulWidget {
@@ -41,12 +42,24 @@ class _VolunteeringFormState extends State<VolunteeringForm> {
 
   @override
   Widget build(BuildContext context) {
+    var dark = MyAppHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: AppBar(
-          title: Text(
-        "Volunteering Form",
-        style: TextStyle(fontSize: 20),
-      )),
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Volunteering Form",
+          style: TextStyle(
+              fontSize: 20,
+              color: dark ? MyAppColors.textWhite : MyAppColors.black),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: dark ? MyAppColors.textWhite : MyAppColors.black,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
             padding: EdgeInsets.all(20),

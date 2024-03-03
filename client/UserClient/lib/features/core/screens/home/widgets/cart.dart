@@ -73,7 +73,7 @@ class Cart extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        "$rating",
+                        "${rating.toStringAsFixed(1)}",
                         style:
                             const TextStyle(fontSize: 15, color: Colors.black),
                       ),
