@@ -75,25 +75,54 @@ export const fetchVolunteers = async () => {
     }
 }
 
+export const fetchVolunteersByNgoId = async (id) => { 
+    try {
+        const volunteerNgoRef = doc(db, "Events", id);
+
+        console.log('volunteerNgoRef>>>>', volunteerNgoRef);
+        const volunteerNgoDocSnapshot = await getDoc(volunteerNgoRef);
+
+        console.log('data>>>>>>>>>>>>', volunteerNgoDocSnapshot);
+
+
+        const volunteersEvent = volunteerNgoDocSnapshot.data()
+        console.log('volunteersEvent data in api', volunteersEvent);
+        console.log('volunteersEvent id in api', id);
+
+        const volunteersNgo = volunteersEvent.volunteers
+
+            // console.log('volunteersNgo>>>>', volunteersNgo);
+          return volunteersNgo;
+
+    } catch (err) {
+        console.log('error in fetching events', err);
+    }
+}
+
 
 export const fetchVolunteerById = async (id) => { 
       try {
-        const volunteerRef = doc(db, 'Volunteers', id);
-        const volunteerDocSnapshot = await getDoc(volunteerRef);
+        const volunteerNgoRef = doc(db, "Events", id);
 
-        // if (volunteerDocSnapshot.exists()) {
+        console.log('volunteerNgoRef>>>>', volunteerNgoRef);
+        const volunteerNgoDocSnapshot = await getDoc(volunteerNgoRef);
 
-        //     console.log("volunteer data", volunteerDocSnapshot.data());
-        //   return volunteerDocSnapshot.data()
-        // } else {
-        //   console.log('Document does not exist!');
-        // }
-        const volunteer = volunteerDocSnapshot.data()
+        console.log('data>>>>>>>>>>>>', volunteerNgoDocSnapshot);
 
-        console.log('volunteer data in api', volunteer);
-        console.log('volunteer id in api', id);
 
-        return volunteer;
+        const volunteersEvent = volunteerNgoDocSnapshot.data()
+        // console.log('volunteersEvent data in api', volunteersEvent);
+        // console.log('volunteersEvent id in api', id);
+
+        const ngoVolunteers = volunteersEvent.volunteers
+        console.log('ngoVolunteers>>>>', ngoVolunteers);
+        
+     
+
+        // const voluntee rNgo = volunteersEvent.volunteers.find(e => e.userId === id)
+
+        //     console.log('volunteersNgo>>>>', volunteerNgo);
+        return ngoVolunteers;
 
       } catch (error) {
         console.error('Error fetching detail data:', error);
@@ -102,11 +131,46 @@ export const fetchVolunteerById = async (id) => {
 
 export const updateVolunteerStatusById = async (e) => { 
     try {
-        const volunteerRef = doc(db, "Volunteers", e.id);
+        const volunteerNgoRef = doc(db, "Events", e.id);
 
-        await updateDoc(volunteerRef, {
-            status: e.status,
-          });
+        console.log('volunteerNgoRef>>>>', volunteerNgoRef);
+        const volunteerNgoDocSnapshot = await getDoc(volunteerNgoRef);
+
+        console.log('data>>>>>>>>>>>>', volunteerNgoDocSnapshot);
+
+
+        const volunteersEvent = volunteerNgoDocSnapshot.data()
+        console.log('volunteersEvent data in api', volunteersEvent);
+        // console.log('volunteersEvent id in api', e.id);
+
+        const volunteersNgo = volunteersEvent.volunteers
+
+        
+        // console.log('volunteersNgo in updateVolunteerStatusById>>>>>>>>',volunteersNgo);
+        
+        // const volunteer = volunteersNgo.find(e => e.id === e.volunteerId)
+        // console.log('volunteer in updateVolunteerStatusById>>>>>>>>',volunteer );
+        // const response = await updateDoc(volunteerNgoDocSnapshot, {
+        //     status: e.status,
+        //   });
+
+        //   if (response) {
+        //     console.log('hi');
+        //   }
+
+        const volunteerIndex = volunteersNgo.findIndex(volunteer => volunteer.userId === e.volunteerId);
+
+        if (volunteerIndex !== -1) {
+            // Update the status of the volunteer
+            volunteersNgo[volunteerIndex].status = e.status;
+
+            console.log('volunteer after update>>>>>>', volunteersNgo);
+
+            // Update the entire document with the modified volunteers array
+            await updateDoc(volunteerNgoRef, {
+                volunteers: volunteersNgo
+            });
+        }
 
 
         
