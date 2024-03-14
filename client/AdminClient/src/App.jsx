@@ -10,6 +10,7 @@ import Regionmap from "./scenes/regionmap";
 import SosReports from "./scenes/sosreports/SosReports";
 import AdminLogs from "./scenes/adminlogs/AdminLogs";
 import AdminActions from "./scenes/adminactions/AdminActions";
+import Finder from './scenes/finder'
 
 import Markers from "./scenes/markers/Markers";
 
@@ -129,6 +130,7 @@ function App() {
               <Route path="/regionmap" element={user? (<Regionmap />): (<Navigate to="/auth" replace />)} />
               {/* <Route path="/admin" element={user? (<Admin />) : (<Navigate to="/auth" replace />)} /> */}
               <Route path="/adminactions" element={user? (<AdminActions />) : (<Navigate to="/auth" replace />)} />
+              <Route path="/finder" element={user? (<Finder />) : (<Navigate to="/auth" replace />)} />
             </Route>
           </Routes>
         </ThemeProvider>

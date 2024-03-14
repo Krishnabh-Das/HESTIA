@@ -27,7 +27,7 @@ const Layout = () => {
   }, []);
 
 
-  console.log("auth in Navbar, I need to change@!!!!!!!!!!!!",user?.email);
+  // console.log("auth in Navbar, I need to change@!!!!!!!!!!!!",user?.email);
 
 
 
@@ -35,7 +35,7 @@ const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const userId = useSelector((state) => state.global.userId);
 
-  console.log("userId in Layout:", userId);
+  // console.log("userId in Layout:", userId);
 
   //redux is working fine, RTK is not making calls properly
 //  const { data } = useGetUserQuery(userId);

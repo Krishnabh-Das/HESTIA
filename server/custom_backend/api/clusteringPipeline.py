@@ -16,7 +16,7 @@ from utils.logingUtils import logger
 from db.bigQueryClient import getBigQueryTableStep3
 from core.config import GCP_STEP3_CLUSTERING_PIPELINE_TABLE
 
-router = APIRouter(prefix="/Cluster")
+
 
 @router.post("/get")
 async def chat_send(img: UploadFile = File(...)):
@@ -72,14 +72,27 @@ async def chat_send(img: UploadFile = File(...)):
                         encodings = face_recognition.face_encodings(
                             known_img, num_jitters=2
                         )
-                        known_encodings[key].append(encodings)
+                        if len(encodings) > 0:
+                            encodings_ = encodings[0]
+                            known_encodings[key].append(encodings_)
 
             uk_img = face_recognition.load_image_file(uk_file_path)
             encoding_uk = face_recognition.face_encodings(uk_img)
+            
+            if len(encoding_uk) > 0:
+                logger.debug("len(encoding_uk) > 0:")
+                encoding_uk = encoding_uk[0]
+            else:
+                return JSONResponse(content={"error": "no face in picture"}, status_code=200)
+            
+            logger.debug(encoding_uk.shape)
+            logger.debug(len(known_encodings[key]))
+            if len(encodings) > 0:
+                logger.debug(known_encodings[key][0].shape)
 
             for key in known_encodings.keys():
                 res = face_recognition.compare_faces(
-                    known_encodings[key], np.array(encoding_uk), tolerance=0.6
+                    known_encodings[key], encoding_uk, tolerance=0.6
                 )
                 print()
                 if res:
