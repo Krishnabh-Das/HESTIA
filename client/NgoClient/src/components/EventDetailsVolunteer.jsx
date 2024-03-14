@@ -49,7 +49,9 @@ import HandshakeIcon from "@mui/icons-material/Handshake";
 
 import { useNavigate } from 'react-router-dom'; 
 
-import { fetchVolunteers } from "../api/Ngo";
+import { fetchVolunteers, fetchVolunteersByNgoId } from "../api/Ngo";
+import { collection } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const EventDetailsVolunteer = () => {
     const user = useSelector(selectUser);
@@ -78,20 +80,20 @@ const EventDetailsVolunteer = () => {
     }
   }, []);
 
-  const handleMoreDetails = (id) => { 
+  const handleMoreDetails = (id,volunteerId ) => { 
     console.log("hi");
     console.log(id);
-      navigate(`/details/${id}`);
+      navigate(`/details/${id}/${volunteerId}`);
     }
 
   const columns = [
     {
-      field: "volunteer_id",
+      field: "userId",
       headerName: "id",
       flex: 1,
       hide: true,
     },
-    { field: "name", headerName: "Name", flex: 1 },
+    { field: "userName", headerName: "Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "status", headerName: "Status", flex: 1,
     renderCell: (params) => {
@@ -115,7 +117,7 @@ const EventDetailsVolunteer = () => {
       return (
         <IconButton
           // onClick={() => handleToggleResolved(params.row.id, !params.row.isResolved)}
-          onClick={() => handleMoreDetails(params.row.volunteer_id)}
+          onClick={() => handleMoreDetails(id ,params.row.userId)}
         > 
           <Preview/>
         </IconButton>
@@ -132,12 +134,16 @@ const EventDetailsVolunteer = () => {
     data: volunteers,
     error,
   } = useQuery({
-    queryKey: ["volunteers"],
-    queryFn: fetchVolunteers 
+    queryKey: ["volunteers", id],
+    queryFn: () => fetchVolunteersByNgoId(id)
   });
+  // const volunteerNgoRef = collection(db, "Events", id);
 
+  // console.log('volunteerNgoRef>>>>', volunteerNgoRef);
 
-  console.log(volunteers);
+  // const volunteersNgo = fetchVolunteersByNgoId(id)
+
+  // console.log("volunteersNgo>>>>>>>>>>>>>>>.", volunteersNgo);
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -182,12 +188,14 @@ const EventDetailsVolunteer = () => {
             <Tab label="Accepted" />
             <Tab label="Rejected" />
           </Tabs>
-          {activeTab === 0 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'pending')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+          {activeTab === 0 && <DataGrid loading={isLoading} getRowId={(row) => row.userId} rows={volunteers?.filter((volunteer) => volunteer.status === 'pending')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+          {activeTab === 1 && <DataGrid loading={isLoading} getRowId={(row) => row.userId} rows={volunteers?.filter((volunteer) => volunteer.status === 'accepted')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+          {activeTab === 2 && <DataGrid loading={isLoading} getRowId={(row) => row.userId} rows={volunteers?.filter((volunteer) => volunteer.status === 'rejected')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
 
-          {activeTab === 1 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'accepted')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+          {/* {activeTab === 1 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'accepted')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>} */}
 
 
-          {activeTab === 2 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'rejected')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>}
+          {/* {activeTab === 2 && <DataGrid loading={isLoading} getRowId={(row) => row.volunteer_id} rows={volunteers?.filter((volunteer) => volunteer.status === 'rejected')   || []} columns={columns} components={{ Toolbar: DataGridCustomToolbar }}/>} */}
         </Box>
         
 

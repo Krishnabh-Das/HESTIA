@@ -18,6 +18,9 @@ import { collection, getDoc, doc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import CircularProgress from "@mui/material/CircularProgress";
 
+// import { Toaster, toast } from 'sonner'
+
+
 //------------------------leaflet config------------------------
 import "../leaflet_myconfig.css";
 import "leaflet/dist/leaflet.css";
@@ -34,7 +37,7 @@ import pinIcon2 from "../assets/pin.png";
 import pinIcon3 from "../assets/destination.png";
 
 import { Icon, divIcon, point } from "leaflet";
-import { fetchVolunteerById, updateVolunteerStatusById } from "../api/Ngo";
+import { fetchVolunteerById, fetchVolunteersByNgoId, updateVolunteerStatusById } from "../api/Ngo";
 
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -55,18 +58,34 @@ const  DetailPage = () => {
 
   const theme = useTheme();
 
-  const { id } = useParams();
+  const { id, volunteerId } = useParams();
 
   const {
     isLoading,
     isError,
-    data: volunteer,
+    data: volunteers,
     error,
   } = useQuery({
     queryKey: ["volunteers", id],
-    queryFn: () => fetchVolunteerById(id),
+    queryFn: () => fetchVolunteersByNgoId(id)
   });
 
+
+  const volunteer = volunteers?.find(e => e.userId === volunteerId)
+
+  // console.log('volunteer>>>>>', volunteer);
+  // const data = queryClient.getQueryData(["volunteer"])
+
+  // console.log('cached>>>>>>>>>>>>>>', data);
+
+  // const result = useQuery({
+  //   queryKey: ['todo', todoId],
+  //   queryFn: () => fetch(`/todos/${todoId}`),
+  //   initialData: () => {
+  //     // Use a todo from the 'todos' query as the initial data for this todo query
+  //     return queryClient.getQueryData(['todos'])?.find((d) => d.id === todoId)
+  //   },
+  // })
   // console.log("volunteer id in page", id);
   // console.log("volunteer  data page", volunteer);
 
@@ -84,11 +103,12 @@ const  DetailPage = () => {
   };
 
   const handleVolunteerStatus = ( status) => { 
-    console.log('click id',id);
+    console.log('click id',volunteerId);
     console.log('click status',status);
 
     updateVolunteerStatusMutation.mutate({
       id,
+      volunteerId,
       status
     })
    }
@@ -139,7 +159,7 @@ const  DetailPage = () => {
                     padding: "10px",
                     marginBottom: "10px",
                   }}
-                  image={volunteer.imageURL}
+                  image={volunteer?.profileImageUrl}
                   title="volunteer"
                 />
 
@@ -158,7 +178,7 @@ const  DetailPage = () => {
                       variant="body1"
                       sx={{ color: theme.palette.secondary[100] }}
                     >
-                      {volunteer.name}
+                      {volunteer?.userName}
                     </Typography>
                   </Box>
                 </Box>
@@ -178,7 +198,7 @@ const  DetailPage = () => {
                       variant="body1"
                       sx={{ color: theme.palette.secondary[100] }}
                     >
-                      {volunteer.email}
+                      {volunteer?.email}
                     </Typography>
                   </Box>
                 </Box>
@@ -204,7 +224,7 @@ const  DetailPage = () => {
                         display: "inline",
                       }}
                     >
-                      {volunteer.number}
+                      {volunteer?.phoneNumber}
                     </Typography>
                   </Box>
                 </Box>
@@ -242,7 +262,7 @@ const  DetailPage = () => {
                     padding: "10px",
                     marginBottom: "10px",
                   }}
-                  image={volunteer.idProof}
+                  image={volunteer?.idProofUrl}
                   title="ID"
                 />
 
@@ -257,25 +277,25 @@ const  DetailPage = () => {
                     </Typography>
                   </Box>
                   <Box display='flex'>
-                    {volunteer.status === "pending" ? (
+                    {volunteer?.status === "pending" ? (
                       <Box display='flex' gap={1}>
                         <HourglassTopIcon sx={{ color: "#EDD000" }} />
                         <Typography>{volunteer.status}</Typography>
                       </Box>
-                    ) : volunteer.status === "accepted" ? (
+                    ) : volunteer?.status === "accepted" ? (
                       <Box display='flex' gap={1}>
                         <VerifiedUserIcon sx={{ color: "#5bff86" }} />
-                        <Typography>{volunteer.status}</Typography>
+                        <Typography>{volunteer?.status}</Typography>
                       </Box>
                     ) : (
                       <Box display='flex' gap={1}>
                         <CancelIcon sx={{ color: "red" }} />
-                        <Typography>{volunteer.status}</Typography>
+                        <Typography>{volunteer?.status}</Typography>
                       </Box>
                     )}
                   </Box>
                 </Box>
-                {volunteer.status === 'pending' && (
+                {volunteer?.status === 'pending' && (
                     <Box display='flex' alignItems='center' justifyContent='space-between' mt={2}>
                     <Button
                       variant="contained"

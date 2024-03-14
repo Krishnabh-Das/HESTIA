@@ -55,7 +55,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={user? (<Navigate to="/dashboard" replace />):(<Navigate to="/auth" replace />)} />
               <Route path="/dashboard" element={user? (<Dashboard />): (<Navigate to="/auth" replace />)} />
-              <Route path="/details/:id" element={user? (<DetailPage />): (<Navigate to="/auth" replace />)} />
+              <Route path="/details/:id/:volunteerId" element={user? (<DetailPage />): (<Navigate to="/auth" replace />)} />
               <Route path="/markers/:id" element={user? (<MarkerDetailPage/>) : (<Navigate to="/auth" replace />)} />
               <Route path="/sosreports" element={user? (<SosReports />): (<Navigate to="/auth" replace />)} />
              
